@@ -1,5 +1,6 @@
 "use client"; // Necesario para manejar estado en App Router
 
+import { login } from "../services/authService"; // Importamos el servicio de login
 import { useEffect, useState } from "react";
 
 export default function LoginPage() {
@@ -19,30 +20,19 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del
 
-    // Llamada al backend NestJS para autenticar usuario
-    const res = await fetch("http://localhost:4000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+       // Usar el servicio de login
+      const res = await login(username, password);
 
-    if (res.ok) {
-       const data = await res.json();
-
-      if (data.status === "ok") {
+      if (res.status === "ok") {
 
         if (typeof window !== "undefined") { // Verificamos que estamos en el cliente
           window.location.href = "/"; // Redirige a la ruta raíz
         }
 
       }else {
-        alert(data.message);
+        alert(res.message);
       }
-    }else{
-      const errorData = await res.json();
-      console.error("Error:", errorData);
-      alert("Error en la autenticación");
-    }
+
   };
 
   return (
