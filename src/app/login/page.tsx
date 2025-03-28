@@ -1,13 +1,23 @@
 "use client"; // Necesario para manejar estado en App Router
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);  // Marca cuando el componente está montado en el cliente
+  }, []);
+
+    if (!isMounted) {
+       return null; // Evita que el componente se renderice en el servidor
+      }
+
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevenir el comportamiento por defecto del
 
     // Llamada al backend NestJS para autenticar usuario
     const res = await fetch("http://localhost:4000/auth/login", {
