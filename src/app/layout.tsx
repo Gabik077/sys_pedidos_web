@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex h-screen">
         {/* Sidebar */}
         <div
-          className={`bg-gray-300 text-white p-4 transition-all duration-300 ${
+          className={`bg-gray-400 text-white p-4 transition-all duration-300 ${
             isOpen ? "w-64" : "w-16"
           }`}
         >
