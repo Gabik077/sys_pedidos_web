@@ -36,7 +36,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-white-100">
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-lg">
         <h1 className="text-2xl text-black font-bold mb-4">Iniciar Sesión</h1>
         <input

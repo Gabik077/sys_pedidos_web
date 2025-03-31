@@ -36,7 +36,7 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-200 p-6">
+    <div className="min-h-screen bg-white-200 p-6">
       <h1 className="text-2xl text-black font-bold mb-4">Lista de Usuarios</h1>
 
       {loading ? (
