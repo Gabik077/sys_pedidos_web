@@ -7,7 +7,7 @@ interface LoginResponse {
 }
 
 // Usamos la variable de entorno para obtener la URL de la API
-const apiUrl = process.env.URL_API;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const login = async (username: string, password: string): Promise<LoginResponse> => {
     try {
