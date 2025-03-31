@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   if (pathname === "/login") {
     return (
       <html lang="es">
-          <body className="flex items-center justify-center min-h-screen bg-white-200">{children}</body>
+        <body className="flex items-center justify-center min-h-screen bg-white-200">{children}</body>
       </html>
     );
   }
@@ -34,23 +34,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="mb-4 text-gray-400 hover:text-white"
+            className="mb-4 text-gray-400 text-white"
           >
             {isOpen ? "❌" : "☰"}
           </button>
 
           <nav className="space-y-2">
-            <Link href="/" className="block p-2 hover:bg-gray-700 rounded">
-              🏠 Home
+            <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              🏠 {isOpen && <span className="ml-2">Home</span>}
             </Link>
-            <Link href="/users" className="block p-2 hover:bg-gray-700 rounded">
-              👥 Usuarios
+            <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              👥 {isOpen && <span className="ml-2">Usuarios</span>}
             </Link>
             <button
               onClick={handleLogout}
-              className="block w-full text-left p-2 hover:bg-red-700 rounded"
+              className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded"
             >
-              🚪 Cerrar sesión
+              🚪 {isOpen && <span className="ml-2">Cerrar sesión</span>}
             </button>
           </nav>
         </div>
