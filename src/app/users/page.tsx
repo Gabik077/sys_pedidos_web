@@ -8,7 +8,8 @@ import ConfirmModal from "../components/confirmModal"; // Asegúrate de importar
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null); // Estado para almacenar el ID del usuario
 
 
   // Cargar usuarios al montar el componente
@@ -27,20 +28,19 @@ export default function UsersPage() {
   }, []);
 
   // Eliminar usuario
-  const handleDelete = async () => {
-     setIsModalOpen(true);
-
+ const handleDeleteClick = (userId: number) => {
+    setSelectedUserId(userId); // Guardar el ID del usuario seleccionado
+    setIsModalOpen(true); // Abrir el modal
   };
-  const confirmDelete = async (id: number) => {
-    console.log("Usuario eliminado");
-      setIsModalOpen(false);
-    try {
-        await deleteUser(id);
-        setUsers(users.filter((user) => user.id !== id)); // Actualiza la lista eliminando el usuario
-      } catch (error) {
-        console.error("Error al eliminar usuario:", error);
-      }
 
+  const confirmDelete = async () => {
+    if (selectedUserId !== null) {
+      await deleteUser(selectedUserId); // Llamar a la función de eliminación
+      setIsModalOpen(false); // Cerrar el modal
+      setSelectedUserId(null); // Resetear el ID
+      setUsers(users.filter((user) => user.id !== selectedUserId)); // Actualiza la lista eliminando el usuario
+
+    }
   };
 
   return (
@@ -68,17 +68,18 @@ export default function UsersPage() {
                 <td className="py-3 px-6 text-left">{user.email}</td>
                 <td className="py-3 px-6 text-left">{user.rol.descripcion}</td>
                 <td className="py-3 px-6 text-center">
-               <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded">Eliminar Usuario</button>
-                    <ConfirmModal
+               <button onClick={()=>handleDeleteClick(user.id)} className="bg-red-500 text-white p-2 rounded">Eliminar Usuario</button>
+               <ConfirmModal
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
                         onConfirm={confirmDelete}
                         message="¿Estás seguro de que quieres eliminar este usuario?"
-                        userId={user.id} // Pasa el ID del usuario al modal
+
                     />
                 </td>
               </tr>
             ))}
+
           </tbody>
         </table>
       )}

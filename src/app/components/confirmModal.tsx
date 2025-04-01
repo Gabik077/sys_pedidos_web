@@ -5,12 +5,11 @@ import { useState } from 'react';
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (userId: number) => void;
+  onConfirm: () => void;
   message: string;
-  userId: number;
 }
 
-export default function ConfirmModal({ isOpen, onClose, onConfirm, message, userId }: ConfirmModalProps) {
+export default function ConfirmModal({ isOpen, onClose, onConfirm, message }: ConfirmModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -20,7 +19,7 @@ export default function ConfirmModal({ isOpen, onClose, onConfirm, message, user
         <p className="mb-4">{message}</p>
         <div className="flex justify-end space-x-2">
           <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded-md">Cancelar</button>
-          <button onClick={() => onConfirm(userId)} className="px-4 py-2 bg-red-600 text-white rounded-md">Confirmar</button>
+          <button onClick={() => onConfirm()} className="px-4 py-2 bg-red-600 text-white rounded-md">Confirmar</button>
         </div>
       </div>
     </div>
