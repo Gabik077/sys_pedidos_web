@@ -1,37 +1,61 @@
-// Funciones para hacer CRUD de usuarios con la API
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+if (!apiUrl) {
+    throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
+}
+
+// Obtener todos los usuarios
 export const fetchUsers = async () => {
-    const res = await fetch(`${apiUrl}/users`);
-    const data = await res.json();
-    return data;
+    return await handleRequest(`${apiUrl}/users`);
 };
 
+export const fetchRoles = async () => {
+    return await handleRequest(`${apiUrl}/users/roles`);
+}
+
+// Crear usuario
 export const createUser = async (userData: any) => {
-    const res = await fetch(`${apiUrl}/users`, {
-        method: 'POST',
+    console.log("userData", JSON.stringify(userData));
+    return await handleRequest(`${apiUrl}/users`, {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
     });
-    return res.json();
 };
 
+// Actualizar usuario
 export const updateUser = async (id: number, userData: any) => {
-    const res = await fetch(`${apiUrl}/users/${id}`, {
-        method: 'PATCH',
+    return await handleRequest(`${apiUrl}/users/${id}`, {
+        method: "PATCH",
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
     });
-    return res.json();
 };
 
+// Eliminar usuario
 export const deleteUser = async (id: number) => {
-    const res = await fetch(`${apiUrl}/users/${id}`, {
-        method: 'DELETE',
+    return await handleRequest(`${apiUrl}/users/${id}`, {
+        method: "DELETE",
     });
-    return res.json();
+};
+
+
+// Función genérica para manejar errores en las llamadas a la API
+const handleRequest = async (url: string, options?: RequestInit) => {
+    try {
+        const res = await fetch(url, options);
+
+        if (!res.ok) {
+            throw new Error(`Error en la API: ${res.status} - ${res.statusText}`);
+        }
+
+        return await res.json();
+    } catch (error) {
+        console.error("Error en la petición:", error);
+        throw error;
+    }
 };

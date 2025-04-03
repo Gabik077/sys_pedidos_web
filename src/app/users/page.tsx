@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchUsers, deleteUser } from "../services/userService";
 import ConfirmModal from "../components/confirmModal"; // Asegúrate de importar el modal
+import Link from "next/link";
 
 
 export default function UsersPage() {
@@ -45,8 +46,13 @@ export default function UsersPage() {
 
   return (
     <div className="min-h-screen bg-white-200 p-6">
-      <h1 className="text-2xl text-black font-bold mb-4">Lista de Usuarios</h1>
 
+       <div>
+        <h1 className="text-2xl text-black font-bold mb-4">Lista de Usuarios</h1>
+        <Link href="/users/create">
+          <button className="mt-6 bg-gray-400 text-white p-2 rounded">➕ Crear Usuario</button>
+        </Link>
+      </div>
       {loading ? (
         <p>Cargando usuarios...</p>
       ) : users.length === 0 ? (
