@@ -9,6 +9,10 @@ export const fetchUsers = async () => {
     return await handleRequest(`${apiUrl}/users`);
 };
 
+export const fetchUserById = async (id: any) => {
+    return await handleRequest(`${apiUrl}/users/${id}`);
+};
+
 export const fetchRoles = async () => {
     return await handleRequest(`${apiUrl}/users/roles`);
 }
@@ -26,9 +30,10 @@ export const createUser = async (userData: any) => {
 };
 
 // Actualizar usuario
-export const updateUser = async (id: number, userData: any) => {
+export const updateUserById = async (id: any, userData: any) => {
+
     return await handleRequest(`${apiUrl}/users/${id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
