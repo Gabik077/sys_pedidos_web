@@ -3,8 +3,9 @@
 import { updateUserById, fetchRoles, fetchUserById } from "@/app/services/userService";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { withAuth } from "@/app/utils/withAuth";
 
-export default function EditUserPage() {
+function EditUserPage() {
   const router = useRouter();
   const { id } = useParams(); // Obtiene el ID del usuario desde la URL
   const [nombre, setNombre] = useState("");
@@ -114,3 +115,5 @@ export default function EditUserPage() {
     </div>
   );
 }
+
+export default withAuth(EditUserPage, ["ADMINISTRADOR"]);

@@ -3,8 +3,9 @@
 import { createUser, fetchRoles } from "@/app/services/userService";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { withAuth } from "@/app/utils/withAuth";
 
-export default function CreateUserPage() {
+function CreateUserPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [nombre, setNombre] = useState("");
@@ -32,6 +33,22 @@ export default function CreateUserPage() {
         setLoading(false);
       }
     };
+ /*const checkCreds = async () => {
+      const response = await fetch("/api/me", { credentials: "include" });
+
+      if (!response.ok) {
+        router.push("/login");
+        return;
+      }
+      const res = await response.json();
+      if (res.user?.role !== "ADMINISTRADOR") {
+          router.push("/login");
+      }
+    }
+
+    checkCreds();*/
+
+
     loadRoles();
   }, []);
 
@@ -140,3 +157,5 @@ export default function CreateUserPage() {
     </div>
   );
 }
+
+export default withAuth(CreateUserPage, ["ADMINISTRADOR"]);
