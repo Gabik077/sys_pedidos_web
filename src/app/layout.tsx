@@ -1,7 +1,7 @@
 "use client";
 import "./globals.css";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "./services/authService";
@@ -10,6 +10,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const pathname = usePathname(); // Obtiene la ruta actual
   const [isOpen, setIsOpen] = useState(true);
   const router = useRouter();
+  const [role, setRole] = useState<string | null>(null); // Guardar el rol del usuario
+
+
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const res = await fetch("/api/me");
+        const data = await res.json();
+
+        if (data.status === "ok" && data.user) {
+          setRole(data.user.role); // Guarda el rol del usuario
+        }
+      } catch (error) {
+        console.error("Error al obtener el usuario:", error);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
+
+
+
 
   const handleLogout = async () => {
      const res = await logout();
@@ -48,9 +71,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded">
               🏠 {isOpen && <span className="ml-2">Home</span>}
             </Link>
-            <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded">
-              👥 {isOpen && <span className="ml-2">Usuarios</span>}
-            </Link>
+           {role === "ADMINISTRADOR" && (
+              <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded">
+                👥 {isOpen && <span className="ml-2">Usuarios</span>}
+              </Link>
+            )}
             <button
               onClick={handleLogout}
               className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded"
