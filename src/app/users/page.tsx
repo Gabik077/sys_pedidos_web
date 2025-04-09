@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { fetchUsers, deleteUser } from "../services/userService";
 import ConfirmModal from "../components/confirmModal";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { withAuth } from '../utils/withAuth';
 
 
-export default function UsersPage() {
+function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,16 +17,6 @@ export default function UsersPage() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-
-        const response = await fetch('/api/me'); // Llamada a la ruta que creamos en Next.js
-      //  const res= await response.json();
-        if (!response.ok) {
-
-          throw new Error('No autorizado');
-        }
-
-      //  alert(res.user.role);
-
         const data = await fetchUsers();
         setUsers(data);
       } catch (error) {
@@ -105,3 +95,5 @@ export default function UsersPage() {
     </div>
   );
 }
+
+export default withAuth(UsersPage, ['ADMINISTRADOR']);

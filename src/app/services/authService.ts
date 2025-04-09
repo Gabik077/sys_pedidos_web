@@ -33,3 +33,23 @@ export const login = async (username: string, password: string): Promise<LoginRe
         return { status: 'error', message: 'Error de red o servidor' };
     }
 };
+
+export const logout = async (): Promise<any> => {
+    try {
+        const res = await fetch(`${apiUrl}/auth/logout`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}),
+        });
+
+        if (res.ok) {
+            return { status: 'ok', message: 'Logout exitoso' };
+        } else {
+            const errorData = await res.json();
+            return { status: 'error', message: errorData.message || 'Error en la comunicación con el servidor' };
+        }
+    } catch (error) {
+        return { status: 'error', message: 'Error de red o servidor' };
+    }
+};

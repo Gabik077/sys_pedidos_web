@@ -4,14 +4,19 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { logout } from "./services/authService";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname(); // Obtiene la ruta actual
   const [isOpen, setIsOpen] = useState(true);
   const router = useRouter();
 
-  const handleLogout = () => {
-    router.push("/login"); // Redirige al login
+  const handleLogout = async () => {
+     const res = await logout();
+
+     if (res.status === "ok") {
+      router.push("/login"); // Redirige al login
+     }
   };
 
   // Si estamos en /login, solo mostramos el contenido sin el menú
