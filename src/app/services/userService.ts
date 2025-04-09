@@ -50,9 +50,12 @@ export const deleteUser = async (id: number) => {
 
 
 // Función genérica para manejar errores en las llamadas a la API
-const handleRequest = async (url: string, options?: RequestInit) => {
+const handleRequest = async (url: string, options: RequestInit = {}) => {
     try {
-        const res = await fetch(url, options);
+        const res = await fetch(url, {
+            credentials: options.credentials ?? 'include', // 👈 'include' por defecto, pero permite sobrescribir
+            ...options,
+        });
 
         if (!res.ok) {
             throw new Error(`Error en la API: ${res.status} - ${res.statusText}`);
