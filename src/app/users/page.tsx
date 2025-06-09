@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { redirect } from 'next/navigation';
 import UsersTable from '../components/UsersTable';
+import { fetchUsers } from '../services/userService';
 
 
 export default async function UsersPage() {
@@ -19,14 +20,7 @@ export default async function UsersPage() {
       redirect('/');
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-      headers: {
-        Cookie: `token=${token}`
-      },
-      cache: 'no-store'
-    });
-
-    const users = await res.json();
+    const users = await fetchUsers(token);
 
     return <UsersTable users={users} />;
   } catch (err) {

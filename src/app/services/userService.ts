@@ -1,3 +1,4 @@
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 if (!apiUrl) {
@@ -5,8 +6,13 @@ if (!apiUrl) {
 }
 
 // Obtener todos los usuarios
-export const fetchUsers = async () => {
-    return await handleRequest(`${apiUrl}/users`);
+export const fetchUsers = async (token: string) => {
+    return await handleRequest(`${apiUrl}/users`, {
+        headers: {
+            Cookie: `token=${token}`
+        },
+        cache: 'no-store'
+    });
 };
 
 export const fetchUserById = async (id: any) => {
@@ -53,14 +59,18 @@ export const deleteUser = async (id: number) => {
 const handleRequest = async (url: string, options: RequestInit = {}) => {
     try {
         const res = await fetch(url, {
-            credentials: options.credentials ?? 'include', // 👈 'include' por defecto, pero permite sobrescribir
+            credentials: options.credentials ?? 'include',
             ...options,
         });
-
         if (!res.ok) {
-            throw new Error(`Error en la API: ${res.status} - ${res.statusText}`);
-        }
+            if (res.status === 401 || res.status === 403) {
 
+                return {
+                    status: res.status, message: "No autorizado o prohibido"
+                }
+                throw new Error(`Error en la API: ${res.status} - ${res.statusText}`);
+            }
+        }
         return await res.json();
     } catch (error) {
         console.error("Error en la petición:", error);

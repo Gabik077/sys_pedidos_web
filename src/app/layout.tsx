@@ -76,12 +76,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded">
                   👥 {isOpen && <span className="ml-2">Usuarios</span>}
                 </Link>
-                <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded">
-                  🛒 {isOpen && <span className="ml-2">Productos</span>}
-                </Link>
+
               </>
 
             )}
+              {(role === "ADMINISTRADOR" || role === "COMPRADOR" || role == "VENDEDOR") && (
+                 <>
+                <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded">
+                  🛒 {isOpen && <span className="ml-2">Productos</span>}
+                </Link>
+                </>
+                )}
             <button
               onClick={handleLogout}
               className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded"
