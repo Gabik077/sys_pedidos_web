@@ -183,7 +183,7 @@ function EditProductPage() {
               <p className="text-xs text-gray-500">Categoría</p>
               <input type="text" value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} className="w-full p-3 border rounded" />
             </div>
-{/*
+
             <div>
               <p className="text-xs text-gray-500">Proveedor</p>
               <select value={idProveedor} onChange={(e) => setIdProveedor(e.target.value)} className="w-full p-3 border rounded">
@@ -195,10 +195,9 @@ function EditProductPage() {
                 ))}
               </select>
             </div>
-*/
-          }
 
-<div className="col-span-2">
+
+      <div>
               <p className="text-xs text-gray-500">Unidad</p>
               <select value={unidadId} onChange={(e) => setUnidadId(e.target.value)} className="w-full p-3 border rounded">
                 <option value="">Seleccione unidad</option>

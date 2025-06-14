@@ -133,7 +133,7 @@ function CreateProductPage() {
             <input type="text" value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} className="w-full p-3 border rounded" />
           </div>
 
-          {/* <div>
+           <div>
             <p className="text-xs text-gray-500">Proveedor</p>
             <select value={idProveedor} onChange={(e) => setIdProveedor(e.target.value)} className="w-full p-3 border rounded">
               <option value="">Seleccionar proveedor</option>
@@ -143,9 +143,7 @@ function CreateProductPage() {
             </select>
           </div>
 
- */}
-
-<div>
+        <div>
             <p className="text-xs text-gray-500">Unidad</p>
             <select value={idUnidad} onChange={(e) => setIdUnidad(e.target.value)} className="w-full p-3 border rounded">
               <option value="">Seleccionar unidad</option>
