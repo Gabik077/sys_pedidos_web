@@ -76,65 +76,64 @@ function CreateUserPage() {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
         <h1 className="text-3xl font-bold mb-6 text-center">Crear Usuario</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-semibold">Nombre</label>
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Nombre</p>
             <input
               type="text"
-              placeholder="Nombre"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               className="w-full p-3 border rounded"
               required
             />
           </div>
+
           <div>
-            <label className="block text-gray-700 font-semibold">Username</label>
+            <p className="text-xs text-gray-500">Username</p>
             <input
               type="text"
-              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full p-3 border rounded"
               required
             />
           </div>
+
           <div>
-            <label className="block text-gray-700 font-semibold">Email</label>
+            <p className="text-xs text-gray-500">Email</p>
             <input
               type="email"
-              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border rounded"
               required
             />
           </div>
+
           <div>
-            <label className="block text-gray-700 font-semibold">Contraseña</label>
+            <p className="text-xs text-gray-500">Contraseña</p>
             <input
               type="password"
-              placeholder="Contraseña"
               value={contrasena}
               onChange={(e) => setContrasena(e.target.value)}
               className="w-full p-3 border rounded"
               required
             />
           </div>
+
           <div>
-            <label className="block text-gray-700 font-semibold">Confirmar Contraseña</label>
+            <p className="text-xs text-gray-500">Confirmar Contraseña</p>
             <input
               type="password"
-              placeholder="Confirmar Contraseña"
               value={confirmarContrasena}
               onChange={(e) => setConfirmarContrasena(e.target.value)}
               className="w-full p-3 border rounded"
               required
             />
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <div>
-            <label className="block text-gray-700 font-semibold">Rol</label>
+
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Rol</p>
             <select
               value={rol}
               onChange={(e) => setRol(e.target.value)}
@@ -149,7 +148,12 @@ function CreateUserPage() {
               ))}
             </select>
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
+
+          {error && (
+            <p className="col-span-2 text-red-500 text-sm">{error}</p>
+          )}
+
+          <button type="submit" className="col-span-2 bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
             Crear Usuario
           </button>
         </form>

@@ -12,7 +12,6 @@ const handleRequest = async (url: string, options: RequestInit = {}) => {
             credentials: options.credentials ?? 'include',
             ...options,
         });
-        console.log("res  petición:", res);
         if (!res.ok) {
             if (res.status === 401 || res.status === 403) {
                 // Redirige si está no autorizado o prohibido
@@ -29,6 +28,17 @@ const handleRequest = async (url: string, options: RequestInit = {}) => {
     }
 };
 
+export const fetchProveedores = async () => {
+    const res = await fetch(`${apiUrl}/proveedores`);
+    return res.json();
+};
+
+export const fetchUnidades = async () => {
+    const res = await fetch(`${apiUrl}/unidades`);
+    return res.json();
+};
+
+
 export const fetchProducts = async (token: string) => {
     return await handleRequest(`${apiUrl}/products`,
         {
@@ -40,7 +50,7 @@ export const fetchProducts = async (token: string) => {
     );
 };
 
-export const fetchProductById = async (id: number) => {
+export const fetchProductById = async (id: any) => {
     return await handleRequest(`${apiUrl}/products/${id}`);
 };
 
@@ -54,7 +64,7 @@ export const createProduct = async (productData: any) => {
     });
 };
 
-export const updateProductById = async (id: number, productData: any) => {
+export const updateProductById = async (id: any, productData: any) => {
     return await handleRequest(`${apiUrl}/products/${id}`, {
         method: "PUT",
         headers: {

@@ -69,47 +69,55 @@ function EditUserPage() {
         {loading ? (
           <p>Cargando...</p>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-gray-700 font-semibold">Nombre</label>
-              <input
-                type="text"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                className="w-full p-3 border rounded"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-semibold">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-3 border rounded"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-semibold">Rol</label>
-              <select
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
-                className="w-full p-3 border rounded"
-                required
-              >
-                <option value="">Seleccionar Rol</option>
-                {roles.map((r) => (
-                  <option key={r.id} value={String(r.id)}>
-                    {r.descripcion}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
-              Guardar Cambios
-            </button>
-          </form>
+          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Nombre</p>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="w-full p-3 border rounded"
+              required
+            />
+          </div>
+
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Email</p>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 border rounded"
+              required
+            />
+          </div>
+
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Rol</p>
+            <select
+              value={rol}
+              onChange={(e) => setRol(e.target.value)}
+              className="w-full p-3 border rounded bg-white"
+              required
+            >
+              <option value="">Seleccionar Rol</option>
+              {roles.map((r) => (
+                <option key={r.id} value={String(r.id)}>
+                  {r.descripcion}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            className="col-span-2 bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700"
+          >
+            Guardar Cambios
+          </button>
+        </form>
+
+
         )}
       </div>
     </div>
