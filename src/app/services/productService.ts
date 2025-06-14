@@ -14,7 +14,7 @@ const handleRequest = async (url: string, options: RequestInit = {}) => {
         });
         if (!res.ok) {
             if (res.status === 401 || res.status === 403) {
-                // Redirige si está no autorizado o prohibido
+                // Redirige si no está autorizado o prohibido
                 return { status: res.status, message: "No autorizado o prohibido" };
             }
 
@@ -34,8 +34,7 @@ export const fetchProveedores = async () => {
 };
 
 export const fetchUnidades = async () => {
-    const res = await fetch(`${apiUrl}/unidades`);
-    return res.json();
+    return await handleRequest(`${apiUrl}/products/unidades`);
 };
 
 

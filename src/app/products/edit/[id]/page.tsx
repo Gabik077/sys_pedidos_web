@@ -195,8 +195,10 @@ function EditProductPage() {
                 ))}
               </select>
             </div>
+*/
+          }
 
-            <div className="col-span-2">
+<div className="col-span-2">
               <p className="text-xs text-gray-500">Unidad</p>
               <select value={unidadId} onChange={(e) => setUnidadId(e.target.value)} className="w-full p-3 border rounded">
                 <option value="">Seleccione unidad</option>
@@ -206,7 +208,7 @@ function EditProductPage() {
                   </option>
                 ))}
               </select>
-            </div> */}
+            </div>
 
             <button type="submit" className="col-span-2 bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
               Guardar Cambios

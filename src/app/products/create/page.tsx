@@ -143,7 +143,9 @@ function CreateProductPage() {
             </select>
           </div>
 
-          <div>
+ */}
+
+<div>
             <p className="text-xs text-gray-500">Unidad</p>
             <select value={idUnidad} onChange={(e) => setIdUnidad(e.target.value)} className="w-full p-3 border rounded">
               <option value="">Seleccionar unidad</option>
@@ -152,7 +154,6 @@ function CreateProductPage() {
               ))}
             </select>
           </div>
- */}
           <button type="submit" className="col-span-2 bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
             Crear Producto
           </button>
