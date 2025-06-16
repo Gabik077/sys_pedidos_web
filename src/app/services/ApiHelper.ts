@@ -8,7 +8,14 @@ export const handleRequest = async (url: string, options: RequestInit = {}) => {
         if (!res.ok) {
             if (res.status === 401 || res.status === 403) {
                 // Redirige si no está autorizado o prohibido
-                return { status: res.status, message: "No autorizado o prohibido" };
+                return { status: res.status, message: res.statusText };
+            }
+            if (res.status === 400) {
+                return { status: res.status, message: res.statusText };
+            }
+
+            if (res.status === 500) {
+                return { status: res.status, message: res.statusText };
             }
 
             throw new Error(`Error en la API: ${res.status} - ${res.statusText}`);

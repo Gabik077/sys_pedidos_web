@@ -33,20 +33,7 @@ function CreateUserPage() {
         setLoading(false);
       }
     };
- /*const checkCreds = async () => {
-      const response = await fetch("/api/me", { credentials: "include" });
 
-      if (!response.ok) {
-        router.push("/login");
-        return;
-      }
-      const res = await response.json();
-      if (res.user?.role !== "ADMINISTRADOR") {
-          router.push("/login");
-      }
-    }
-
-    checkCreds();*/
 
 
     loadRoles();
