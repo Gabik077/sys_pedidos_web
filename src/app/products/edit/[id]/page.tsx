@@ -66,7 +66,7 @@ function EditProductPage() {
         setDescripcion(producto.descripcion || '');
         setPrecioCompra(String(producto.precio_compra || ''));
         setPrecioVenta(String(producto.precio_venta || ''));
-        setStockMinimo(String(producto.stock_minimo || ''));
+        setStockMinimo(String(producto.stock_minimo || '0'));
         setEstado(producto.estado || '');
         setIdMoneda(String(producto.id_moneda || ''));
         setCodigoInterno(producto.codigo_interno || '');
@@ -103,7 +103,6 @@ function EditProductPage() {
       marca,
       codigo_barra: codigoBarra,
       unidad: parseInt(unidadId, 10),
-      id_empresa: 1, // Asignar un valor por defecto para la empresa
     };
 
     const res = await updateProductById(id, productoActualizado);
@@ -134,9 +133,22 @@ function EditProductPage() {
               <input type="text" value={marca} onChange={(e) => setMarca(e.target.value)} className="w-full p-3 border rounded" />
             </div>
 
-            <div className="col-span-2">
+            <div>
               <p className="text-xs text-gray-500">Descripción</p>
               <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} className="w-full p-3 border rounded" />
+            </div>
+
+            <div className="flex items-center mt-6">
+              <input
+                type="checkbox"
+                id="activo"
+                checked={estado === 'activo'}
+                onChange={(e) => setEstado(e.target.checked ? 'activo' : 'inactivo')}
+                className="h-4 w-4"
+              />
+              <label htmlFor="activo" className="ml-2 text-xs text-gray-500">
+                Activo
+              </label>
             </div>
 
             <div>
@@ -159,32 +171,21 @@ function EditProductPage() {
               <input type="number" value={stockMinimo} onChange={(e) => setStockMinimo(e.target.value)} className="w-full p-3 border rounded" />
             </div>
 
-            <div className="flex items-center mt-6">
-              <input
-                type="checkbox"
-                id="activo"
-                checked={estado === 'activo'}
-                onChange={(e) => setEstado(e.target.checked ? 'activo' : 'inactivo')}
-                className="h-4 w-4"
-              />
-              <label htmlFor="activo" className="ml-2 text-xs text-gray-500">
-                Activo
-              </label>
-            </div>
-
             <div>
-              <p className="text-xs text-gray-500">ID Moneda</p>
+              <p className="text-xs text-gray-500">Moneda</p>
               <input type="text" value={idMoneda} onChange={(e) => setIdMoneda(e.target.value)} className="w-full p-3 border rounded" />
             </div>
 
             <div>
-              <p className="text-xs text-gray-500">Código Interno</p>
-              <input type="text" value={codigoInterno} onChange={(e) => setCodigoInterno(e.target.value)} className="w-full p-3 border rounded" />
-            </div>
-
-            <div>
-              <p className="text-xs text-gray-500">Código de Barra</p>
-              <input type="text" value={codigoBarra} onChange={(e) => setCodigoBarra(e.target.value)} className="w-full p-3 border rounded" />
+              <p className="text-xs text-gray-500">Unidad</p>
+              <select value={unidadId} onChange={(e) => setUnidadId(e.target.value)} className="w-full p-3 border rounded">
+                <option value="">Seleccione unidad</option>
+                {unidades.map((unidad: any) => (
+                  <option key={unidad.id} value={unidad.id}>
+                    {unidad.nombre} ({unidad.simbolo})
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -204,17 +205,14 @@ function EditProductPage() {
               </select>
             </div>
 
+            <div>
+              <p className="text-xs text-gray-500">Código Interno</p>
+              <input type="text" value={codigoInterno} onChange={(e) => setCodigoInterno(e.target.value)} className="w-full p-3 border rounded" />
+            </div>
 
-      <div>
-              <p className="text-xs text-gray-500">Unidad</p>
-              <select value={unidadId} onChange={(e) => setUnidadId(e.target.value)} className="w-full p-3 border rounded">
-                <option value="">Seleccione unidad</option>
-                {unidades.map((unidad: any) => (
-                  <option key={unidad.id} value={unidad.id}>
-                    {unidad.nombre} ({unidad.simbolo})
-                  </option>
-                ))}
-              </select>
+            <div>
+              <p className="text-xs text-gray-500">Código de Barra</p>
+              <input type="text" value={codigoBarra} onChange={(e) => setCodigoBarra(e.target.value)} className="w-full p-3 border rounded" />
             </div>
 
             <button type="submit" className="col-span-2 bg-blue-600 text-white p-3 rounded-lg text-lg font-semibold hover:bg-blue-700">

@@ -59,7 +59,6 @@ function CreateProductPage() {
       id_unidad: parseInt(idUnidad, 10),
       iva: parseInt(iva, 10) || 0, // Asignar IVA, si no se proporciona, por defecto será 0
       sku: "",
-      id_empresa: 1, // Asignar un valor por defecto para la empresa
     };
 console.log("Nuevo producto a crear:", nuevoProducto);
     const res = await createProduct(nuevoProducto);
