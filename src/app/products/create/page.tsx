@@ -12,7 +12,7 @@ function CreateProductPage() {
   const [descripcion, setDescripcion] = useState("");
   const [precioCompra, setPrecioCompra] = useState("");
   const [precioVenta, setPrecioVenta] = useState("");
-  const [stockMinimo, setStockMinimo] = useState("");
+  const [stockMinimo, setStockMinimo] = useState("0");
   const [estado, setEstado] = useState("activo");
   const [idMoneda, setIdMoneda] = useState("1"); // Asignar un valor por defecto para la moneda
   const [codigoInterno, setCodigoInterno] = useState("");
@@ -58,7 +58,8 @@ function CreateProductPage() {
       codigo_barra: codigoBarra,
       id_unidad: parseInt(idUnidad, 10),
       iva: parseInt(iva, 10) || 0, // Asignar IVA, si no se proporciona, por defecto será 0
-      sku: "", // Puedes agregar un campo SKU si es necesario
+      sku: "",
+      id_empresa: 1, // Asignar un valor por defecto para la empresa
     };
 console.log("Nuevo producto a crear:", nuevoProducto);
     const res = await createProduct(nuevoProducto);

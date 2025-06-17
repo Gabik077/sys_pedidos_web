@@ -15,6 +15,7 @@ function EditProductPage() {
   const { id } = useParams();
 
   const [nombre, setNombre] = useState('');
+  const [iva, setIva] = useState('10'); // Valor por defecto del IVA
   const [descripcion, setDescripcion] = useState('');
   const [precioCompra, setPrecioCompra] = useState('');
   const [precioVenta, setPrecioVenta] = useState('');
@@ -60,7 +61,7 @@ function EditProductPage() {
           alert('Producto no encontrado');
           return;
         }
-
+        setIva(String(producto.iva ));
         setNombre(producto.nombre || '');
         setDescripcion(producto.descripcion || '');
         setPrecioCompra(String(producto.precio_compra || ''));
@@ -94,13 +95,15 @@ function EditProductPage() {
       precio_venta: parseFloat(precioVenta),
       stock_minimo: parseInt(stockMinimo, 10),
       estado,
+      iva: parseInt(iva, 10) || 0,
       id_moneda: parseInt(idMoneda, 10),
       codigo_interno: codigoInterno,
       id_categoria: parseInt(idCategoria, 10),
       id_proveedor: parseInt(idProveedor, 10),
       marca,
       codigo_barra: codigoBarra,
-      id_unidad: parseInt(unidadId, 10),
+      unidad: parseInt(unidadId, 10),
+      id_empresa: 1, // Asignar un valor por defecto para la empresa
     };
 
     const res = await updateProductById(id, productoActualizado);
@@ -144,6 +147,11 @@ function EditProductPage() {
             <div>
               <p className="text-xs text-gray-500">Precio Venta</p>
               <input type="number" value={precioVenta} onChange={(e) => setPrecioVenta(e.target.value)} className="w-full p-3 border rounded" required />
+            </div>
+
+            <div>
+              <p className="text-xs text-gray-500">IVA</p>
+              <input type="number" value={iva} onChange={(e) => setIva(e.target.value)} className="w-full p-3 border rounded" required />
             </div>
 
             <div>
