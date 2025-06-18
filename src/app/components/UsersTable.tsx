@@ -22,6 +22,9 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleDeleteClick = (userId: number) => {
     setSelectedUserId(userId);
@@ -31,54 +34,101 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const confirmDelete = async () => {
     if (selectedUserId !== null) {
       await deleteUser(selectedUserId);
-      setUsers(users.filter((user) => user.id !== selectedUserId));
+      const updatedUsers = users.filter((user) => user.id !== selectedUserId);
+      setUsers(updatedUsers);
       setIsModalOpen(false);
       setSelectedUserId(null);
+      if ((currentPage - 1) * itemsPerPage >= updatedUsers.length) {
+        setCurrentPage(currentPage - 1);
+      }
     }
   };
 
+  const filteredUsers = users.filter((user) =>
+    user.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   return (
-    <div className="min-h-screen bg-white-200 p-6">
-      <div>
-        <h1 className="text-2xl text-black font-bold mb-4">Lista de Usuarios</h1>
-        <Link href="/users/create">
-          <button className="mt-6 bg-gray-400 text-white p-2 rounded">➕ Crear Usuario</button>
-        </Link>
+    <div className="min-h-screen bg-white p-6">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+        <h1 className="text-2xl text-black font-bold">Lista de Usuarios</h1>
+        <div className="flex gap-4 w-full md:w-auto">
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full md:w-64 p-2 border rounded"
+          />
+          <Link href="/users/create">
+            <button className="bg-gray-400 text-white p-2 rounded w-full md:w-auto">➕ Crear Usuario</button>
+          </Link>
+        </div>
       </div>
 
-      {users.length === 0 ? (
+      {filteredUsers.length === 0 ? (
         <p>No hay usuarios registrados.</p>
       ) : (
-        <table className="min-w-full bg-white border border-gray-300 shadow-md mt-6">
-          <thead>
-            <tr className="bg-blue-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">Nombre</th>
-              <th className="py-3 px-6 text-left">Email</th>
-              <th className="py-3 px-6 text-left">Rol</th>
-              <th className="py-3 px-6 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody className="text-gray-600 text-sm font-light">
-            {users.map((user) => (
-              <tr key={user.id} className="border-b border-gray-200 hover:bg-gray-100">
-                <td className="py-3 px-6 text-left">{user.nombre}</td>
-                <td className="py-3 px-6 text-left">{user.email}</td>
-                <td className="py-3 px-6 text-left">{user.rol.descripcion}</td>
-                <td className="py-3 px-6 text-center flex gap-2">
-                  <Link href={`/users/edit/${user.id}`}>
-                    <button className="bg-yellow-500 text-white p-2 rounded">✏️ Editar</button>
-                  </Link>
-                  <button
-                    onClick={() => handleDeleteClick(user.id)}
-                    className="bg-red-500 text-white p-2 rounded"
-                  >
-                    🗑️ Eliminar
-                  </button>
-                </td>
+        <>
+          <table className="min-w-full bg-white border border-gray-300 shadow-md">
+            <thead>
+              <tr className="bg-blue-200 text-gray-600 uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-left">Nombre</th>
+                <th className="py-3 px-6 text-left">Email</th>
+                <th className="py-3 px-6 text-left">Rol</th>
+                <th className="py-3 px-6 text-center">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-gray-600 text-sm font-light">
+              {paginatedUsers.map((user) => (
+                <tr key={user.id} className="border-b border-gray-200 hover:bg-gray-100">
+                  <td className="py-3 px-6 text-left">{user.nombre}</td>
+                  <td className="py-3 px-6 text-left">{user.email}</td>
+                  <td className="py-3 px-6 text-left">{user.rol.descripcion}</td>
+                  <td className="py-3 px-6 text-center flex gap-2">
+                    <Link href={`/users/edit/${user.id}`}>
+                      <button className="bg-yellow-500 text-white p-2 rounded">✏️ Editar</button>
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteClick(user.id)}
+                      className="bg-red-500 text-white p-2 rounded"
+                    >
+                      🗑️ Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center items-center gap-2 mt-6">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+              disabled={currentPage === 1}
+            >
+              ⬅️ Anterior
+            </button>
+            <span className="text-sm text-gray-700">Página {currentPage} de {totalPages}</span>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
+              disabled={currentPage === totalPages}
+            >
+              Siguiente ➡️
+            </button>
+          </div>
+        </>
       )}
 
       <ConfirmModal

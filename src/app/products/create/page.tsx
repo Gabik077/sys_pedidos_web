@@ -67,7 +67,7 @@ console.log("Nuevo producto a crear:", nuevoProducto);
       alert("Producto creado con éxito");
       router.push("/products");
     } else {
-      alert("Error al crear producto");
+      alert(res.message || "Error al crear el producto");
     }
   };
 
