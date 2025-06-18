@@ -53,6 +53,7 @@ export const updateProductById = async (id: any, productData: any) => {
     });
 };
 
+
 export const deleteProduct = async (id: number) => {
     return await handleRequest(`${apiUrl}/products/${id}`, {
         method: "DELETE",
