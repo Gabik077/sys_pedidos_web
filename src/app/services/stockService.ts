@@ -1,27 +1,16 @@
-import { handleRequest } from "./ApiHelper";
+import { handleRequest, handleRequestGET } from "./ApiHelper";
 
-// app/services/productService.ts
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
 }
 
-
-
-
-
-
-export const fetchStock = async (token: string) => {
-    return await handleRequest(`${apiUrl}/stock`,
-        {
-            headers: {
-                Cookie: `token=${token}`
-            },
-            cache: 'no-store'
-        }
-    );
+export const fetchStockList = async () => {
+    return await handleRequest(`${apiUrl}/stock`);
 };
+
 
 export const fetchProductById = async (id: any) => {
     return await handleRequest(`${apiUrl}/products/${id}`);

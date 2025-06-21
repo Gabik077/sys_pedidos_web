@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "./services/authService";
+import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { SlLogout } from "react-icons/sl";
+
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname(); // Obtiene la ruta actual
@@ -64,17 +70,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             onClick={() => setIsOpen(!isOpen)}
             className="mb-4 text-gray-400 text-white"
           >
-            {isOpen ? "❌" : "☰"}
+            {isOpen ?   <IoMdClose className="text-lg" /> : <RxHamburgerMenu className="text-lg" />}
           </button>
 
           <nav className="space-y-2">
             <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded">
-              🏠 {isOpen && <span className="ml-2">Home</span>}
+            <FaHome className="text-lg" />
+              {isOpen && <span className="ml-2">Home</span>}
             </Link>
             {role === "ADMINISTRADOR" && (
               <>
                 <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded">
-                  👥 {isOpen && <span className="ml-2">Usuarios</span>}
+                <FaUser className="text-lg" />
+                  {isOpen && <span className="ml-2">Usuarios</span>}
                 </Link>
 
               </>
@@ -83,7 +91,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {(role === "ADMINISTRADOR" || role === "COMPRADOR" || role == "VENDEDOR") && (
                  <>
                 <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded">
-                  🛒 {isOpen && <span className="ml-2">Productos</span>}
+                <FaShoppingCart className="text-lg" />
+                  {isOpen && <span className="ml-2">Productos</span>}
                 </Link>
                 </>
                 )}
@@ -91,15 +100,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {(role === "ADMINISTRADOR" || role === "COMPRADOR" ) && (
                  <>
                 <Link href="/stock" className="flex items-center p-2 hover:bg-gray-700 rounded">
-                  🛒 {isOpen && <span className="ml-2">Gestión de Stock</span>}
+                <FaBoxOpen className="text-lg" />
+                  {isOpen && <span className="ml-2">Stock</span>}
+                </Link>
+                </>
+                )}
+
+            {(role === "ADMINISTRADOR" || role === "COMPRADOR" ) && (
+                 <>
+                <Link href="/compras" className="flex items-center p-2 hover:bg-gray-700 rounded">
+               <FaShoppingCart className="text-lg" />
+                 {isOpen && <span className="ml-2">Compras</span>}
                 </Link>
                 </>
                 )}
             <button
               onClick={handleLogout}
-              className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded"
-            >
-              🚪 {isOpen && <span className="ml-2">Cerrar sesión</span>}
+              className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded" >
+              <SlLogout className="text-lg" />
+              {isOpen && <span className="ml-2">Cerrar sesión</span>}
             </button>
           </nav>
         </div>

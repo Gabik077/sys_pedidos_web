@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ConfirmModal from "./confirmModal";
 import { deleteUser } from "../services/userService";
-
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 interface User {
   id: number;
   nombre: string;
@@ -57,7 +57,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   return (
     <div className="min-h-screen bg-white p-6">
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
-        <h1 className="text-2xl text-black font-bold">Lista de Usuarios</h1>
+        <h1 className="text-2xl text-gray-500 font-bold">Lista de Usuarios</h1>
         <div className="flex gap-4 w-full md:w-auto">
           <input
             type="text"
@@ -111,23 +111,34 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
           </table>
 
           {/* Pagination Controls */}
-          <div className="flex justify-center items-center gap-2 mt-6">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
-              disabled={currentPage === 1}
-            >
-              ⬅️ Anterior
-            </button>
-            <span className="text-sm text-gray-700">Página {currentPage} de {totalPages}</span>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              className="bg-gray-200 px-3 py-1 rounded disabled:opacity-50"
-              disabled={currentPage === totalPages}
-            >
-              Siguiente ➡️
-            </button>
-          </div>
+
+          <div className="flex justify-center items-center gap-4 mt-6">
+  {/* Botón anterior */}
+  <button
+    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+    className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled={currentPage === 1}
+  >
+    <FaChevronLeft className="text-sm" />
+    <span className="text-sm font-medium">Anterior</span>
+  </button>
+
+  {/* Indicador de página */}
+  <span className="text-sm text-gray-600 font-medium">
+    Página <span className="font-semibold text-gray-900">{currentPage}</span> de{" "}
+    <span className="font-semibold text-gray-900">{totalPages}</span>
+  </span>
+
+  {/* Botón siguiente */}
+  <button
+    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+    className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled={currentPage === totalPages}
+  >
+    <span className="text-sm font-medium">Siguiente</span>
+    <FaChevronRight className="text-sm" />
+  </button>
+</div>
         </>
       )}
 

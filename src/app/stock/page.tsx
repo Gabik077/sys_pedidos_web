@@ -15,7 +15,7 @@ export default function StockTabsPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Gestión de Stock</h1>
+      <h1 className="text-2xl font-bold text-gray-500 mb-4">Gestión de Stock</h1>
       <div className="flex space-x-4 border-b mb-6">
         {tabs.map((tab) => (
           <button
