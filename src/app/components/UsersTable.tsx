@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ConfirmModal from "./confirmModal";
 import { deleteUser } from "../services/userService";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 interface User {
   id: number;
   nombre: string;
@@ -96,13 +96,14 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
                   <td className="py-3 px-6 text-left">{user.rol.descripcion}</td>
                   <td className="py-3 px-6 text-center flex gap-2">
                     <Link href={`/users/edit/${user.id}`}>
-                      <button className="bg-yellow-500 text-white p-2 rounded">✏️ Editar</button>
+                      <button
+                      className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow-md" > <FaEdit className="text-white"/> Editar</button>
                     </Link>
                     <button
                       onClick={() => handleDeleteClick(user.id)}
-                      className="bg-red-500 text-white p-2 rounded"
-                    >
-                      🗑️ Eliminar
+                      className="flex items-center gap-2 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow-md">
+                      <FaTrash className="text-white" />
+                      Eliminar
                     </button>
                   </td>
                 </tr>

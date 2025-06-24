@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ConfirmModal from "./confirmModal";
 import { deleteProduct } from "../services/productService";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 interface Product {
   id: number;
   nombre: string;
@@ -20,14 +20,16 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [selectedProductName, setSelectedProductName] = useState<string | null>(null);
 
   // Pagination and search state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleDeleteClick = (productId: number) => {
+  const handleDeleteClick = (productId: number,name: string) => {
     setSelectedProductId(productId);
+    setSelectedProductName(name);
     setIsModalOpen(true);
   };
 
@@ -98,13 +100,12 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
                   <td className="py-3 px-6 text-left">{product.precio_venta}</td>
                   <td className="py-3 px-6 text-center flex gap-2">
                     <Link href={`/products/edit/${product.id}`}>
-                      <button className="bg-yellow-500 text-white p-2 rounded">✏️ Editar</button>
+                      <button className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow-md"><FaEdit className="text-white" /> Editar</button>
                     </Link>
                     <button
-                      onClick={() => handleDeleteClick(product.id)}
-                      className="bg-red-500 text-white p-2 rounded"
-                    >
-                      🗑️ Eliminar
+                      onClick={() => handleDeleteClick(product.id,product.nombre)}
+                      className="flex items-center gap-2 bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow-md">
+                      <FaTrash className="text-white" /> Eliminar
                     </button>
                   </td>
                 </tr>
@@ -148,7 +149,7 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={confirmDelete}
-        message="¿Estás seguro de que quieres eliminar este producto?"
+        message={`¿Estás seguro de que quieres eliminar el producto "${selectedProductName ?? ''}"?`}
       />
     </div>
   );
