@@ -11,6 +11,22 @@ export const fetchStockList = async () => {
     return await handleRequest(`${apiUrl}/stock`);
 };
 
+export async function updateStockItem(id: number, data: { cantidad_disponible: number }) {
+    const res = await handleRequest(`/api/stock/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error("Error al actualizar el stock");
+
+    return res.json();
+}
+
+
 
 export const fetchProductById = async (id: any) => {
     return await handleRequest(`${apiUrl}/products/${id}`);
