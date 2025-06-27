@@ -45,6 +45,11 @@ export default function EntradasView() {
   useEffect(() => {
     const fetchData = async () => {
       const productos = await fetchProductsStock();
+      if (productos.status == "invalid_token") {
+            alert("Sesión expirada, por favor inicie sesión nuevamente.");
+          window.location.href = "/login";
+          return;
+        }
       setProductos(productos);
 
       const provRes = await fetch("/proveedores");
@@ -108,9 +113,32 @@ export default function EntradasView() {
       credentials: "include",
       body: JSON.stringify(dataToSend),
     });
+    if (!res.ok) {
+      console.error("Error:", res.statusText);
+      if(res.statusText == "unauthorized") {
+        window.location.href = "/login";
+        return;
+      }
+      alert("Error al registrar la entrada:");
+      return;
+    }
 
     const result = await res.json();
     console.log("Resultado:", result);
+
+    // Limpiar los datos después de enviar
+    setFormData({
+      tipo_origen: "produccion",
+      observaciones: "",
+      categoria_stock: 1,
+      id_proveedor: 1,
+      metodo_pago: "efectivo",
+      productos: [],
+    });
+    setFacturaData({ timbrado: "", nro_factura: "", fecha_factura: "" });
+    setBusqueda("");
+    setProductoFiltrado(null);
+    setCantidad(1);
   };
 
   const productosSugeridos = productos.filter((p) =>

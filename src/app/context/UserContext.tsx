@@ -32,6 +32,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         if (data.status === "ok" && data.user) {
           setRole(data.user.role);
           setToken(data.token ?? null); // si el backend incluye el token en la respuesta
+        }else{
+            console.error("Error al obtener datos del usuario:", data);
+            if (data.status === "unauthorized") {
+                alert("Sesión expirada, por favor inicie sesión nuevamente.");
+                window.location.href = "/login";
+            }
         }
       } catch (e) {
         console.error("Error al obtener datos del usuario", e);
