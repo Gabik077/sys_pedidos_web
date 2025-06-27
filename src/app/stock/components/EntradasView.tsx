@@ -1,5 +1,6 @@
 "use client";
 
+import { fetchProveedores } from "@/app/services/productService";
 import { fetchProductsStock } from "@/app/services/stockService";
 import { useState, useEffect } from "react";
 
@@ -14,6 +15,10 @@ interface Proveedor {
   id: number;
   nombre: string;
 }
+interface Categoria {
+    id: number;
+    nombre: string;
+  }
 
 interface ProductoSeleccionado {
   id_producto: number;
@@ -23,10 +28,12 @@ interface ProductoSeleccionado {
 export default function EntradasView() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [proveedores, setProveedores] = useState<Proveedor[]>([]);
-  const [formData, setFormData] = useState({
+  const [categoria, setCategoria] = useState<Categoria[]>([]);
+
+  const [formData, setFormData] = useState({//default values for form
     tipo_origen: "produccion",
     observaciones: "",
-    categoria_stock: 1,
+    categoria_stock: "1",
     id_proveedor: 1,
     metodo_pago: "efectivo",
     productos: [] as ProductoSeleccionado[],
@@ -52,8 +59,8 @@ export default function EntradasView() {
         }
       setProductos(productos);
 
-      const provRes = await fetch("/proveedores");
-      const proveedores = await provRes.json();
+      const proveedores = await fetchProveedores();
+
       setProveedores(proveedores);
     };
     fetchData();
@@ -96,14 +103,14 @@ export default function EntradasView() {
       id_origen: 1,
       observaciones: formData.observaciones,
       categoria_stock: formData.categoria_stock,
-      compra: {
+      compra: formData.tipo_origen === "compra" ? {
         id_proveedor: formData.id_proveedor,
         total_compra: calcularTotal(),
         estado: "aprobado",
         timbrado: facturaData.timbrado,
         nro_factura: facturaData.nro_factura,
         fecha_factura: facturaData.fecha_factura,
-      },
+      } : null,
       productos: formData.productos,
     };
 
@@ -125,12 +132,13 @@ export default function EntradasView() {
 
     const result = await res.json();
     console.log("Resultado:", result);
+    alert("Entrada registrada con éxito");
 
     // Limpiar los datos después de enviar
     setFormData({
       tipo_origen: "produccion",
       observaciones: "",
-      categoria_stock: 1,
+      categoria_stock: "1",
       id_proveedor: 1,
       metodo_pago: "efectivo",
       productos: [],
@@ -155,13 +163,25 @@ export default function EntradasView() {
           <select
             value={formData.tipo_origen}
             onChange={(e) => setFormData({ ...formData, tipo_origen: e.target.value })}
-            className="w-full border p-2 rounded"
-          >
+            className="w-full border p-2 rounded" >
             <option value="produccion">Producción</option>
             <option value="compra">Compra</option>
             <option value="ajuste">Ajuste</option>
             <option value="devolucion">Devolución</option>
             <option value="otros">Otros</option>
+          </select>
+        </div>
+
+
+        <div>
+          <label className="block">Categoría Stock</label>
+          <select
+            value={formData.categoria_stock}
+            onChange={(e) => setFormData({ ...formData, categoria_stock: e.target.value })}
+            className="w-full border p-2 rounded" >
+            <option value="1">Stock General</option>
+            <option value="2">Materia Prima</option>
+            <option value="3">Stock Ventas</option>
           </select>
         </div>
 
