@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "./services/authService";
-import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar } from "react-icons/fa";
+import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { SlLogout } from "react-icons/sl";
@@ -78,6 +78,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <Link href="/facturacion" className="flex items-center p-2 hover:bg-gray-700 rounded">
                 <FaFileInvoiceDollar className="text-lg" />
                 {isOpen && <span className="ml-2">Facturación</span>}
+              </Link>
+            )}
+
+
+          {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
+              <Link href="/clientes" className="flex items-center p-2 hover:bg-gray-700 rounded">
+                <FaUserFriends className="text-lg" />
+                {isOpen && <span className="ml-2">Clientes</span>}
               </Link>
             )}
 

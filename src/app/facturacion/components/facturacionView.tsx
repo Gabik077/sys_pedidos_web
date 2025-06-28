@@ -122,7 +122,7 @@ export default function FacturacionView() {
       setCantidad(1);
       setBusquedaCliente("");
     } else {
-      alert("Error al registrar la factura");
+      alert(result.message || "Error al registrar la factura");
     }
   };
 

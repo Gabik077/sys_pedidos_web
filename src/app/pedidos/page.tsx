@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import PedidosMap from "./components/pedidoMapaView";
+import CrearPedidoView from "./components/crearPedidoView";
 
 
 
-const tabs = ["Crear Pedido", "Lista de Pedidos", "Pedidos Pendientes", "Pedidos Entregados","Pedidos en Mapa"];
+const tabs = ["Crear Pedido", "Pedidos Pendientes", "Pedidos Entregados","Pedidos en Mapa", "Envios de Pedidos"];
 
 export default function ComprasTabsPage() {
   const [activeTab, setActiveTab] = useState("Crear Pedido");
@@ -30,12 +31,11 @@ export default function ComprasTabsPage() {
 
       <div>
       <div>
-        {activeTab === "Crear Pedido" && <h1 className="text-2xl font-bold mb-4">Crear Pedido</h1>}
-        {activeTab === "Lista de Pedidos" && <h1 className="text-2xl font-bold mb-4">Lista de Pedidos</h1>}
+        {activeTab === "Crear Pedido" && <CrearPedidoView />}
         {activeTab === "Pedidos Pendientes" && <h1 className="text-2xl font-bold mb-4">Pedidos Pendientes</h1>}
         {activeTab === "Pedidos Entregados" && <h1 className="text-2xl font-bold mb-4">Pedidos Entregados</h1>}
         {activeTab === "Pedidos en Mapa" && <PedidosMap />}
-
+        {activeTab === "Envios de Pedidos" && <h1 className="text-2xl font-bold mb-4">Administrar Envios</h1>}
 
       </div>
       </div>

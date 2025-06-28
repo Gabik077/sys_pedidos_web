@@ -7,6 +7,10 @@ if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
 }
 
+export const fetchMoviles = async () => {
+    return await handleRequest(`${apiUrl}/stock/moviles`);
+}
+
 export const fetchProductsStock = async () => {
     return await handleRequest(`${apiUrl}/products`);
 };
