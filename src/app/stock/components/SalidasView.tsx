@@ -120,7 +120,7 @@ export default function SalidasView() {
       setCantidad(1);
       setBusquedaCliente("");
     } else {
-      alert("Error al registrar la salida");
+      alert(result.message || "Error al registrar la salida");
     }
   };
 
