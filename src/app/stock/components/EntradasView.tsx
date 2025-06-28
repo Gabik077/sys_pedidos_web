@@ -116,6 +116,11 @@ export default function EntradasView() {
 
     const result = await insertEntradaStock(dataToSend);
 
+    if (result.status !== "ok") {
+      alert("Error al registrar la entrada: " + result.message);
+      return;
+    }
+
 
     console.log("Resultado:", result);
     alert("Entrada registrada con éxito");

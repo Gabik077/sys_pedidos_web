@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchProductsStock } from "@/app/services/stockService";
+import { fetchClients, fetchProductsStock, insertSalidaStock } from "@/app/services/stockService";
 import { useState, useEffect } from "react";
 
 interface Producto {
@@ -13,6 +13,7 @@ interface Producto {
 interface Cliente {
   id: number;
   nombre: string;
+  apellido: string;
 }
 
 interface ProductoSeleccionado {
@@ -26,7 +27,7 @@ export default function SalidasView() {
   const [formData, setFormData] = useState({
     tipo_origen: "venta",
     observaciones: "",
-    id_cliente: 1,
+    id_cliente: clientes[0]?.id || 1,
     cliente_nombre: "",
     cliente_ruc: "",
     productos: [] as ProductoSeleccionado[],
@@ -41,8 +42,8 @@ export default function SalidasView() {
       const productos = await fetchProductsStock();
       setProductos(productos);
 
-      const cliRes = await fetch("/clientes");
-      const clientes = await cliRes.json();
+      const clientes = await fetchClients();
+
       setClientes(clientes);
     };
     fetchData();
@@ -89,25 +90,37 @@ export default function SalidasView() {
     e.preventDefault();
     const dataToSend = {
       tipo_origen: formData.tipo_origen,
-      id_origen: 1,
+      id_origen: 1,//no se usa
       observaciones: formData.observaciones,
       total_venta: calcularTotal(),
       iva: calcularIVA(),
-      venta: {
+      venta: formData.tipo_origen === "venta" ? {
         id_cliente: formData.id_cliente,
-      },
+      }: null,
       productos: formData.productos,
     };
 
-    const res = await fetch("http://localhost:4000/stock/salida", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(dataToSend),
-    });
 
-    const result = await res.json();
+
+    const result = await insertSalidaStock(dataToSend);
     console.log("Resultado:", result);
+
+    if (result.status === "ok") {
+      alert("Salida registrada exitosamente");
+      setFormData({
+        tipo_origen: "venta",
+        observaciones: "",
+        id_cliente: clientes[0]?.id || 1,
+        cliente_nombre: "",
+        cliente_ruc: "",
+        productos: [],
+      });
+      setBusqueda("");
+      setProductoFiltrado(null);
+      setCantidad(1);
+    } else {
+      alert("Error al registrar la salida");
+    }
   };
 
   const productosSugeridos = productos.filter((p) =>
@@ -154,7 +167,7 @@ export default function SalidasView() {
           >
             {clientes.map((cli) => (
               <option key={cli.id} value={cli.id}>
-                {cli.nombre}
+                {cli.nombre} {cli.apellido}
               </option>
             ))}
           </select>

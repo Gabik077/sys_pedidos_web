@@ -11,6 +11,10 @@ export const fetchProductsStock = async () => {
     return await handleRequest(`${apiUrl}/products`);
 };
 
+export const fetchClients = async () => {
+    return await handleRequest(`${apiUrl}/stock/clientes`);
+};
+
 export const fetchStockList = async () => {
     return await handleRequest(`${apiUrl}/stock`);
 };
@@ -18,6 +22,15 @@ export const fetchStockList = async () => {
 
 export async function insertEntradaStock(data: any) {
     return await handleRequest(`${apiUrl}/stock/entrada`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+}
+export async function insertSalidaStock(data: any) {
+    return await handleRequest(`${apiUrl}/stock/salida`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
