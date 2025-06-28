@@ -14,6 +14,7 @@ interface Cliente {
   id: number;
   nombre: string;
   apellido: string;
+  ruc?: string;
 }
 
 interface ProductoSeleccionado {
@@ -24,10 +25,12 @@ interface ProductoSeleccionado {
 export default function SalidasView() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [busquedaCliente, setBusquedaCliente] = useState("");
+
   const [formData, setFormData] = useState({
     tipo_origen: "venta",
     observaciones: "",
-    id_cliente: clientes[0]?.id || 1,
+    id_cliente: 1,
     cliente_nombre: "",
     cliente_ruc: "",
     productos: [] as ProductoSeleccionado[],
@@ -43,7 +46,6 @@ export default function SalidasView() {
       setProductos(productos);
 
       const clientes = await fetchClients();
-
       setClientes(clientes);
     };
     fetchData();
@@ -90,17 +92,15 @@ export default function SalidasView() {
     e.preventDefault();
     const dataToSend = {
       tipo_origen: formData.tipo_origen,
-      id_origen: 1,//no se usa
+      id_origen: 1,
       observaciones: formData.observaciones,
       total_venta: calcularTotal(),
       iva: calcularIVA(),
       venta: formData.tipo_origen === "venta" ? {
         id_cliente: formData.id_cliente,
-      }: null,
+      } : null,
       productos: formData.productos,
     };
-
-
 
     const result = await insertSalidaStock(dataToSend);
     console.log("Resultado:", result);
@@ -110,7 +110,7 @@ export default function SalidasView() {
       setFormData({
         tipo_origen: "venta",
         observaciones: "",
-        id_cliente: clientes[0]?.id || 1,
+        id_cliente: 1,
         cliente_nombre: "",
         cliente_ruc: "",
         productos: [],
@@ -118,6 +118,7 @@ export default function SalidasView() {
       setBusqueda("");
       setProductoFiltrado(null);
       setCantidad(1);
+      setBusquedaCliente("");
     } else {
       alert("Error al registrar la salida");
     }
@@ -125,6 +126,10 @@ export default function SalidasView() {
 
   const productosSugeridos = productos.filter((p) =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
+  const clientesSugeridos = clientes.filter((cli) =>
+    `${cli.nombre} ${cli.apellido}`.toLowerCase().includes(busquedaCliente.toLowerCase())
   );
 
   return (
@@ -157,22 +162,43 @@ export default function SalidasView() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div>
-          <label className="block">Cliente</label>
-          <select
-            value={formData.id_cliente}
-            onChange={(e) => setFormData({ ...formData, id_cliente: Number(e.target.value) })}
+      <div className="mb-6">
+        <label className="block mb-1">Buscar Cliente</label>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Nombre del cliente"
+            value={busquedaCliente}
+            onChange={(e) => {
+              setBusquedaCliente(e.target.value);
+            }}
             className="w-full border p-2 rounded"
-          >
-            {clientes.map((cli) => (
-              <option key={cli.id} value={cli.id}>
-                {cli.nombre} {cli.apellido}
-              </option>
-            ))}
-          </select>
+          />
+          {busquedaCliente && clientesSugeridos.length > 0 && (
+            <ul className="absolute bg-white border w-full max-h-48 overflow-y-auto z-10 rounded shadow">
+              {clientesSugeridos.map((cli) => (
+                <li
+                  key={cli.id}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      id_cliente: cli.id,
+                      cliente_nombre: `${cli.nombre} ${cli.apellido}`,
+                      cliente_ruc: cli.ruc || ""
+                    });
+                    setBusquedaCliente("");
+                  }}
+                >
+                  {cli.nombre} {cli.apellido}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
+      </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block">Nombre del Cliente</label>
           <input
