@@ -1,7 +1,7 @@
 "use client";
 
 import { fetchProveedores } from "@/app/services/productService";
-import { fetchProductsStock } from "@/app/services/stockService";
+import { fetchProductsStock, insertEntradaStock } from "@/app/services/stockService";
 import { useState, useEffect } from "react";
 
 interface Producto {
@@ -114,23 +114,9 @@ export default function EntradasView() {
       productos: formData.productos,
     };
 
-    const res = await fetch("http://localhost:4000/stock/entrada", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(dataToSend),
-    });
-    if (!res.ok) {
-      console.error("Error:", res.statusText);
-      if(res.statusText == "unauthorized") {
-        window.location.href = "/login";
-        return;
-      }
-      alert("Error al registrar la entrada:");
-      return;
-    }
+    const result = await insertEntradaStock(dataToSend);
 
-    const result = await res.json();
+
     console.log("Resultado:", result);
     alert("Entrada registrada con éxito");
 

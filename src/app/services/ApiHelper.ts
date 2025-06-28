@@ -52,7 +52,8 @@ export const handleRequest = async (url: string, options: RequestInit = {}) => {
                 return { status: res.status, message: res.statusText };
             }
 
-            throw new Error(`Error en la API: ${res.status} - ${res.statusText}`);
+            alert(`Error en la API: ${res.status} - ${res.statusText}`);
+            return { status: res.status, message: res.statusText };
         }
 
         return await res.json();

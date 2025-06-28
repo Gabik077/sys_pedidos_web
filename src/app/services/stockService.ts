@@ -1,4 +1,4 @@
-import { handleRequest, handleRequestGET } from "./ApiHelper";
+import { handleRequest } from "./ApiHelper";
 
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -14,6 +14,17 @@ export const fetchProductsStock = async () => {
 export const fetchStockList = async () => {
     return await handleRequest(`${apiUrl}/stock`);
 };
+
+
+export async function insertEntradaStock(data: any) {
+    return await handleRequest(`${apiUrl}/stock/entrada`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+}
 
 export async function updateStockItem(id: number, data: { cantidad_disponible: number }) {
     const res = await handleRequest(`/api/stock/${id}`, {
