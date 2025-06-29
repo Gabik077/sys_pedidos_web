@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchClients, fetchProductsStock, insertSalidaStock,fetchMoviles } from "@/app/services/stockService";
+import { fetchClients, fetchProductsStock, insertSalidaStock,fetchMoviles, insertPedido } from "@/app/services/stockService";
 import { useState, useEffect } from "react";
 
 interface Producto {
@@ -138,7 +138,7 @@ export default function CrearPedidoView() {
         productos: formData.productos,
       };
 
-    const result = await insertSalidaStock(dataToSend);
+    const result = await insertPedido(dataToSend);
     console.log("Resultado:", result);
 
     if (result.status === "ok") {
@@ -218,7 +218,16 @@ export default function CrearPedidoView() {
     </div>
   </div>
 
-  <div>
+
+  <div className="mb-6">
+        <label className="block">Observaciones</label>
+        <textarea
+          value={formData.observaciones}
+          onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
+          className="w-full border p-2 rounded"
+        ></textarea>
+      </div>
+{/*   <div>
 
     <label className="block">Asignar Móvil / Chofer</label>
     <select
@@ -241,7 +250,7 @@ export default function CrearPedidoView() {
         </option>
       ))}
     </select>
-  </div>
+  </div> */}
 </div>
 
 
@@ -266,17 +275,6 @@ export default function CrearPedidoView() {
           <input type="text" value={formData.cliente_ciudad} className="w-full border p-2 rounded" disabled />
         </div>
       </div>
-
-      <div className="mb-6">
-        <label className="block">Observaciones</label>
-        <textarea
-          value={formData.observaciones}
-          onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
-          className="w-full border p-2 rounded"
-        ></textarea>
-      </div>
-
-
 
 
       <h3 className="font-semibold text-lg mb-2">Agregar Producto</h3>

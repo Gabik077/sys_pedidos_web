@@ -43,6 +43,16 @@ export async function insertSalidaStock(data: any) {
     });
 }
 
+export async function insertPedido(data: any) {
+    return await handleRequest(`${apiUrl}/stock/pedido`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+}
+
 export async function updateStockItem(id: number, data: { cantidad_disponible: number }) {
     const res = await handleRequest(`/api/stock/${id}`, {
         method: "PUT",
