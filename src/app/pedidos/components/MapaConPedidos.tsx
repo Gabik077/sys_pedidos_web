@@ -44,17 +44,16 @@ export default function MapaConPedidos({ pedidos, origen, calcularRuta }: Props)
     };
 
     loadGoogleMapsScript();
+    if (isMapReady && window.google && mapRef.current) {
+        const map = new window.google.maps.Map(mapRef.current, {
+          center: { lat: -25.2637, lng: -57.5759 },//default center
+          zoom: 12,
+        });
+
+      }
+
   }, []);
 
-  useEffect(() => {
-    if (isMapReady && window.google && mapRef.current) {
-      const map = new window.google.maps.Map(mapRef.current, {
-        center: { lat: -25.2637, lng: -57.5759 },//default center
-        zoom: 12,
-      });
-
-    }
-  }, [isMapReady]);
 
   useEffect(() => {
 
