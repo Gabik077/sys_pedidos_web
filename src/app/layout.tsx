@@ -50,7 +50,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <html lang="es">
-      <body className="flex h-screen">
+     <body className="flex min-h-screen">
         {/* Sidebar */}
         <div
           className={`bg-gray-400 text-white p-4 transition-all duration-300 ${
@@ -127,7 +127,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Contenido principal */}
-        <div className="flex-1 p-6 bg-gray-100">{children}</div>
+     {/* Contenido principal */}
+<div className="flex-1 p-6 bg-gray-100 overflow-auto">{children}</div>
       </body>
     </html>
   );
