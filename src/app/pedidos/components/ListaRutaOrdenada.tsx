@@ -7,6 +7,7 @@ import { Pedido } from "./types";
 interface Props {
   pedidos: Pedido[];
   origen: { lat: number; lng: number };
+  calcularRuta: boolean;
 }
 
 interface RutaItem {
@@ -16,11 +17,11 @@ interface RutaItem {
   orden: number;
 }
 
-export default function ListaRutaOrdenada({ pedidos, origen }: Props) {
+export default function ListaRutaOrdenada({ pedidos, origen ,calcularRuta}: Props) {
   const [rutaOrdenada, setRutaOrdenada] = useState<RutaItem[]>([]);
 
   useEffect(() => {
-    if (!window.google || pedidos.length === 0 || !origen.lat || !origen.lng) return;
+    if (!calcularRuta || !window.google || pedidos.length === 0 || !origen.lat || !origen.lng) return;
 
     const service = new google.maps.DistanceMatrixService();
 
@@ -57,7 +58,7 @@ export default function ListaRutaOrdenada({ pedidos, origen }: Props) {
         }
       }
     );
-  }, [pedidos, origen]);
+  }, [calcularRuta, pedidos, origen]);
 
   if (rutaOrdenada.length === 0) return null;
 

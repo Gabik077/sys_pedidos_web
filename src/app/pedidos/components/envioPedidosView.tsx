@@ -19,6 +19,8 @@ export default function EnvioPedidosView() {
   const [movilSeleccionado, setMovilSeleccionado] = useState<number | null>(null);
   const [origenLat, setOrigenLat] = useState<string>("-25.377676990645696");// Valor por defecto
   const [origenLon, setOrigenLon] = useState<string>("-57.570087369311956"); // Valor por defecto
+  const [calcularRuta, setCalcularRuta] = useState<boolean>(false);
+
 
   useEffect(() => {
     const fetchPedidos = async () => {
@@ -42,6 +44,7 @@ export default function EnvioPedidosView() {
     });
   };
 
+
   const handleGuardarEnvio = () => {
     if (!movilSeleccionado || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
       alert("Completa todos los campos y selecciona al menos un pedido.");
@@ -57,6 +60,12 @@ export default function EnvioPedidosView() {
     console.log("Guardando envío:", data);
     // Aquí deberías hacer la llamada a la API para guardar el envío
   };
+
+  const handleCalcularRuta = () => {
+    setCalcularRuta(false); // reiniciar para forzar render
+    setTimeout(() => setCalcularRuta(true), 0);
+  };
+
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -84,6 +93,12 @@ export default function EnvioPedidosView() {
         >
           Guardar Envío
         </button>
+        <button
+          onClick={handleCalcularRuta}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Calcular Ruta Óptima
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -102,6 +117,8 @@ export default function EnvioPedidosView() {
           <MapaConPedidos
             pedidos={pedidosSeleccionados}
             origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
+            calcularRuta={calcularRuta}
+
           />
         </div>
       </div>
@@ -110,6 +127,8 @@ export default function EnvioPedidosView() {
         <ListaRutaOrdenada
           pedidos={pedidosSeleccionados}
           origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
+          calcularRuta={calcularRuta}
+
         />
       </div>
     </div>
