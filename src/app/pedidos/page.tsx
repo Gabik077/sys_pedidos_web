@@ -9,7 +9,7 @@ import PedidosPendientesView from "./components/pedidosPendientesView";
 
 
 
-const tabs = ["Crear Pedido", "Pedidos Pendientes", "Pedidos Entregados", "Envios de Pedidos"];
+const tabs = ["Crear Pedido", "Pedidos Pendientes", "Pedidos Entregados", "Envio de Pedidos"];
 
 export default function ComprasTabsPage() {
   const [activeTab, setActiveTab] = useState("Crear Pedido");
@@ -36,7 +36,7 @@ export default function ComprasTabsPage() {
         {activeTab === "Crear Pedido" && <CrearPedidoView />}
         {activeTab === "Pedidos Pendientes" && <PedidosPendientesView />}
         {activeTab === "Pedidos Entregados" && <h1 className="text-2xl font-bold mb-4">Pedidos Entregados</h1>}
-        {activeTab === "Envios de Pedidos" && <EnvioPedidosView />}
+        {activeTab === "Envio de Pedidos" && <EnvioPedidosView />}
 
       </div>
       </div>
