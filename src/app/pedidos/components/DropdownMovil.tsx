@@ -1,0 +1,59 @@
+// components/DropdownMovil.tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import { fetchMoviles } from "@/app/services/stockService";
+
+interface Movil {
+  id: number;
+  nombreChofer: string;
+  chapaMovil: string;
+  tipoMovil: string;
+  nombreMovil: string;
+}
+
+interface Props {
+  onSelect: (id: number) => void;
+}
+
+export default function DropdownMovil({ onSelect }: Props) {
+  const [moviles, setMoviles] = useState<Movil[]>([]);
+  const [movilId, setMovilId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const getMoviles = async () => {
+      try {
+        const data = await fetchMoviles();
+        setMoviles(data);
+      } catch (error) {
+        console.error("Error al cargar móviles:", error);
+      }
+    };
+    getMoviles();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = parseInt(e.target.value);
+    setMovilId(id);
+    onSelect(id);
+  };
+
+  return (
+    <div>
+      <select
+        value={movilId ?? ""}
+        onChange={handleChange}
+        className="w-full border rounded px-3 py-2"
+      >
+        <option value="" disabled>
+          -- Seleccione un móvil --
+        </option>
+        {moviles.map((movil) => (
+          <option key={movil.id} value={movil.id}>
+            {movil.nombreMovil} - {movil.nombreChofer} ({movil.chapaMovil})
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}

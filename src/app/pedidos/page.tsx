@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import PedidosMap from "./components/pedidoMapaView";
 import CrearPedidoView from "./components/crearPedidoView";
+import EnvioPedidosView from "./components/envioPedidosView";
+import PedidosPendientesView from "./components/pedidosPendientesView";
 
 
 
@@ -32,10 +34,10 @@ export default function ComprasTabsPage() {
       <div>
       <div>
         {activeTab === "Crear Pedido" && <CrearPedidoView />}
-        {activeTab === "Pedidos Pendientes" && <h1 className="text-2xl font-bold mb-4">Pedidos Pendientes</h1>}
+        {activeTab === "Pedidos Pendientes" && <PedidosPendientesView />}
         {activeTab === "Pedidos Entregados" && <h1 className="text-2xl font-bold mb-4">Pedidos Entregados</h1>}
         {activeTab === "Pedidos en Mapa" && <PedidosMap />}
-        {activeTab === "Envios de Pedidos" && <h1 className="text-2xl font-bold mb-4">Administrar Envios</h1>}
+        {activeTab === "Envios de Pedidos" && <EnvioPedidosView />}
 
       </div>
       </div>
