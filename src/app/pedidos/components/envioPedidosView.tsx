@@ -17,9 +17,12 @@ export default function EnvioPedidosView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [pedidosSeleccionados, setPedidosSeleccionados] = useState<Pedido[]>([]);
   const [movilSeleccionado, setMovilSeleccionado] = useState<number | null>(null);
-  const [origenLat, setOrigenLat] = useState<string>("-25.377676990645696");// Valor por defecto
-  const [origenLon, setOrigenLon] = useState<string>("-57.570087369311956"); // Valor por defecto
+  const [origenLat, setOrigenLat] = useState<string>("-25.377676990645696");// Valor por defecto para pruebas
+  const [origenLon, setOrigenLon] = useState<string>("-57.570087369311956"); // Valor por defecto para pruebas
   const [calcularRuta, setCalcularRuta] = useState<boolean>(false);
+  const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
+  const [filtroFecha, setFiltroFecha] = useState<string>("");
+
 
 
   useEffect(() => {
@@ -68,10 +71,31 @@ export default function EnvioPedidosView() {
 
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="mx-auto">
       <h2 className="text-2xl font-bold mb-4">Armado de Envío</h2>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
+
+      <select
+    value={filtroEstado}
+    onChange={(e) => setFiltroEstado(e.target.value)}
+    className="border rounded px-3 py-2"
+  >
+    <option value="TODOS">Todos los estados</option>
+    <option value="pendiente">Pendiente</option>
+    <option value="en_preceso">En proceso</option>
+    <option value="entregado">Entregado</option>
+    <option value="cancelado">Cancelado</option>
+    {/* agrega más según tus estados posibles */}
+  </select>
+
+  <input
+    type="date"
+    value={filtroFecha}
+    onChange={(e) => setFiltroFecha(e.target.value)}
+    className="border rounded px-3 py-2"
+  />
+
         <DropdownMovil onSelect={(id) => setMovilSeleccionado(id)} />
         <input
           type="text"
@@ -97,20 +121,34 @@ export default function EnvioPedidosView() {
           onClick={handleCalcularRuta}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
-          Calcular Ruta Óptima
+          Calcular Ruta
         </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="max-h-[75vh] overflow-y-auto space-y-4">
-          {pedidos.map((pedido) => (
-            <PedidoItem
-              key={pedido.id}
-              pedido={pedido}
-              seleccionado={pedidosSeleccionados.some((p) => p.id === pedido.id)}
-              onToggle={() => togglePedido(pedido)}
-            />
-          ))}
+        {pedidos
+            .filter((pedido) => {
+                // Filtro por estado
+                if (filtroEstado !== "TODOS" && pedido.estado !== filtroEstado) {
+                return false;
+                }
+
+                // Filtro por fecha (asumiendo pedido.fecha es tipo ISO o similar)
+                if (filtroFecha && !pedido.fechaPedido.startsWith(filtroFecha)) {
+                return false;
+                }
+
+                return true;
+            })
+            .map((pedido) => (
+                <PedidoItem
+                key={pedido.id}
+                pedido={pedido}
+                seleccionado={pedidosSeleccionados.some((p) => p.id === pedido.id)}
+                onToggle={() => togglePedido(pedido)}
+                />
+            ))}
         </div>
 
         <div className="h-[75vh]">
