@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "./PedidoItem";
 import ListaRutaOrdenada from "./ListaRutaOrdenada";
-import { Pedido } from "./types";
+import type { Pedido } from "./types";
 
 const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
   ssr: false,
@@ -15,13 +15,15 @@ const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
 
 export default function EnvioPedidosView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  const [pedidosSeleccionados, setPedidosSeleccionados] = useState<Pedido[]>([]);
+  const [pedidosSeleccionados, setPedidosSeleccionados] = useState<Pedido[]>([]);//para mostrar en el mapa
   const [movilSeleccionado, setMovilSeleccionado] = useState<number | null>(null);
   const [origenLat, setOrigenLat] = useState<string>("-25.377676990645696");// Valor por defecto para pruebas
   const [origenLon, setOrigenLon] = useState<string>("-57.570087369311956"); // Valor por defecto para pruebas
   const [calcularRuta, setCalcularRuta] = useState<boolean>(false);
   const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
   const [filtroFecha, setFiltroFecha] = useState<string>("");
+  const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
+
 
 
 
@@ -155,17 +157,17 @@ export default function EnvioPedidosView() {
             pedidos={pedidosSeleccionados}
             origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
             calcularRuta={calcularRuta}
-
+            onOrdenOptimizado={(ordenados) => setPedidosOrdenados(ordenados)}
           />
         </div>
       </div>
 
       <div className="mt-6">
         <ListaRutaOrdenada
-          pedidos={pedidosSeleccionados}
+          pedidos={pedidosOrdenados.length > 0 ? pedidosOrdenados : pedidosSeleccionados}
+//          pedidos={pedidosSeleccionados}
           origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
           calcularRuta={calcularRuta}
-
         />
       </div>
     </div>

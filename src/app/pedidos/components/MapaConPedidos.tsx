@@ -2,25 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 
-interface Cliente {
-  lat: number;
-  lon: number;
-  nombre: string;
-  direccion: string;
-}
+import { Pedido } from "./types";
 
-interface Pedido {
-  id: number;
-  cliente: Cliente;
-}
+
 
 interface Props {
   pedidos: Pedido[];
   origen: { lat: number; lng: number };
   calcularRuta: boolean;
+  onOrdenOptimizado?: (pedidosOrdenados: Pedido[]) => void;
 }
 
-export default function MapaConPedidos({ pedidos, origen, calcularRuta }: Props) {
+export default function MapaConPedidos({ pedidos, origen, calcularRuta ,onOrdenOptimizado}: Props) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<google.maps.Map | null>(null);
   const directionsRenderer = useRef<google.maps.DirectionsRenderer | null>(null);
@@ -94,6 +87,12 @@ export default function MapaConPedidos({ pedidos, origen, calcularRuta }: Props)
           (result, status) => {
             if (status === "OK" && result) {
               directionsRenderer.current!.setDirections(result);
+              const ordenOptimizado = result.routes[0].waypoint_order;
+              console.log("Orden optimizado:", ordenOptimizado);
+          // Mapear con pedidos[ordenOptimizado[i]] para ver en qué orden visitar los puntos
+          const pedidosOrdenados = ordenOptimizado.map((i) => pedidos[i]);
+          onOrdenOptimizado?.(pedidosOrdenados);
+
             } else {
               console.error("Error al calcular ruta:", status);
             }
