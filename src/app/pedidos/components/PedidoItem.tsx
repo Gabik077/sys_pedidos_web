@@ -1,8 +1,7 @@
-// components/PedidoItem.tsx
 "use client";
 
 import { Pedido } from "./types";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 interface Props {
   pedido: Pedido;
@@ -11,6 +10,12 @@ interface Props {
 }
 
 const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
+  const [mostrarTodos, setMostrarTodos] = useState(false);
+
+  const detallesMostrados = mostrarTodos
+    ? pedido.detalles
+    : pedido.detalles.slice(0, 2);
+
   return (
     <div className="border p-4 rounded shadow relative">
       <div className="absolute top-2 right-2">
@@ -62,7 +67,7 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
           <div className="mt-2">
             <strong>Productos:</strong>
             <ul className="pl-5 list-disc">
-              {pedido.detalles.map((d) => (
+              {detallesMostrados.map((d) => (
                 <li key={d.id}>
                   {d.producto?.nombre} - Cant: {d.cantidad} - Precio Unit:{" "}
                   {Number(d.precioUnitario).toLocaleString("es-PY", {
@@ -72,6 +77,17 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
                 </li>
               ))}
             </ul>
+
+            {/* Ver más / Ver menos */}
+            {pedido.detalles.length > 2 && (
+              <button
+                type="button"
+                onClick={() => setMostrarTodos(!mostrarTodos)}
+                className="text-gray-500 mt-2 hover:underline text-sm"
+              >
+                {mostrarTodos ? "Ver menos" : "Ver más..."}
+              </button>
+            )}
           </div>
         </div>
       </label>
