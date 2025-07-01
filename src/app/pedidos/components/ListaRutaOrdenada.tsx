@@ -28,10 +28,10 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Pro
   useEffect(() => {
     if (!calcularRuta || !window.google || pedidos.length === 0 || !origen.lat || !origen.lng) return;
 
-    // Puntos: origen + todos los pedidos
     const puntos = [
       { lat: origen.lat, lng: origen.lng },
       ...pedidos.map((p) => ({ lat: p.cliente.lat, lng: p.cliente.lon })),
+      { lat: origen.lat, lng: origen.lng }, // ➕ vuelta al origen
     ];
 
     const origins = puntos.slice(0, -1).map((p) => new google.maps.LatLng(p.lat, p.lng));
@@ -51,15 +51,20 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Pro
           const elementos = response.rows.map((row, i) => row.elements[i]);
 
           const nuevosTramos: Tramo[] = elementos.map((elem, i) => ({
-            clienteNombre: pedidos[i]?.clienteNombre,
-            desde: i === 0 ? "Origen" : pedidos[i - 1].clienteNombre,
-            hasta: pedidos[i].clienteNombre,
-            direccion: pedidos[i].cliente.direccion,
-            pedidoNro: pedidos[i].id,
+            desde: i === 0
+              ? "Origen"
+              : i <= pedidos.length
+                ? pedidos[i - 1].clienteNombre
+                : "Último Cliente",
+            hasta: i < pedidos.length
+              ? pedidos[i].clienteNombre
+              : "Origen",
             distancia: elem.distance?.text || "-",
             duracion: elem.duration?.text || "-",
             distanciaValor: elem.distance?.value || 0,
             duracionValor: elem.duration?.value || 0,
+            direccion: i < pedidos.length ? pedidos[i].cliente.direccion : "",
+            clienteNombre: i < pedidos.length ? pedidos[i].clienteNombre : "Origen",
           }));
 
           const distanciaTotal = nuevosTramos.reduce((sum, t) => sum + t.distanciaValor, 0);
@@ -76,6 +81,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Pro
       }
     );
   }, [calcularRuta, pedidos, origen]);
+
 
   if (tramos.length === 0) return null;
 
