@@ -62,20 +62,26 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </button>
 
           <nav className="space-y-2">
-            <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded">
+            <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded"
+             title={!isOpen ? "Home" : ""}
+            >
               <FaHome className="text-lg" />
               {isOpen && <span className="ml-2">Home</span>}
             </Link>
 
             {role === "ADMINISTRADOR" && (
-              <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              title={!isOpen ? "Usuarios" : ""}
+              >
                 <FaUser className="text-lg" />
                 {isOpen && <span className="ml-2">Usuarios</span>}
               </Link>
             )}
 
             {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
-              <Link href="/facturacion" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              <Link href="/facturacion" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              title={!isOpen ? "Facturación" : ""}
+              >
                 <FaFileInvoiceDollar className="text-lg" />
                 {isOpen && <span className="ml-2">Facturación</span>}
               </Link>
@@ -83,21 +89,27 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
 
           {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
-              <Link href="/clientes" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              <Link href="/clientes" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              title={!isOpen ? "Clientes" : ""}
+              >
                 <FaUserFriends className="text-lg" />
                 {isOpen && <span className="ml-2">Clientes</span>}
               </Link>
             )}
 
             {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
-              <Link href="/pedidos" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              <Link href="/pedidos" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              title={!isOpen ? "Pedidos" : ""}
+              >
                 <FaCalendar className="text-lg" />
                 {isOpen && <span className="ml-2">Pedidos</span>}
               </Link>
             )}
 
             {(role === "ADMINISTRADOR" || role === "COMPRADOR" || role === "VENDEDOR") && (
-              <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded">
+              <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              title={!isOpen ? "Productos" : ""}
+              >
                 <FaShoppingCart className="text-lg" />
                 {isOpen && <span className="ml-2">Productos</span>}
               </Link>
@@ -105,11 +117,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
             {(role === "ADMINISTRADOR" || role === "COMPRADOR") && (
               <>
-                <Link href="/stock" className="flex items-center p-2 hover:bg-gray-700 rounded">
+                <Link href="/stock" className="flex items-center p-2 hover:bg-gray-700 rounded"
+                  title={!isOpen ? "Stock" : ""}
+                >
                   <FaBoxOpen className="text-lg" />
                   {isOpen && <span className="ml-2">Stock</span>}
                 </Link>
-                <Link href="/compras" className="flex items-center p-2 hover:bg-gray-700 rounded">
+                <Link href="/compras" className="flex items-center p-2 hover:bg-gray-700 rounded"
+                title={!isOpen ? "Compras" : ""}
+                >
                   <FaShoppingBasket className="text-lg" />
                   {isOpen && <span className="ml-2">Compras</span>}
                 </Link>
@@ -119,6 +135,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <button
               onClick={handleLogout}
               className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded"
+              title={!isOpen ? "Cerrar sesión" : ""}
             >
               <SlLogout className="text-lg" />
               {isOpen && <span className="ml-2">Cerrar sesión</span>}
