@@ -74,6 +74,7 @@ export default function MapaConPedidos({ pedidos, origen, calcularRuta }: Props)
 
   useEffect(() => {
     if (!calcularRuta || !window.google || !directionsService.current || !directionsRenderer.current) return;
+    const offsetLng = origen.lng + 0.00045; // ≈ 50m al este
 
 
     if (pedidos.length > 0 && origen.lat && origen.lng) {
@@ -85,8 +86,8 @@ export default function MapaConPedidos({ pedidos, origen, calcularRuta }: Props)
         directionsService.current!.route(
           {
             origin: new google.maps.LatLng(origen.lat, origen.lng),
-            destination: waypoints[waypoints.length - 1].location,
-            waypoints: waypoints.slice(0, -1),
+            destination: new google.maps.LatLng(origen.lat, offsetLng),
+            waypoints: waypoints,
             travelMode: google.maps.TravelMode.DRIVING,
             optimizeWaypoints: true,
           },
