@@ -72,11 +72,11 @@ export default function EnvioPedidosView() {
 
   return (
     <div className="mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Armado de Envío</h2>
+      <h2 className="text-2xl font-bold mb-4">Administración de Envíos</h2>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
 
-      <select
+     {/* <select
     value={filtroEstado}
     onChange={(e) => setFiltroEstado(e.target.value)}
     className="border rounded px-3 py-2"
@@ -86,8 +86,7 @@ export default function EnvioPedidosView() {
     <option value="en_preceso">En proceso</option>
     <option value="entregado">Entregado</option>
     <option value="cancelado">Cancelado</option>
-    {/* agrega más según tus estados posibles */}
-  </select>
+  </select> */}
 
   <input
     type="date"
