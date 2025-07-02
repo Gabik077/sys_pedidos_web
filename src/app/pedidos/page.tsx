@@ -4,8 +4,9 @@ import { useState } from "react";
 import CrearPedidoView from "./components/crearPedidoView";
 import EnvioPedidosView from "./components/envioPedidosView";
 import PedidosPendientesView from "./components/pedidosPendientesView";
+import PedidosEnviadosView from "./components/pedidosEnviadosView";
 
-const tabs = ["Crear Pedido", "Pedidos Pendientes", "Pedidos Entregados", "Envio de Pedidos"];
+const tabs = ["Crear Pedido", "Pedidos Pendientes", "Pedidos Entregados", "Envio de Pedidos", "Pedidos Enviados"];
 
 export default function ComprasTabsPage() {
   const [activeTab, setActiveTab] = useState("Crear Pedido");
@@ -43,6 +44,10 @@ export default function ComprasTabsPage() {
         </div>
         <div className={activeTab === "Envio de Pedidos" ? "" : "hidden"}>
           <EnvioPedidosView />
+        </div>
+
+        <div className={activeTab === "Pedidos Enviados" ? "" : "hidden"}>
+          <PedidosEnviadosView />
         </div>
       </div>
     </div>
