@@ -1,4 +1,24 @@
 // types.ts
+
+export interface EnvioPedido {
+    id: number;
+    ordenEnvio: number;
+    pedido: Pedido;
+    movil: {
+        nombreMovil: string;
+        nombreChofer: string;
+        chapaMovil: string;
+        telefonoChofer: string;
+    };
+}
+
+export interface EnvioHeader {
+    id: number;
+    fechaCreacion: string;
+    estado: string;
+    envioPedido: EnvioPedido[];
+}
+
 export interface Producto {
     id: number;
     nombre: string;
