@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPedidos } from "@/app/services/stockService";
+import { getPedidos, insertEnvioPedidos } from "@/app/services/stockService";
 import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "./PedidoItem";
@@ -23,8 +23,6 @@ export default function EnvioPedidosView() {
   const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
   const [filtroFecha, setFiltroFecha] = useState<string>("");
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
-
-
 
 
   useEffect(() => {
@@ -50,17 +48,28 @@ export default function EnvioPedidosView() {
   };
 
 
-  const handleGuardarEnvio = () => {
-    if (!movilSeleccionado || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
+  const handleGuardarEnvio = async () => {
+    if (!pedidosOrdenados || !movilSeleccionado || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
       alert("Completa todos los campos y selecciona al menos un pedido.");
       return;
     }
 
     const data = {
-      id_movil: movilSeleccionado,
-      origen: { lat: origenLat, lon: origenLon },
-      pedidos: pedidosSeleccionados.map((p) => p.id),
+      idMovil: movilSeleccionado,
+      pedidos: pedidosOrdenados.map((p) => p.id),
     };
+
+    const envio = await insertEnvioPedidos(data);
+
+    if (envio.status === "ok") {
+      alert("Envío guardado exitosamente.");
+      setPedidosSeleccionados([]);
+      setPedidosOrdenados([]);
+      setMovilSeleccionado(null); // Reiniciar móvil seleccionado
+      setCalcularRuta(false); // Reiniciar cálculo de ruta
+    } else {
+      alert("Error al guardar el envío: " + envio.message);
+    }
 
     console.log("Guardando envío:", data);
     // Aquí deberías hacer la llamada a la API para guardar el envío

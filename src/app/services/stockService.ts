@@ -27,6 +27,15 @@ export const fetchStockList = async () => {
     return await handleRequest(`${apiUrl}/stock`);
 };
 
+export async function insertEnvioPedidos(data: any) {
+    return await handleRequest(`${apiUrl}/stock/envio`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+}
 
 export async function insertEntradaStock(data: any) {
     return await handleRequest(`${apiUrl}/stock/entrada`, {
