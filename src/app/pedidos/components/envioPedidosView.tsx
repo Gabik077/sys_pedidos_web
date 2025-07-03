@@ -83,7 +83,7 @@ export default function EnvioPedidosView() {
 
   return (
     <div className="mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Crear Envíos</h2>
+      <h2 className="text-2xl font-bold mb-4">Crear Reparto</h2>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
 

@@ -123,6 +123,15 @@ export default function CrearPedidoView() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if(formData.productos.length === 0) {
+      alert("Debe agregar al menos un producto al pedido");
+      return;
+    }
+    if (!formData.id_cliente || !formData.cliente_nombre) {
+      alert("Debe seleccionar un cliente antes de registrar el pedido");
+      return;
+    }
     const dataToSend = {
         tipo_origen: "pedido",
         id_origen: 1,

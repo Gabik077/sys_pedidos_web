@@ -156,7 +156,7 @@ export default function EnviosPendientesView() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-gray-500 text-2xl font-bold mb-6">Envíos Pendientes</h2>
+      <h2 className="text-gray-500 text-2xl font-bold mb-6">Repartos Pendientes</h2>
 
       {envios.map((envio) => {
         const isExpanded = enviosExpandido.has(envio.id);
@@ -169,7 +169,9 @@ export default function EnviosPendientesView() {
                   Envío #{envio.id} - {new Date(envio.fechaCreacion).toLocaleString()}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Móvil: {envio.envioPedido?.[0]?.movil?.nombreMovil} - Chofer: {envio.envioPedido?.[0]?.movil?.nombreChofer} - Chapa: {envio.envioPedido?.[0]?.movil?.chapaMovil}
+                  Móvil: {envio.envioPedido?.[0]?.movil?.nombreMovil} -
+                   Chofer: {envio.envioPedido?.[0]?.movil?.nombreChofer} -
+                   Chapa: {envio.envioPedido?.[0]?.movil?.chapaMovil}
                 </p>
               </div>
               <button
