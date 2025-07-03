@@ -61,7 +61,7 @@ export default function EnviosPendientesView() {
   const handleImprimirEnvio = (envio: EnvioHeader) => {
     const win = window.open('', '_blank');
     if (!win) return;
-
+    let totalEnvio = 0;
     const contenido = `
       <html>
         <head>
@@ -79,6 +79,7 @@ export default function EnviosPendientesView() {
 
           ${envio.envioPedido.map((ep) => {
             const p = ep.pedido;
+            totalEnvio += Number(p.total);
             return `
               <div class="pedido">
                 <h3>Pedido #${p.id}</h3>
@@ -100,9 +101,13 @@ export default function EnviosPendientesView() {
                   `).join('')}
                 </ul>
               </div>
+           </h1>
             `;
           }).join('')}
-
+       <h2>Total pedidos: ${Number(totalEnvio).toLocaleString('es-PY', {
+                style: 'currency',
+                currency: 'PYG'
+              })}
           <script>window.print();</script>
         </body>
       </html>

@@ -83,7 +83,7 @@ export default function EnvioPedidosView() {
 
   return (
     <div className="mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Crear Reparto</h2>
+      <h2 className="text-2xl font-bold mb-4 text-gray-500">Crear Reparto</h2>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
 
@@ -136,7 +136,7 @@ export default function EnvioPedidosView() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="max-h-[75vh] overflow-y-auto space-y-4">
+        <div className="max-h-[75vh] overflow-y-auto space-y-4 text-gray-500">
         {pedidos
             .filter((pedido) => {
                 // Filtro por estado

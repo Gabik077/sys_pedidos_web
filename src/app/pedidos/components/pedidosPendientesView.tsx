@@ -28,7 +28,7 @@ export default function PedidosPendientesView() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Lista de Pedidos</h2>
+        <h2 className="text-2xl font-bold text-gray-500">Lista de Pedidos</h2>
         <button
           onClick={fetchPedidos}
           className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
@@ -38,10 +38,10 @@ export default function PedidosPendientesView() {
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 text-gray-500">
         {pedidos.map((pedido) => (
           <div key={pedido.id} className="border p-4 mb-6 rounded shadow">
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-lg font-semibold mb-2 text-gray-500">
               Pedido #{pedido.id} - {new Date(pedido.fechaPedido).toLocaleString()}
             </h3>
             <p><strong>Cliente:</strong> {pedido.clienteNombre}</p>

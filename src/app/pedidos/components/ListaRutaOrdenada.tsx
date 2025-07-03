@@ -87,8 +87,8 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Pro
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-bold mb-2">Ruta Ordenada</h3>
-      <ul className="space-y-2 text-sm">
+      <h3 className="text-lg font-bold mb-2 text-gray-500">Ruta Ordenada</h3>
+      <ul className="space-y-2 text-sm text-gray-500">
         {tramos.map((t, i) => (
           <li key={i} className="border p-3 rounded shadow bg-white">
             <strong>#{i + 1}. {t.clienteNombre}</strong><br />
