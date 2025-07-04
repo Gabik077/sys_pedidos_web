@@ -23,9 +23,7 @@ export const getPedidos = async () => {
     return await handleRequest(`${apiUrl}/stock/getPedidosPendientes`);
 };
 
-export const fetchClients = async () => {
-    return await handleRequest(`${apiUrl}/stock/clientes`);
-};
+
 
 export const fetchStockList = async () => {
     return await handleRequest(`${apiUrl}/stock`);

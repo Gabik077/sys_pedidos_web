@@ -1,6 +1,7 @@
 "use client";
 
-import { fetchProductsStock, fetchClients, insertSalidaStock } from "@/app/services/stockService";
+import { fetchProductsStock, insertSalidaStock } from "@/app/services/stockService";
+import { fetchClients } from "@/app/services/clientService";
 import { useEffect, useState } from "react";
 
 interface Producto {

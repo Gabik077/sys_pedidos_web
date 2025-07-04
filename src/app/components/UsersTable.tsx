@@ -23,7 +23,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleDeleteClick = (userId: number) => {

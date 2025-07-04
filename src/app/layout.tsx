@@ -89,7 +89,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
 
           {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
-              <Link href="/clientes" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              <Link href="/clients" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Clientes" : ""}
               >
                 <FaUserFriends className="text-lg" />
