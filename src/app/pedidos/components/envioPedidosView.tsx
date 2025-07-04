@@ -7,6 +7,7 @@ import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "./PedidoItem";
 import ListaRutaOrdenada from "./ListaRutaOrdenada";
 import type { Pedido } from "./types";
+import { FaSyncAlt } from "react-icons/fa";
 
 const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
   ssr: false,
@@ -23,7 +24,19 @@ export default function EnvioPedidosView() {
   const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
   const [filtroFecha, setFiltroFecha] = useState<string>("");
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
+  const [loading, setLoading] = useState(false);
 
+  const fetchPedidos = async () => {
+    setLoading(true);
+    try {
+      const pedidos = await getPedidos();
+      setPedidos(pedidos);
+    } catch (err) {
+      console.error("Error al obtener pedidos:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchPedidos = async () => {
@@ -86,7 +99,14 @@ export default function EnvioPedidosView() {
       <h2 className="text-2xl font-bold mb-4 text-gray-500">Crear Reparto</h2>
 
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
+        <button
+          title="Actualizar Pedidos"
+          onClick={fetchPedidos}
+          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+        >
 
+          {loading ? "cargando..." : <FaSyncAlt className="text-lg" />}
+        </button>
      {/* <select
     value={filtroEstado}
     onChange={(e) => setFiltroEstado(e.target.value)}
