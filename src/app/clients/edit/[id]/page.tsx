@@ -64,7 +64,7 @@ function EditClientePage() {
       const res = await updateCliente(id as String, updatedCliente);
       if (res.status === "ok") {
         alert("Cliente actualizado con éxito");
-        router.push("/clientes");
+        router.push("/clients");
       } else {
         alert("Error al actualizar cliente");
       }

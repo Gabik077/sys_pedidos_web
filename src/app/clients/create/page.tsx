@@ -36,7 +36,7 @@ function CreateClientePage() {
       const res = await createCliente(newCliente);
       if (res.status === "ok") {
         alert("Cliente creado con éxito");
-        router.push("/clientes");
+        router.push("/clients");
       } else {
         alert("Error al crear cliente");
       }
