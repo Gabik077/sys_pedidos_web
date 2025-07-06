@@ -157,6 +157,53 @@ export default function EnviosPendientesView() {
       alert('Error en el servidor');
     }
   };
+  const handleImprimirProductos = (envio: EnvioHeader) => {
+    const productosMap = new Map<string, { nombre: string; cantidad: number }>();
+
+    envio.envioPedido.forEach(ep => {
+      ep.pedido.detalles.forEach(det => {
+        const nombre = det.producto?.nombre ?? "Sin nombre";
+        const key = nombre.toLowerCase(); // clave única para consolidar
+
+        if (!productosMap.has(key)) {
+          productosMap.set(key, { nombre, cantidad: det.cantidad });
+        } else {
+          productosMap.get(key)!.cantidad += det.cantidad;
+        }
+      });
+    });
+
+    const productosHTML = Array.from(productosMap.values())
+      .sort((a, b) => a.nombre.localeCompare(b.nombre))
+      .map(p => `<li>${p.nombre} - Cantidad total: ${p.cantidad}</li>`)
+      .join('');
+
+    const win = window.open('', '_blank');
+    if (!win) return;
+
+    const contenido = `
+      <html>
+        <head>
+          <title>Productos del Envío #${envio.id}</title>
+          <style>
+            body { font-family: sans-serif; padding: 20px; }
+            h2 { margin-top: 0; }
+          </style>
+        </head>
+        <body>
+          <h2>Productos del Envío #${envio.id}</h2>
+          <p><strong>Fecha:</strong> ${new Date(envio.fechaCreacion).toLocaleString()}</p>
+            <p><strong>Móvil:</strong> ${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
+          <ul>${productosHTML}</ul>
+          <script>window.print();</script>
+        </body>
+      </html>
+    `;
+
+    win.document.write(contenido);
+    win.document.close();
+  };
+
 
 
   return (
@@ -206,6 +253,13 @@ export default function EnviosPendientesView() {
               >
                 Imprimir pedidos
               </button>
+              <button
+                  onClick={() => handleImprimirProductos(envio)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+                >
+                  Imprimir productos
+                </button>
+
             </div>
 
             {isExpanded && (
