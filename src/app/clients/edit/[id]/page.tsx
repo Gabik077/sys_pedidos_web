@@ -16,6 +16,7 @@ function EditClientePage() {
   const [ruc, setRuc] = useState("");
   const [direccion, setDireccion] = useState("");
   const [ciudad, setCiudad] = useState("");
+  const [email, setEmail] = useState("");
   const [lat, setLat] = useState<string>("");
   const [lon, setLon] = useState<string>("");
 
@@ -31,6 +32,7 @@ function EditClientePage() {
           setRuc(cliente.ruc);
           setDireccion(cliente.direccion);
           setCiudad(cliente.ciudad);
+          setEmail(cliente.email ?? "");
           setLat(cliente.lat?.toString().replace(/,/g, ".") ?? "");
           setLon(cliente.lon?.toString().replace(/,/g, ".") ?? "");
         }
@@ -55,6 +57,7 @@ function EditClientePage() {
       telefono,
       ruc,
       direccion,
+      email,
       ciudad,
       lat: parsedLat,
       lon: parsedLon,
@@ -128,7 +131,15 @@ function EditClientePage() {
               className="w-full p-3 border rounded"
             />
           </div>
-
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Email</p>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 border rounded"
+            />
+          </div>
           <div className="col-span-2">
             <p className="text-xs text-gray-500">Ciudad</p>
             <input

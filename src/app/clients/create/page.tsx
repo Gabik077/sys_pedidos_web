@@ -15,6 +15,7 @@ function CreateClientePage() {
   const [ciudad, setCiudad] = useState("");
   const [lat, setLat] = useState<string>("");
   const [lon, setLon] = useState<string>("");
+  const [email, setEmail] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +27,7 @@ function CreateClientePage() {
       apellido,
       telefono,
       ruc,
+      email,
       direccion,
       ciudad,
       lat: parsedLat, // Aseguramos que la latitud y longitud sean números decimales
@@ -87,6 +89,15 @@ function CreateClientePage() {
               type="text"
               value={ruc}
               onChange={(e) => setRuc(e.target.value)}
+              className="w-full p-3 border rounded"
+            />
+          </div>
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Correo</p>
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full p-3 border rounded"
             />
           </div>
