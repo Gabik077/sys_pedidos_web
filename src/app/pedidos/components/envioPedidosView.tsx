@@ -61,8 +61,12 @@ export default function EnvioPedidosView() {
 
 
   const handleGuardarEnvio = async () => {
-    if (!pedidosOrdenados || !movilSeleccionado || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
+    if (!pedidosOrdenados || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
       alert("Completa todos los campos y selecciona al menos un pedido.");
+      return;
+    }
+    if(movilSeleccionado === 0 || movilSeleccionado === null){
+      alert("Selecciona un móvil válido.");
       return;
     }
 
@@ -79,6 +83,7 @@ export default function EnvioPedidosView() {
       setPedidosOrdenados([]);
       setMovilSeleccionado(null); // Reiniciar móvil seleccionado
       setCalcularRuta(false); // Reiniciar cálculo de ruta
+      fetchPedidos(); // Refrescar lista de pedidos
     } else {
       alert("Error al guardar el envío: " + envio.message);
     }
