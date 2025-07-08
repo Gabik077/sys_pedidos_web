@@ -65,8 +65,12 @@ export default function EnvioPedidosView() {
       alert("Completa todos los campos y selecciona al menos un pedido.");
       return;
     }
-    if(movilSeleccionado === 0 || movilSeleccionado === null){
+    if(movilSeleccionado === 0 ){
       alert("Selecciona un móvil válido.");
+      return;
+    }
+    if(pedidosOrdenados.length === 0) {
+      alert("No hay pedidos ordenados para guardar.");
       return;
     }
 

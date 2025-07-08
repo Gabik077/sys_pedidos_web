@@ -26,7 +26,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Pro
   const [totales, setTotales] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
 
   useEffect(() => {
-    if (!calcularRuta || !window.google || pedidos.length === 0 || !origen.lat || !origen.lng) return;
+    if (!window.google || pedidos.length === 0 || !origen.lat || !origen.lng) return;
 
     const puntos = [
       { lat: origen.lat, lng: origen.lng },

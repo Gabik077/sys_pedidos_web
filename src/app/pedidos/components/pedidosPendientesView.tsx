@@ -110,7 +110,7 @@ export default function PedidosPendientesView() {
                     style: "currency",
                     currency: "PYG",
                   })}{" "}
-                  ({detalle.estado})
+                  {(pedido.estado === "pendiente" || pedido.estado === "envio_creado") ? `(${detalle.estado})` : ""}
                 </li>
               ))}
             </ul>
