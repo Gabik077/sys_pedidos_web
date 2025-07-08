@@ -8,18 +8,34 @@ import { FaSyncAlt } from "react-icons/fa";
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(false);
+  const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
+
 
   const fetchPedidos = async () => {
     setLoading(true);
     try {
-      const pedidos = await getPedidos();
+      const pedidos = await getPedidos("pendiente");
       setPedidos(pedidos);
+      setFiltroEstado("pendiente"); // Establecer el filtro por defecto
     } catch (err) {
       console.error("Error al obtener pedidos:", err);
     } finally {
       setLoading(false);
     }
   };
+
+   const handleEstadoPedido = async (estado: string) => {
+    try {
+      setFiltroEstado(estado);
+      const pedidos = await getPedidos(estado);
+      setPedidos(pedidos);
+    } catch (err) {
+      console.error("Error al obtener pedidos:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
 
   useEffect(() => {
     fetchPedidos();
@@ -29,13 +45,30 @@ export default function PedidosPendientesView() {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-500">Lista de Pedidos</h2>
+
+
+        <select
+            value={filtroEstado}
+            onChange={(e) => handleEstadoPedido(e.target.value)}
+            className="border rounded px-3 py-2" >
+
+            <option value="pendiente">Pendientes</option>
+            <option value="envio_creado">En Envio</option>
+            <option value="entregado">Entregados</option>
+            <option value="cancelado">Cancelados</option>
+
+          </select>
+
         <button
+          title ="Actualizar Pendientes"
           onClick={fetchPedidos}
           className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
         >
 
           {loading ? "cargando..." : <FaSyncAlt className="text-lg" />}
         </button>
+
+
       </div>
 
       <div className="space-y-4 text-gray-500">

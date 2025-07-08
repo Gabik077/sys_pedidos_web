@@ -21,7 +21,6 @@ export default function EnvioPedidosView() {
   const [origenLat, setOrigenLat] = useState<string>("-25.377676990645696");// Valor por defecto para pruebas
   const [origenLon, setOrigenLon] = useState<string>("-57.570087369311956"); // Valor por defecto para pruebas
   const [calcularRuta, setCalcularRuta] = useState<boolean>(false);
-  const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
   const [filtroFecha, setFiltroFecha] = useState<string>("");
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
   const [loading, setLoading] = useState(false);
@@ -29,7 +28,7 @@ export default function EnvioPedidosView() {
   const fetchPedidos = async () => {
     setLoading(true);
     try {
-      const pedidos = await getPedidos();
+      const pedidos = await getPedidos("pendiente");
       setPedidos(pedidos);
     } catch (err) {
       console.error("Error al obtener pedidos:", err);
@@ -41,7 +40,7 @@ export default function EnvioPedidosView() {
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const pedidos = await getPedidos();
+        const pedidos = await getPedidos("pendiente");
         setPedidos(pedidos);
       } catch (err) {
         console.error("Error al obtener pedidos:", err);
@@ -93,7 +92,6 @@ export default function EnvioPedidosView() {
     setTimeout(() => setCalcularRuta(true), 0);
   };
 
-
   return (
     <div className="mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-gray-500">Crear Reparto</h2>
@@ -107,17 +105,7 @@ export default function EnvioPedidosView() {
 
           {loading ? "cargando..." : <FaSyncAlt className="text-lg" />}
         </button>
-     {/* <select
-    value={filtroEstado}
-    onChange={(e) => setFiltroEstado(e.target.value)}
-    className="border rounded px-3 py-2"
-  >
-    <option value="TODOS">Todos los estados</option>
-    <option value="pendiente">Pendiente</option>
-    <option value="en_preceso">En proceso</option>
-    <option value="entregado">Entregado</option>
-    <option value="cancelado">Cancelado</option>
-  </select> */}
+
 
   <input
     type="date"
@@ -159,10 +147,7 @@ export default function EnvioPedidosView() {
         <div className="max-h-[75vh] overflow-y-auto space-y-4 text-gray-500">
         {pedidos
             .filter((pedido) => {
-                // Filtro por estado
-                if (filtroEstado !== "TODOS" && pedido.estado !== filtroEstado) {
-                return false;
-                }
+
 
                 // Filtro por fecha (asumiendo pedido.fecha es tipo ISO o similar)
                 if (filtroFecha && !pedido.fechaPedido.startsWith(filtroFecha)) {

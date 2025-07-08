@@ -19,8 +19,8 @@ export const fetchProductsStock = async () => {
     return await handleRequest(`${apiUrl}/products`);
 };
 
-export const getPedidos = async () => {
-    return await handleRequest(`${apiUrl}/stock/getPedidosPendientes`);
+export const getPedidos = async (estado: string) => {
+    return await handleRequest(`${apiUrl}/stock/getPedidos?estadoPedido=${estado}`);
 };
 
 export const fetchStockList = async () => {
