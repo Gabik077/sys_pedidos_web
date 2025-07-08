@@ -6,7 +6,7 @@ import { guardaEstadoPedido, getEnvios, guardarEstadoPedido } from "@/app/servic
 import { EnvioHeader } from "./types";
 
 
-export default function EnviosPendientesView() {
+export default function PedidosEntregadosView() {
   const [envios, setEnvios] = useState<EnvioHeader[]>([]);
   const [enviosExpandido, setEnviosExpandido] = useState<Set<number>>(new Set());
   const [productosExpandidoPorPedido, setProductosExpandidoPorPedido] = useState<Record<number, boolean>>({});
@@ -14,7 +14,7 @@ export default function EnviosPendientesView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getEnvios("pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
+      const data = await getEnvios("entregado"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
       setEnvios(data);
     };
     fetchData();
@@ -107,8 +107,7 @@ export default function EnviosPendientesView() {
 
       if (res.status === 'ok') {
         alert('Envío finalizado correctamente');
-        const data = await getEnvios("pendiente");
-        setEnvios(data);
+        // Podés recargar la lista o actualizar el estado en el frontend
       } else {
         alert('Error al finalizar el envío');
       }
@@ -124,8 +123,6 @@ export default function EnviosPendientesView() {
 
       if (res.status === 'ok') {
         alert('Envío cancelado correctamente');
-        const data = await getEnvios("pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
-        setEnvios(data);
       } else {
         alert('Error al cancelar el envío');
       }
@@ -185,7 +182,7 @@ export default function EnviosPendientesView() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-gray-500 text-2xl font-bold mb-6">Repartos Pendientes</h2>
+      <h2 className="text-gray-500 text-2xl font-bold mb-6">Repartos Entregados</h2>
 
       {envios.map((envio) => {
         const isExpanded = enviosExpandido.has(envio.id);
@@ -212,18 +209,7 @@ export default function EnviosPendientesView() {
             </div>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              <button
-                onClick={() => handleFinalizarEnvio(envio.id)}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-              >
-                Finalizar envío
-              </button>
-              <button
-                onClick={() => handleCancelarEnvio(envio.id)}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-              >
-                Cancelar envío
-              </button>
+
               <button
                 onClick={() => handleImprimirEnvio(envio)}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"

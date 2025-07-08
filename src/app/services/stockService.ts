@@ -7,8 +7,8 @@ if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
 }
 
-export const getEnviosPendientes = async () => {
-    return await handleRequest(`${apiUrl}/stock/getEnviosPendientes`);
+export const getEnvios = async (estado: String) => {
+    return await handleRequest(`${apiUrl}/stock/getEnvios?estadoEnvio=${estado}`);
 };
 
 export const fetchMoviles = async () => {
@@ -23,11 +23,19 @@ export const getPedidos = async () => {
     return await handleRequest(`${apiUrl}/stock/getPedidosPendientes`);
 };
 
-
-
 export const fetchStockList = async () => {
     return await handleRequest(`${apiUrl}/stock`);
 };
+
+export const guardarEstadoPedido = async (id_envio: number, estado: string) => {
+    return await handleRequest(`${apiUrl}/stock/guardarEstadoPedido`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id_envio, estado }),
+    });
+}
 
 export const guardaEstadoPedido = async (data: any) => {
     return await handleRequest(`${apiUrl}/stock/guardarEstadoPedido`, {
