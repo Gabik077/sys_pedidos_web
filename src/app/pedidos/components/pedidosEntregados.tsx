@@ -262,7 +262,7 @@ export default function PedidosEntregadosView() {
                               {d.producto.nombre} - Cant: {d.cantidad} - Precio: {Number(d.precioUnitario).toLocaleString("es-PY", {
                                 style: "currency",
                                 currency: "PYG",
-                              })} ({d.estado})
+                              })}
                             </li>
                           ))}
                         </ul>
