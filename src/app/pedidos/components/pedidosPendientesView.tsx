@@ -88,7 +88,11 @@ export default function PedidosPendientesView() {
                   ? "bg-orange-500"
                   : pedido.estado === "entregado"
                   ? "bg-green-600"
-                  : "bg-red-600"
+                  : pedido.estado === "envio_creado"
+                  ? "bg-blue-400"
+                  : pedido.estado === "cancelado"
+                  ? "bg-red-500"
+                  : "bg-gray-400"
               }`}
             >
               {pedido.estado}
