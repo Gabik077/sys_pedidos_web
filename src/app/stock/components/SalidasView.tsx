@@ -134,7 +134,7 @@ export default function SalidasView() {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 max-w-5xl mx-auto bg-white rounded shadow">
+    <form onSubmit={handleSubmit} className="p-6 max-w-5xl mx-auto bg-white rounded shadow text-gray-500">
       <h2 className="text-2xl font-bold mb-6">Formulario de Salida</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

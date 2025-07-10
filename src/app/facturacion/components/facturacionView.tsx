@@ -136,12 +136,12 @@ export default function FacturacionView() {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 max-w-6xl mx-auto bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Formulario de Facturación</h2>
+    <form onSubmit={handleSubmit} className="p-6 max-w-6xl mx-auto bg-white rounded shadow text-gray-500">
+      <h2 className="text-xl font-bold mb-4 text-gray-500">Formulario de Facturación</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
-          <label className="block text-gray-700">Tipo Origen</label>
+          <label className="block mb-1 ">Tipo Origen</label>
           <select
             value={formData.tipo_origen}
             onChange={(e) => setFormData({ ...formData, tipo_origen: e.target.value })}
@@ -151,7 +151,7 @@ export default function FacturacionView() {
         </div>
 
         <div className="mb-4">
-            <label className="block text-gray-700">Método de Pago</label>
+            <label className="block mb-1">Método de Pago</label>
             <select
                 value={formData.metodo_pago}
                 onChange={(e) => setFormData({ ...formData, metodo_pago: e.target.value })}
