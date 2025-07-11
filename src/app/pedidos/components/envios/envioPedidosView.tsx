@@ -62,7 +62,7 @@ export default function EnvioPedidosView() {
 
 
   const handleGuardarEnvio = async () => {
-    if (!pedidosOrdenados || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
+    if (!pedidosSeleccionados || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
       alert("Completa todos los campos y selecciona al menos un pedido.");
       return;
     }
@@ -70,14 +70,20 @@ export default function EnvioPedidosView() {
       alert("Selecciona un móvil válido.");
       return;
     }
-    if(pedidosOrdenados.length === 0) {
-      alert("No hay pedidos ordenados para guardar.");
+    if(totalesCalculados.distancia === "" || totalesCalculados.duracion === ""){
+      alert("Calcula la ruta antes de guardar el envío.");
       return;
+    }
+
+    if(pedidosSeleccionados.length === 0){
+      alert("Selecciona al menos un pedido para el envío.");
+      return;
+
     }
 
     const data = {
       idMovil: movilSeleccionado,
-      pedidos: pedidosOrdenados.map((p) => p.id),
+      pedidos: pedidosSeleccionados.map((p) => p.id),
       kmCalculado: totalesCalculados.distancia,
       tiempoCalculado: totalesCalculados.duracion,
     };
@@ -99,8 +105,9 @@ export default function EnvioPedidosView() {
   };
 
   const handleCalcularRuta = () => {
-    setCalcularRuta(false); // reiniciar para forzar render
-    setTimeout(() => setCalcularRuta(true), 0);
+    setCalcularRuta(true); // reiniciar para forzar render
+
+
   };
 
   return (
@@ -177,25 +184,27 @@ export default function EnvioPedidosView() {
             ))}
         </div>
 
-        <div className="h-[75vh]">
+       {/* <div className="h-[75vh]">
           <MapaConPedidos
             pedidos={pedidosSeleccionados}
             origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
             calcularRuta={calcularRuta}
             onOrdenOptimizado={(ordenados) => setPedidosOrdenados(ordenados)}
           />
+        </div> */}
+
+<div className="h-[75vh]">
+        <ListaRutaOrdenada
+         pedidos={pedidosSeleccionados}
+          origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
+          calcularRuta={calcularRuta}
+          onTotalesCalculados={(totales) =>{ setCalcularRuta(false); setTotalesCalculados(totales);}}
+          onRutaOptimizada={(ordenados) => setPedidosOrdenados(ordenados)}
+          />
         </div>
       </div>
 
-      <div className="mt-6">
-        <ListaRutaOrdenada
-          pedidos={pedidosOrdenados.length > 0 ? pedidosOrdenados : []}
-//          pedidos={pedidosSeleccionados}
-          origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
-          calcularRuta={calcularRuta}
-          onTotalesCalculados={(totales) => setTotalesCalculados(totales)}
-          />
-        </div>
+
     </div>
   );
 }

@@ -1,119 +1,145 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Pedido } from "../../../types";
-import { on } from "events";
 
 interface Props {
-  pedidos: Pedido[]; // ya vienen en orden correcto
+  pedidos: Pedido[];
   origen: { lat: number; lng: number };
   calcularRuta: boolean;
-  onTotalesCalculados?: ( totales: { distancia: string; duracion: string }) => void; // opcional para manejar los totales calculados
+  onTotalesCalculados?: (totales: { distancia: string; duracion: string }) => void;
+  onRutaOptimizada?: (pedidosOrdenados: Pedido[]) => void;
 }
 
-interface Tramo {
-  clienteNombre?: string; // opcional si no se usa
-  desde: string;
-  hasta: string;
-  direccion?: string; // opcional si no se usa
-  pedidoNro?: number; // opcional si no se usa
-  distancia: string;
-  duracion: string;
-  distanciaValor: number;
-  duracionValor: number;
-}
-
-export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta,onTotalesCalculados }: Props) {
-  const [tramos, setTramos] = useState<Tramo[]>([]);
+export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTotalesCalculados, onRutaOptimizada }: Props) {
   const [totales, setTotales] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
+  const [loading, setLoading] = useState(false);
+  const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);
+  const listaRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = () => {
+    if (listaRef.current) {
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Ruta Optimizada</title>
+              <style>
+                body { font-family: sans-serif; padding: 20px; }
+                .pedido { margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+                .totales { font-weight: bold; margin-top: 20px; }
+              </style>
+            </head>
+            <body>
+              ${listaRef.current.innerHTML}
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
+
+  const handleVerEnGoogleMaps = () => {
+    const waypoints = [
+      `${origen.lat},${origen.lng}`,
+      ...pedidosOrdenados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+      `${origen.lat},${origen.lng}`
+    ];
+    const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
+    window.open(url, "_blank");
+  };
 
   useEffect(() => {
-    if (!window.google || pedidos.length === 0 || !origen.lat || !origen.lng) return;
+    if (!calcularRuta || pedidos.length === 0) return;
 
-    const puntos = [
-      { lat: origen.lat, lng: origen.lng },
-      ...pedidos.map((p) => ({ lat: p.cliente.lat, lng: p.cliente.lon })),
-      { lat: origen.lat, lng: origen.lng }, // ➕ vuelta al origen
-    ];
+    const fetchRuta = async () => {
+      setLoading(true);
 
-    const origins = puntos.slice(0, -1).map((p) => new google.maps.LatLng(p.lat, p.lng));
-    const destinations = puntos.slice(1).map((p) => new google.maps.LatLng(p.lat, p.lng));
+      const coords = pedidos.map((p) => `${p.cliente.lon},${p.cliente.lat}`).join(";");
+      const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?source=first&destination=last&roundtrip=true&overview=false`;
 
-    const service = new google.maps.DistanceMatrixService();
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-    service.getDistanceMatrix(
-      {
-        origins,
-        destinations,
-        travelMode: google.maps.TravelMode.DRIVING,
-        unitSystem: google.maps.UnitSystem.METRIC,
-      },
-      (response, status) => {
-        if (status === "OK" && response?.rows) {
-          const elementos = response.rows.map((row, i) => row.elements[i]);
+        if (data.code === "Ok" && data.trips.length > 0) {
+          const trip = data.trips[0];
+          const orden = data.waypoints
+            .sort((a: any, b: any) => a.waypoint_index - b.waypoint_index)
+            .map((wp: any) => wp.waypoint_index);
 
-          const nuevosTramos: Tramo[] = elementos.map((elem, i) => ({
-            desde: i === 0
-              ? "Origen"
-              : i <= pedidos.length
-                ? pedidos[i - 1].clienteNombre
-                : "Último Cliente",
-            hasta: i < pedidos.length
-              ? pedidos[i].clienteNombre
-              : "Origen",
-            distancia: elem.distance?.text || "-",
-            duracion: elem.duration?.text || "-",
-            distanciaValor: elem.distance?.value || 0,
-            duracionValor: elem.duration?.value || 0,
-            direccion: i < pedidos.length ? pedidos[i].cliente.direccion : "",
-            clienteNombre: i < pedidos.length ? pedidos[i].clienteNombre : "Origen",
-          }));
+          const pedidosOrden = orden.map((i: number) => pedidos[i]);
 
-          const distanciaTotal = nuevosTramos.reduce((sum, t) => sum + t.distanciaValor, 0);
-          const duracionTotal = nuevosTramos.reduce((sum, t) => sum + t.duracionValor, 0);
+          setPedidosOrdenados(pedidosOrden);
+
+          const distanciaTotal = trip.distance;
+          const duracionTotal = trip.duration;
 
           const horas = Math.floor(duracionTotal / 3600);
           const minutos = Math.round((duracionTotal % 3600) / 60);
 
-          setTramos(nuevosTramos);
-           setTotales({
+          const totales = {
             distancia: (distanciaTotal / 1000).toFixed(2) + " km",
-            duracion: horas > 0
-              ? `${horas}h ${minutos}min`
-              : `${minutos} min`
-          });
+            duracion: horas > 0 ? `${horas}h ${minutos}min` : `${minutos} min`
+          };
 
-
-          onTotalesCalculados?.({
-            distancia: (distanciaTotal / 1000).toFixed(2) + " km",
-            duracion: horas > 0
-              ? `${horas}h ${minutos}min`
-              : `${minutos} min`
-          });
-
-
-        }else {
-          console.warn("Error al obtener distancia:", status, response);
+          setTotales(totales);
+          onTotalesCalculados?.(totales);
+          onRutaOptimizada?.(pedidosOrden);
         }
+      } catch (error) {
+        console.error("Error al calcular ruta optimizada:", error);
       }
-    );
+
+      setLoading(false);
+    };
+
+    fetchRuta();
   }, [calcularRuta, pedidos, origen]);
 
+  if (loading) {
+    return <div className="mt-6 text-gray-500 text-sm">⏳ Calculando ruta optimizada...</div>;
+  }
 
-  if (tramos.length === 0) return null;
+  if (!totales.distancia && !totales.duracion) return null;
 
   return (
-    <div className="mt-6">
-      <h3 className="text-lg font-bold mb-2 text-gray-500">Ruta Ordenada</h3>
-      <ul className="space-y-2 text-sm text-gray-500">
-        {tramos.map((t, i) => (
+    <div className="mt-6" ref={listaRef}>
+      <div className="flex justify-between items-center mb-2">
+        <h3 className="text-lg font-bold text-gray-500">Ruta Optimizada</h3>
+        <div className="flex gap-2">
+          <button
+            onClick={handleVerEnGoogleMaps}
+            className="px-4 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700 shadow"
+          >
+            📍 Ver en Google Maps
+          </button>
+          <button
+            onClick={handlePrint}
+            className="px-4 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 shadow"
+          >
+            🖨️ Imprimir
+          </button>
+        </div>
+      </div>
+      <ul className="space-y-2 text-sm text-gray-700">
+        <li className="border p-3 rounded shadow bg-white">
+          <strong>Inicio</strong><br />
+          Latitud: {origen.lat}, Longitud: {origen.lng}
+        </li>
+        {pedidosOrdenados.map((p, i) => (
           <li key={i} className="border p-3 rounded shadow bg-white">
-            <strong>#{i + 1}. {t.clienteNombre}</strong><br />
-            Dirección: {t.direccion || "No disponible"}<br />
-            Tramo: {t.desde} → {t.hasta}<br />
-            Distancia: {t.distancia} - Duración: {t.duracion}
+            <strong>#{i + 1}. {p.clienteNombre}</strong><br />
+            Pedido N°: {p.id}
           </li>
         ))}
+        <li className="border p-3 rounded shadow bg-white">
+          <strong>Final</strong><br />
+          Latitud: {origen.lat}, Longitud: {origen.lng}
+        </li>
       </ul>
       <div className="mt-4 text-base font-semibold text-gray-700">
         🧭 Distancia total: {totales.distancia} | ⏱️ Tiempo total: {totales.duracion}
