@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { guardaEstadoPedido, getEnvios, guardarEstadoPedido } from "@/app/services/stockService"; // Asegúrate de que estos endpoints existan
-import { EnvioHeader } from "./types";
+import { EnvioHeader } from "../../../types";
 
 
 export default function PedidosEntregadosView() {

@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Pedido } from "./types";
+import { Pedido } from "../../../types";
+import { on } from "events";
 
 interface Props {
   pedidos: Pedido[]; // ya vienen en orden correcto
   origen: { lat: number; lng: number };
   calcularRuta: boolean;
+  onTotalesCalculados?: ( totales: { distancia: string; duracion: string }) => void; // opcional para manejar los totales calculados
 }
 
 interface Tramo {
@@ -21,7 +23,7 @@ interface Tramo {
   duracionValor: number;
 }
 
-export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Props) {
+export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta,onTotalesCalculados }: Props) {
   const [tramos, setTramos] = useState<Tramo[]>([]);
   const [totales, setTotales] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
 
@@ -70,13 +72,28 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta }: Pro
           const distanciaTotal = nuevosTramos.reduce((sum, t) => sum + t.distanciaValor, 0);
           const duracionTotal = nuevosTramos.reduce((sum, t) => sum + t.duracionValor, 0);
 
+          const horas = Math.floor(duracionTotal / 3600);
+          const minutos = Math.round((duracionTotal % 3600) / 60);
+
           setTramos(nuevosTramos);
-          setTotales({
+           setTotales({
             distancia: (distanciaTotal / 1000).toFixed(2) + " km",
-            duracion: Math.round(duracionTotal / 60) + " min",
+            duracion: horas > 0
+              ? `${horas}h ${minutos}min`
+              : `${minutos} min`
           });
-        } else {
-          console.error("Error al obtener distancia:", status, response);
+
+
+          onTotalesCalculados?.({
+            distancia: (distanciaTotal / 1000).toFixed(2) + " km",
+            duracion: horas > 0
+              ? `${horas}h ${minutos}min`
+              : `${minutos} min`
+          });
+
+
+        }else {
+          console.warn("Error al obtener distancia:", status, response);
         }
       }
     );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Pedido } from "./types";
+import { Pedido } from "../../../types";
 import { FC, useState } from "react";
 
 interface Props {

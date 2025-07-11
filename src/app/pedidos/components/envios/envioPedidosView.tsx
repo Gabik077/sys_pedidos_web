@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { getPedidos, insertEnvioPedidos } from "@/app/services/stockService";
 import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
-import PedidoItem from "./PedidoItem";
+import PedidoItem from "../pedidos/PedidoItem";
 import ListaRutaOrdenada from "./ListaRutaOrdenada";
-import type { Pedido } from "./types";
+import type { Pedido } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 
 const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
@@ -24,6 +24,7 @@ export default function EnvioPedidosView() {
   const [filtroFecha, setFiltroFecha] = useState<string>("");
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
   const [loading, setLoading] = useState(false);
+  const [totalesCalculados, setTotalesCalculados] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
 
   const fetchPedidos = async () => {
     setLoading(true);
@@ -77,6 +78,8 @@ export default function EnvioPedidosView() {
     const data = {
       idMovil: movilSeleccionado,
       pedidos: pedidosOrdenados.map((p) => p.id),
+      kmCalculado: totalesCalculados.distancia,
+      tiempoCalculado: totalesCalculados.duracion,
     };
 
     const envio = await insertEnvioPedidos(data);
@@ -103,8 +106,8 @@ export default function EnvioPedidosView() {
 
   return (
     <div className="mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-gray-500">Crear Reparto</h2>
-
+      <h2 className="text-2xl font-bold mb-1 text-gray-500">Crear Reparto</h2>
+      <h3 className="text-gray-500"> Distancia : {totalesCalculados.distancia === "" ? "0" : totalesCalculados.distancia }   -  Tiempo: {totalesCalculados.duracion === "" ? "0" : totalesCalculados.duracion}</h3>
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
         <button
           title="Actualizar Pedidos"
@@ -187,12 +190,13 @@ export default function EnvioPedidosView() {
 
       <div className="mt-6">
         <ListaRutaOrdenada
-          pedidos={pedidosOrdenados.length > 0 ? pedidosOrdenados : pedidosSeleccionados}
+          pedidos={pedidosOrdenados.length > 0 ? pedidosOrdenados : []}
 //          pedidos={pedidosSeleccionados}
           origen={{ lat: parseFloat(origenLat), lng: parseFloat(origenLon) }}
           calcularRuta={calcularRuta}
-        />
-      </div>
+          onTotalesCalculados={(totales) => setTotalesCalculados(totales)}
+          />
+        </div>
     </div>
   );
 }

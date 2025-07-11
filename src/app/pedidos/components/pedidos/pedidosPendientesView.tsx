@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getPedidos } from "@/app/services/stockService";
-import { Pedido } from "./types";
+import { Pedido } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 
 export default function PedidosPendientesView() {

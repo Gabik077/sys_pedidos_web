@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import CrearPedidoView from "./components/crearPedidoView";
-import EnvioPedidosView from "./components/envioPedidosView";
-import PedidosPendientesView from "./components/pedidosPendientesView";
-import PedidosEnviadosView from "./components/pedidosEnviadosView";
-import PedidosEntregadosView from "./components/pedidosEntregados";
+import CrearPedidoView from "./components/pedidos/crearPedidoView";
+import EnvioPedidosView from "./components/envios/envioPedidosView";
+import PedidosPendientesView from "./components/pedidos/pedidosPendientesView";
+import PedidosEnviadosView from "./components/pedidos/pedidosEnviadosView";
+import PedidosEntregadosView from "./components/pedidos/pedidosEntregados";
 
 const tabs = ["Crear Pedido", "Pedidos Pendientes", "Reparto", "Pedidos Enviados","Pedidos Entregados"];
 

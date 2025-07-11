@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { Pedido } from "./types";
+import { Pedido } from "../../../types";
 
 
 
