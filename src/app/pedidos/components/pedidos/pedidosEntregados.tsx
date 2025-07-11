@@ -4,13 +4,27 @@
 import { useEffect, useState } from "react";
 import { guardaEstadoPedido, getEnvios, guardarEstadoPedido } from "@/app/services/stockService"; // Asegúrate de que estos endpoints existan
 import { EnvioHeader } from "../../../types";
+import { FaSyncAlt } from "react-icons/fa";
 
 
 export default function PedidosEntregadosView() {
   const [envios, setEnvios] = useState<EnvioHeader[]>([]);
   const [enviosExpandido, setEnviosExpandido] = useState<Set<number>>(new Set());
   const [productosExpandidoPorPedido, setProductosExpandidoPorPedido] = useState<Record<number, boolean>>({});
+  const [loading, setLoading] = useState(false);
 
+
+    const fetchEnvios = async () => {
+      setLoading(true);
+      try {
+        const data = await getEnvios("entregado");
+        setEnvios(data);
+      } catch (err) {
+        console.error("Error al obtener pedidos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -184,8 +198,15 @@ export default function PedidosEntregadosView() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-gray-500 text-2xl font-bold mb-6">Repartos Entregados</h2>
+      <h2 className="text-gray-500 text-2xl font-bold mb-1">Repartos Entregados</h2>
+       <button
+          title ="Actualizar Pendientes"
+          onClick={fetchEnvios}
+          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+        >
 
+          {loading ? "cargando..." : <FaSyncAlt className="text-lg" />}
+        </button>
       {envios.map((envio) => {
         const isExpanded = enviosExpandido.has(envio.id);
 
