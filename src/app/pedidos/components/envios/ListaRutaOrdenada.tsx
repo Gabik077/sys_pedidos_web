@@ -43,11 +43,20 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   };
 
   const handleVerEnGoogleMaps = () => {
+    const maxWaypoints = 25;
+    const totalPuntos = pedidosOrdenados.length + 2; // origen + pedidos + destino
+
+    if (totalPuntos > maxWaypoints) {
+      alert("⚠️ Google Maps permite como máximo 25 puntos (incluyendo origen y destino). Solo se mostrarán los primeros 23 pedidos.");
+    }
+
+    const pedidosLimitados = pedidosOrdenados.slice(0, maxWaypoints - 2);
     const waypoints = [
       `${origen.lat},${origen.lng}`,
-      ...pedidosOrdenados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+      ...pedidosLimitados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
       `${origen.lat},${origen.lng}`
     ];
+
     const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
     window.open(url, "_blank");
   };
@@ -109,7 +118,9 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   return (
     <div className="mt-6" ref={listaRef}>
       <div className="flex justify-between items-center mb-2">
-        <h3 className="text-lg font-bold text-gray-500">Ruta Optimizada</h3>
+        <h3 className="text-lg font-bold text-gray-500">
+          Ruta Optimizada ({pedidosOrdenados.length + 2}/25 puntos)
+        </h3>
         <div className="flex gap-2">
           <button
             onClick={handleVerEnGoogleMaps}
@@ -126,21 +137,23 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
         </div>
       </div>
       <ul className="space-y-2 text-sm text-gray-700">
-        <li className="border p-3 rounded shadow bg-white">
-          <strong>Inicio</strong><br />
-          Latitud: {origen.lat}, Longitud: {origen.lng}
-        </li>
-        {pedidosOrdenados.map((p, i) => (
-          <li key={i} className="border p-3 rounded shadow bg-white">
-            <strong>#{i + 1}. {p.clienteNombre}</strong><br />
-            Pedido N°: {p.id}
-          </li>
-        ))}
-        <li className="border p-3 rounded shadow bg-white">
-          <strong>Final</strong><br />
-          Latitud: {origen.lat}, Longitud: {origen.lng}
-        </li>
-      </ul>
+  <li className="border p-3 rounded shadow bg-white">
+    <strong>Inicio</strong><br />
+    Latitud: {origen.lat}, Longitud: {origen.lng}
+  </li>
+  {pedidosOrdenados.map((p, i) => (
+    <li key={i} className="border p-3 rounded shadow bg-white">
+      <strong>#{i + 1}. {p.clienteNombre}</strong><br />
+      Pedido N°: {p.id}<br />
+      Latitud: {p.cliente.lat}, Longitud: {p.cliente.lon}
+    </li>
+  ))}
+  <li className="border p-3 rounded shadow bg-white">
+    <strong>Final</strong><br />
+    Latitud: {origen.lat}, Longitud: {origen.lng}
+  </li>
+</ul>
+
       <div className="mt-4 text-base font-semibold text-gray-700">
         🧭 Distancia total: {totales.distancia} | ⏱️ Tiempo total: {totales.duracion}
       </div>
