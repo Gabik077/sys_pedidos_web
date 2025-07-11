@@ -74,7 +74,9 @@ export default function EnviosPendientesView() {
           <h2>Envío #${envio.id}</h2>
           <p><strong>Fecha:</strong> ${new Date(envio.fechaCreacion).toLocaleString()}</p>
           <p><strong>Móvil:</strong> ${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
-
+          <p><strong>Cantidad pedidos:</strong> ${envio.envioPedido.length}</p>
+          <p><strong>Distancia:</strong> ${envio.kmCalculado || ""}</p>
+          <p><strong>Tiempo estimado:</strong> ${envio.tiempoCalculado || ""}</p>
           ${envio.envioPedido.map((ep) => {
             const p = ep.pedido;
             totalEnvio += Number(p.total);
@@ -221,9 +223,12 @@ export default function EnviosPendientesView() {
                   Envío #{envio.id} - {new Date(envio.fechaCreacion).toLocaleString()}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Móvil: {envio.envioPedido?.[0]?.movil?.nombreMovil} -
-                   Chofer: {envio.envioPedido?.[0]?.movil?.nombreChofer} -
-                   Chapa: {envio.envioPedido?.[0]?.movil?.chapaMovil}
+                 <strong>Móvil:</strong>  {envio.envioPedido?.[0]?.movil?.nombreMovil} -
+                  Chofer: {envio.envioPedido?.[0]?.movil?.nombreChofer} -
+                   Chapa: {envio.envioPedido?.[0]?.movil?.chapaMovil} |
+                   <strong> Cantidad pedidos:</strong>  {envio.envioPedido.length } |
+                   <strong> Distancia:</strong>  {envio.kmCalculado || "" } |
+                   <strong> Tiempo estimado:</strong>  {envio.tiempoCalculado || "" }
                 </p>
               </div>
               <button

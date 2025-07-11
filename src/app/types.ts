@@ -17,6 +17,8 @@ export interface EnvioHeader {
     fechaCreacion: string;
     estado: string;
     envioPedido: EnvioPedido[];
+    kmCalculado: string;
+    tiempoCalculado: string;
 }
 
 export interface Producto {

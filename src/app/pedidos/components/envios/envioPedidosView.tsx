@@ -88,7 +88,6 @@ export default function EnvioPedidosView() {
       alert("Envío guardado exitosamente.");
       setPedidosSeleccionados([]);
       setPedidosOrdenados([]);
-      setMovilSeleccionado(null); // Reiniciar móvil seleccionado
       setCalcularRuta(false); // Reiniciar cálculo de ruta
       fetchPedidos(); // Refrescar lista de pedidos
     } else {
