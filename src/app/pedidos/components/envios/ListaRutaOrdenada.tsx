@@ -155,7 +155,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
 </ul>
 
       <div className="mt-4 text-base font-semibold text-gray-700">
-        🧭 Distancia total: {totales.distancia} | ⏱️ Tiempo total: {totales.duracion}
+        🧭 Distancia total: {totales.distancia} | ⏱️ Tiempo total: {totales.duracion} (sin tráfico)
       </div>
     </div>
   );
