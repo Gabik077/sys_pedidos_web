@@ -18,8 +18,8 @@ export default function EnvioPedidosView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [pedidosSeleccionados, setPedidosSeleccionados] = useState<Pedido[]>([]);//para mostrar en el mapa
   const [movilSeleccionado, setMovilSeleccionado] = useState<number | null>(null);
-  const [origenLat, setOrigenLat] = useState<string>("-25.377676990645696");// Valor por defecto para pruebas
-  const [origenLon, setOrigenLon] = useState<string>("-57.570087369311956"); // Valor por defecto para pruebas
+  const [origenLat, setOrigenLat] = useState<string>("-25.366594304094598");// Valor por defecto para pruebas
+  const [origenLon, setOrigenLon] = useState<string>("-57.5892038538108"); // Valor por defecto para pruebas
   const [calcularRuta, setCalcularRuta] = useState<boolean>(false);
   const [filtroFecha, setFiltroFecha] = useState<string>("");
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
