@@ -19,6 +19,10 @@ export interface EnvioHeader {
     envioPedido: EnvioPedido[];
     kmCalculado: string;
     tiempoCalculado: string;
+    inicioRutaLat?: number; // Latitud de origen
+    inicioRutaLon?: number; // Longitud de origen
+    finRutaLat?: number; // Latitud de destino
+    finRutaLon?: number; // Longitud de destino
 }
 
 export interface Producto {

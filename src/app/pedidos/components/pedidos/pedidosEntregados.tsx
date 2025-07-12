@@ -117,36 +117,9 @@ export default function PedidosEntregadosView() {
     win.document.close();
   };
 
-  const handleFinalizarEnvio = async (idEnvio: number) => {
-    try {
-      const res = await guardarEstadoPedido(idEnvio, 'entregado');
 
-      if (res.status === 'ok') {
-        alert('Envío finalizado correctamente');
-        // Podés recargar la lista o actualizar el estado en el frontend
-      } else {
-        alert('Error al finalizar el envío');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error en el servidor');
-    }
-  };
 
-  const handleCancelarEnvio = async (idEnvio: number) => {
-    try {
-      const res = await guardarEstadoPedido(idEnvio, 'cancelado');
 
-      if (res.status === 'ok') {
-        alert('Envío cancelado correctamente');
-      } else {
-        alert('Error al cancelar el envío');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error en el servidor');
-    }
-  };
   const handleImprimirProductos = (envio: EnvioHeader) => {
     const productosMap = new Map<string, { nombre: string; cantidad: number }>();
 
@@ -195,15 +168,19 @@ export default function PedidosEntregadosView() {
   };
 
   const handleVerEnGoogleMaps = (envio: EnvioHeader) => {
-    const maxWaypoints = 25;
+    if (!envio.envioPedido || envio.envioPedido.length === 0 || envio.envioPedido.length == 0) {
+      alert("No hay pedidos asociados a este envío.");
+      return;
+    }
+    const pedidoslimitados = envio.envioPedido.slice(0, 23); // Limitar a 23 pedidos para evitar problemas con Google Maps
 
     // Usamos la ubicación del primer cliente como origen y destino
-    const pedidosOrdenados = envio.envioPedido
+    const pedidosOrdenados = pedidoslimitados
       .map(ep => ep.pedido)
       .filter(p => p.cliente?.lat !== undefined && p.cliente?.lon !== undefined)
       .sort((a, b) => {
-        const epA = envio.envioPedido.find(e => e.pedido.id === a.id);
-        const epB = envio.envioPedido.find(e => e.pedido.id === b.id);
+        const epA = pedidoslimitados.find(e => e.pedido.id === a.id);
+        const epB = pedidoslimitados.find(e => e.pedido.id === b.id);
         return (epA?.ordenEnvio ?? 0) - (epB?.ordenEnvio ?? 0);
       });
 
@@ -212,20 +189,22 @@ export default function PedidosEntregadosView() {
       return;
     }
 
-    const origen = pedidosOrdenados[0].cliente;
-    const destino = pedidosOrdenados[pedidosOrdenados.length - 1].cliente;
 
+    const origen = envio.inicioRutaLat && envio.inicioRutaLon ? `${envio.inicioRutaLat},${envio.inicioRutaLon}` : null;
+    const destino = envio.finRutaLat && envio.finRutaLon ? `${envio.finRutaLat},${envio.finRutaLon}` : null;
     // Limitar a los waypoints permitidos por Google
-    const pedidosLimitados = pedidosOrdenados.slice(0, maxWaypoints - 2);
+
     const waypoints = [
-      `${origen.lat},${origen.lon}`,
-      ...pedidosLimitados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
-      `${destino.lat},${destino.lon}`,
+      origen,
+      ...pedidosOrdenados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+      destino,
     ];
+    console.log("Waypoints:", waypoints);
 
     const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
     window.open(url, "_blank");
   };
+
 
 
 

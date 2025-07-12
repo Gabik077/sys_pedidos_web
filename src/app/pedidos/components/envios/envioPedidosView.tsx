@@ -87,6 +87,10 @@ export default function EnvioPedidosView() {
       pedidos: pedidosOrdenados.map((p) => p.id),
       kmCalculado: totalesCalculados.distancia,
       tiempoCalculado: totalesCalculados.duracion,
+      origenLat: origenLat ? parseFloat(origenLat) : 0.0,//el origen y el destino son los mismos
+      origenLon: origenLon ? parseFloat(origenLon) : 0.0,
+      destinoLat: origenLat ? parseFloat(origenLat) : 0.0,
+      destinoLon: origenLon ? parseFloat(origenLon) : 0.0,
     };
 
     const envio = await insertEnvioPedidos(data);
