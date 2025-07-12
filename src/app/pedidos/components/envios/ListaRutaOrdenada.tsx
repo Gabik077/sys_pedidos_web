@@ -124,15 +124,15 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
         <div className="flex gap-2">
           <button
             onClick={handleVerEnGoogleMaps}
-            className="px-4 py-1 text-sm rounded bg-green-600 text-white hover:bg-green-700 shadow"
+            className="px-4 py-1 text-sm rounded bg-green-700 text-white hover:bg-green-800 shadow"
           >
-            📍 Ver en Google Maps
+            Ver en Google Maps
           </button>
           <button
             onClick={handlePrint}
-            className="px-4 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700 shadow"
+            className="px-4 py-1 text-sm rounded bg-blue-400 text-white hover:bg-blue-500 shadow"
           >
-            🖨️ Imprimir
+             Imprimir
           </button>
         </div>
       </div>
@@ -145,6 +145,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
     <li key={i} className="border p-3 rounded shadow bg-white">
       <strong>#{i + 1}. {p.clienteNombre}</strong><br />
       Pedido N°: {p.id}<br />
+      Ciudad: {p.cliente.ciudad} - Dirección : {p.cliente.direccion}<br />
       Latitud: {p.cliente.lat}, Longitud: {p.cliente.lon}
     </li>
   ))}
