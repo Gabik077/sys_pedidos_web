@@ -70,7 +70,7 @@ export default function EnvioPedidosView() {
       alert("Selecciona un móvil válido.");
       return;
     }
-    if(totalesCalculados.distancia === "" || totalesCalculados.duracion === ""){
+    if(pedidosSeleccionados ===null || pedidosSeleccionados.length === 0 || totalesCalculados.distancia === "" || totalesCalculados.duracion === ""){
       alert("Calcula la ruta antes de guardar el envío.");
       return;
     }
@@ -81,9 +81,10 @@ export default function EnvioPedidosView() {
 
     }
 
+
     const data = {
       idMovil: movilSeleccionado,
-      pedidos: pedidosSeleccionados.map((p) => p.id),
+      pedidos: pedidosOrdenados.map((p) => p.id),
       kmCalculado: totalesCalculados.distancia,
       tiempoCalculado: totalesCalculados.duracion,
     };
