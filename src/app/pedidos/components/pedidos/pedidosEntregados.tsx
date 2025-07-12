@@ -194,6 +194,39 @@ export default function PedidosEntregadosView() {
     win.document.close();
   };
 
+  const handleVerEnGoogleMaps = (envio: EnvioHeader) => {
+    const maxWaypoints = 25;
+
+    // Usamos la ubicación del primer cliente como origen y destino
+    const pedidosOrdenados = envio.envioPedido
+      .map(ep => ep.pedido)
+      .filter(p => p.cliente?.lat !== undefined && p.cliente?.lon !== undefined)
+      .sort((a, b) => {
+        const epA = envio.envioPedido.find(e => e.pedido.id === a.id);
+        const epB = envio.envioPedido.find(e => e.pedido.id === b.id);
+        return (epA?.ordenEnvio ?? 0) - (epB?.ordenEnvio ?? 0);
+      });
+
+    if (pedidosOrdenados.length === 0) {
+      alert("No hay ubicaciones válidas de clientes para este envío.");
+      return;
+    }
+
+    const origen = pedidosOrdenados[0].cliente;
+    const destino = pedidosOrdenados[pedidosOrdenados.length - 1].cliente;
+
+    // Limitar a los waypoints permitidos por Google
+    const pedidosLimitados = pedidosOrdenados.slice(0, maxWaypoints - 2);
+    const waypoints = [
+      `${origen.lat},${origen.lon}`,
+      ...pedidosLimitados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+      `${destino.lat},${destino.lon}`,
+    ];
+
+    const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
+    window.open(url, "_blank");
+  };
+
 
 
   return (
@@ -248,7 +281,12 @@ export default function PedidosEntregadosView() {
                 >
                   Imprimir productos
                 </button>
-
+                <button
+                  onClick={() => handleVerEnGoogleMaps(envio)}
+                  className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded"
+                >
+                  Ver en Google Maps
+                </button>
             </div>
 
             {isExpanded && (
