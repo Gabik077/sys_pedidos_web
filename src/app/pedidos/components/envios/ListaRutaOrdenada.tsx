@@ -43,19 +43,23 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   };
 
   const handleVerEnGoogleMaps = () => {
-    const maxWaypoints = 25;
-    const totalPuntos = pedidosOrdenados.length + 2; // origen + pedidos + destino
+    const pointsLimit = 25;
+    const totalPuntos = pedidosOrdenados.length + 1; // origen + pedidos
 
-    if (totalPuntos > maxWaypoints) {
+    if (totalPuntos > pointsLimit) {
       alert("⚠️ Google Maps permite como máximo 25 puntos (incluyendo origen y destino). Solo se mostrarán los primeros 23 pedidos.");
     }
 
-    const pedidosLimitados = pedidosOrdenados.slice(0, maxWaypoints - 2);
+    const pedidosLimitados = pedidosOrdenados.slice(0, pointsLimit - 1);
+    const intermedios = pedidosLimitados.slice(0, -1);
+    const destino = pedidosLimitados[pedidosLimitados.length - 1];
+
     const waypoints = [
       `${origen.lat},${origen.lng}`,
-      ...pedidosLimitados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
-      `${origen.lat},${origen.lng}`
+      ...intermedios.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+      `${destino.cliente.lat},${destino.cliente.lon}`//tomamos el último pedido como destino
     ];
+
 
     const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
     window.open(url, "_blank");
@@ -119,7 +123,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
     <div className="mt-6" ref={listaRef}>
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-bold text-gray-500">
-          Ruta Optimizada ({pedidosOrdenados.length + 2}/25 puntos)
+          Ruta Optimizada ({pedidosOrdenados.length + 1}/25 puntos)
         </h3>
         <div className="flex gap-2">
           <button
@@ -149,15 +153,14 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
       Latitud: {p.cliente.lat}, Longitud: {p.cliente.lon}
     </li>
   ))}
-  <li className="border p-3 rounded shadow bg-white">
-    <strong>Final</strong><br />
-    Latitud: {origen.lat}, Longitud: {origen.lng}
-  </li>
+
 </ul>
 
       <div className="mt-4 text-base font-semibold text-gray-700">
         🧭 Distancia total: {totales.distancia} | ⏱️ Tiempo total: {totales.duracion} (sin tráfico)
       </div>
+      <br/>
     </div>
+
   );
 }
