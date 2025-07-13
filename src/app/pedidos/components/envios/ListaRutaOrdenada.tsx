@@ -2,6 +2,22 @@
 
 import { useEffect, useState, useRef } from "react";
 import { Pedido } from "../../../types";
+import {
+  DndContext,
+  closestCenter,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface Props {
   pedidos: Pedido[];
@@ -16,6 +32,11 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   const [loading, setLoading] = useState(false);
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);
   const listaRef = useRef<HTMLDivElement>(null);
+
+  // ✅ CORREGIDO: hooks fuera del JSX
+  const mouseSensor = useSensor(MouseSensor);
+  const touchSensor = useSensor(TouchSensor);
+  const sensors = useSensors(mouseSensor, touchSensor);
 
   const handlePrint = () => {
     if (listaRef.current) {
@@ -44,7 +65,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
 
   const handleVerEnGoogleMaps = () => {
     const pointsLimit = 25;
-    const totalPuntos = pedidosOrdenados.length + 1; // origen + pedidos
+    const totalPuntos = pedidosOrdenados.length + 1;
 
     if (totalPuntos > pointsLimit) {
       alert("⚠️ Google Maps permite como máximo 25 puntos (incluyendo origen y destino). Solo se mostrarán los primeros 23 pedidos.");
@@ -57,9 +78,8 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
     const waypoints = [
       `${origen.lat},${origen.lng}`,
       ...intermedios.map(p => `${p.cliente.lat},${p.cliente.lon}`),
-      `${destino.cliente.lat},${destino.cliente.lon}`//tomamos el último pedido como destino
+      `${destino.cliente.lat},${destino.cliente.lon}`
     ];
-
 
     const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
     window.open(url, "_blank");
@@ -102,6 +122,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
           setTotales(totales);
           onTotalesCalculados?.(totales);
           onRutaOptimizada?.(pedidosOrden);
+          console.log("pedidosOrden:", pedidosOrden);
         }
       } catch (error) {
         console.error("Error al calcular ruta optimizada:", error);
@@ -112,6 +133,19 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
 
     fetchRuta();
   }, [calcularRuta, pedidos, origen]);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active.id !== over?.id) {
+      const oldIndex = pedidosOrdenados.findIndex(p => p.id === active.id);
+      const newIndex = pedidosOrdenados.findIndex(p => p.id === over?.id);
+
+      const pedidosReordenados = arrayMove(pedidosOrdenados, oldIndex, newIndex);
+      setPedidosOrdenados(pedidosReordenados);
+      onRutaOptimizada?.(pedidosReordenados);
+      console.log("nuevo orden:", pedidosReordenados);
+    }
+  };
 
   if (loading) {
     return <div className="mt-6 text-gray-500 text-sm">⏳ Calculando ruta optimizada...</div>;
@@ -136,31 +170,66 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
             onClick={handlePrint}
             className="px-4 py-1 text-sm rounded bg-blue-400 text-white hover:bg-blue-500 shadow"
           >
-             Imprimir
+            Imprimir
           </button>
         </div>
       </div>
-      <ul className="space-y-2 text-sm text-gray-700">
-  <li className="border p-3 rounded shadow bg-white">
-    <strong>Inicio</strong><br />
-    Latitud: {origen.lat}, Longitud: {origen.lng}
-  </li>
-  {pedidosOrdenados.map((p, i) => (
-    <li key={i} className="border p-3 rounded shadow bg-white">
-      <strong>#{i + 1}. {p.clienteNombre}</strong><br />
-      Pedido N°: {p.id}<br />
-      Ciudad: {p.cliente.ciudad} - Dirección : {p.cliente.direccion}<br />
-      Latitud: {p.cliente.lat}, Longitud: {p.cliente.lon}
-    </li>
-  ))}
 
-</ul>
+      <DndContext
+        collisionDetection={closestCenter}
+        sensors={sensors}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={pedidosOrdenados.map(p => p.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <ul className="space-y-2 text-sm text-gray-700">
+            <li className="border p-3 rounded shadow bg-white">
+              <strong>Inicio</strong><br />
+              Latitud: {origen.lat}, Longitud: {origen.lng}
+            </li>
+            {pedidosOrdenados.map((p, i) => (
+              <SortableItem key={p.id} pedido={p} index={i} />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
 
       <div className="mt-4 text-base font-semibold text-gray-700">
         🧭 Distancia total: {totales.distancia} | ⏱️ Tiempo total: {totales.duracion} (sin tráfico)
       </div>
-      <br/>
+      <br />
     </div>
+  );
+}
 
+function SortableItem({ pedido, index }: { pedido: Pedido; index: number }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition
+  } = useSortable({ id: pedido.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="border p-3 rounded shadow bg-white cursor-move"
+    >
+      <strong>#{index + 1}. {pedido.clienteNombre}</strong><br />
+      Pedido N°: {pedido.id}<br />
+      Ciudad: {pedido.cliente.ciudad} - Dirección : {pedido.cliente.direccion}<br />
+      Latitud: {pedido.cliente.lat}, Longitud: {pedido.cliente.lon}
+    </li>
   );
 }
