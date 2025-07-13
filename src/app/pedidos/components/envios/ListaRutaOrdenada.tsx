@@ -186,7 +186,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
         >
           <ul className="space-y-2 text-sm text-gray-700">
             <li className="border p-3 rounded shadow bg-white">
-              <strong>Inicio</strong><br />
+               <strong>#1 Inicio</strong><br />
               Latitud: {origen.lat}, Longitud: {origen.lng}
             </li>
             {pedidosOrdenados.map((p, i) => (
@@ -226,7 +226,7 @@ function SortableItem({ pedido, index }: { pedido: Pedido; index: number }) {
       {...listeners}
       className="border p-3 rounded shadow bg-white cursor-move"
     >
-      <strong>#{index + 1}. {pedido.clienteNombre}</strong><br />
+      <strong>#{index + 2}. {pedido.clienteNombre}</strong><br />
       Pedido N°: {pedido.id}<br />
       Ciudad: {pedido.cliente.ciudad} - Dirección : {pedido.cliente.direccion}<br />
       Latitud: {pedido.cliente.lat}, Longitud: {pedido.cliente.lon}
