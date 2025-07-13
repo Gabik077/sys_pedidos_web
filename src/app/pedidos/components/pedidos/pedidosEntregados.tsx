@@ -189,21 +189,28 @@ export default function PedidosEntregadosView() {
       return;
     }
 
+    const origen = envio.inicioRutaLat && envio.inicioRutaLon
+    ? `${envio.inicioRutaLat},${envio.inicioRutaLon}`
+    : null;
 
-    const origen = envio.inicioRutaLat && envio.inicioRutaLon ? `${envio.inicioRutaLat},${envio.inicioRutaLon}` : null;
-    const destino = envio.finRutaLat && envio.finRutaLon ? `${envio.finRutaLat},${envio.finRutaLon}` : null;
-    // Limitar a los waypoints permitidos por Google
+  // Separar pedidos intermedios y destino
+  const pedidosIntermedios = pedidosOrdenados.slice(0, -1);
+  const ultimoPedido = pedidosOrdenados[pedidosOrdenados.length - 1];
 
-    const waypoints = [
-      origen,
-      ...pedidosOrdenados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
-      destino,
-    ];
-    console.log("Waypoints:", waypoints);
+  // Si no se definió un destino manualmente, tomar el último cliente como destino
+  const destino = `${ultimoPedido.cliente.lat},${ultimoPedido.cliente.lon}`;
+
+  const waypoints = [
+    origen,
+    ...pedidosIntermedios.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+    destino,
+  ].filter(Boolean); // Elimina `null` si `origen` no está definido
+
 
     const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
     window.open(url, "_blank");
   };
+
 
 
 

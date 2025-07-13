@@ -81,17 +81,20 @@ export default function EnvioPedidosView() {
 
     }
 
+    const pedidosIntermedios = pedidosOrdenados.slice(0, -1);
+    const pedidoDestino = pedidosOrdenados[pedidosOrdenados.length - 1];
 
     const data = {
       idMovil: movilSeleccionado,
       pedidos: pedidosOrdenados.map((p) => p.id),
       kmCalculado: totalesCalculados.distancia,
       tiempoCalculado: totalesCalculados.duracion,
-      origenLat: origenLat ? parseFloat(origenLat) : 0.0,//el origen y el destino son los mismos
+      origenLat: origenLat ? parseFloat(origenLat) : 0.0,
       origenLon: origenLon ? parseFloat(origenLon) : 0.0,
-      destinoLat: origenLat ? parseFloat(origenLat) : 0.0,
-      destinoLon: origenLon ? parseFloat(origenLon) : 0.0,
+      destinoLat: pedidoDestino.cliente?.lat ?? 0.0,
+      destinoLon: pedidoDestino.cliente?.lon ?? 0.0,
     };
+
 
     const envio = await insertEnvioPedidos(data);
 
