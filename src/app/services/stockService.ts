@@ -133,3 +133,8 @@ export const deleteProduct = async (id: number) => {
         method: "DELETE",
     });
 };
+export const deleteMovil = async (id: number) => {
+    return await handleRequest(`${apiUrl}/stock/moviles/${id}`, {
+        method: "DELETE",
+    });
+};

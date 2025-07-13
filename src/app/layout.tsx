@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "./services/authService";
-import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends } from "react-icons/fa";
+import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends, FaTruckMoving } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { SlLogout } from "react-icons/sl";
@@ -103,6 +103,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               >
                 <FaCalendar className="text-lg" />
                 {isOpen && <span className="ml-2">Pedidos</span>}
+              </Link>
+            )}
+
+          {(role === "ADMINISTRADOR") && (
+              <Link href="/moviles" className="flex items-center p-2 hover:bg-gray-700 rounded"
+              title={!isOpen ? "Pedidos" : ""}
+              >
+                <FaTruckMoving className="text-lg" />
+                {isOpen && <span className="ml-2">Moviles</span>}
               </Link>
             )}
 
