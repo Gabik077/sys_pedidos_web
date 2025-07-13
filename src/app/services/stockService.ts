@@ -1,3 +1,4 @@
+import { MovilPedido } from "../types";
 import { handleRequest } from "./ApiHelper";
 
 
@@ -133,8 +134,32 @@ export const deleteProduct = async (id: number) => {
         method: "DELETE",
     });
 };
-export const deleteMovil = async (id: number) => {
+
+
+export const createMovil = async (movilData: MovilPedido) => {
+    return await handleRequest(`${apiUrl}/stock/createMovil`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(movilData),
+    });
+};
+export const updateMovilById = async (id: number, movilData: MovilPedido) => {
     return await handleRequest(`${apiUrl}/stock/moviles/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(movilData),
+    });
+};
+export const getMovilById = async (id: number) => {
+    return await handleRequest(`${apiUrl}/stock/moviles/${id}`);
+};
+
+export const deleteMovil = async (id: number) => {
+    return await handleRequest(`${apiUrl}/stock/movil/${id}`, {
         method: "DELETE",
     });
 };

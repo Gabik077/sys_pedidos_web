@@ -4,12 +4,14 @@ export interface EnvioPedido {
     id: number;
     ordenEnvio: number;
     pedido: Pedido;
-    movil: {
-        nombreMovil: string;
-        nombreChofer: string;
-        chapaMovil: string;
-        telefonoChofer: string;
-    };
+    movil: MovilPedido;
+}
+export interface MovilPedido {
+    id: number;
+    nombreMovil: string;
+    nombreChofer: string;
+    chapaMovil: string;
+    telefonoChofer: string;
 }
 
 export interface EnvioHeader {
