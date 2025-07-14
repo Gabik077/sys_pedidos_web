@@ -49,15 +49,25 @@ export default function MovilesTable() {
 
   const confirmDelete = async () => {
     if (selectedMovilId !== null) {
-      await deleteMovil(selectedMovilId);
-      setMoviles(moviles.filter((m) => m.id !== selectedMovilId));
-      setIsModalOpen(false);
-      setSelectedMovilId(null);
+     const res =  await deleteMovil(selectedMovilId);
 
-      // Ajustar página si es necesario
-      if ((page - 1) * pageSize >= moviles.length - 1) {
-        setPage((prev) => Math.max(prev - 1, 1));
+      if(res.status === "error") {
+        setIsModalOpen(false);
+        alert(`Error al eliminar el móvil`);
+
+        return;
+      }else{
+        setMoviles(moviles.filter((m) => m.id !== selectedMovilId));
+        setIsModalOpen(false);
+        setSelectedMovilId(null);
+
+        // Ajustar página si es necesario
+        if ((page - 1) * pageSize >= moviles.length - 1) {
+          setPage((prev) => Math.max(prev - 1, 1));
+        }
       }
+
+
     }
   };
 

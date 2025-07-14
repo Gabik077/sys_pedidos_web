@@ -7,7 +7,7 @@ export interface EnvioPedido {
     movil: MovilPedido;
 }
 export interface MovilPedido {
-    id: number;
+    id?: number;
     nombreMovil: string;
     nombreChofer: string;
     chapaMovil: string;
