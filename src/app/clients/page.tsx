@@ -16,7 +16,7 @@ export default async function ClientPage() {
 
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    if (decoded.role !== 'ADMINISTRADOR') {
+    if (decoded.role !== 'ADMINISTRADOR' && decoded.role !== 'SYSADMIN') {
       redirect('/');
     }
 

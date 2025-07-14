@@ -184,4 +184,4 @@ function EditClientePage() {
   );
 }
 
-export default withAuth(EditClientePage, ["ADMINISTRADOR"]);
+export default withAuth(EditClientePage, ["SYSADMIN"]);

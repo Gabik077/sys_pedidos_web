@@ -149,4 +149,4 @@ function CreateUserPage() {
   );
 }
 
-export default withAuth(CreateUserPage, ["ADMINISTRADOR"]);
+export default withAuth(CreateUserPage, ["SYSADMIN"]);

@@ -225,4 +225,4 @@ function EditProductPage() {
   );
 }
 
-export default withAuth(EditProductPage, ['ADMINISTRADOR']);
+export default withAuth(EditProductPage, ['ADMINISTRADOR',"SYSADMIN"]);

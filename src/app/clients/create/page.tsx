@@ -156,4 +156,5 @@ function CreateClientePage() {
   );
 }
 
-export default withAuth(CreateClientePage, ["ADMINISTRADOR"]);
+
+export default withAuth(CreateClientePage, ["SYSADMIN"]);

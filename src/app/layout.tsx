@@ -69,7 +69,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               {isOpen && <span className="ml-2">Home</span>}
             </Link>
 
-            {role === "ADMINISTRADOR" && (
+            {role === "ADMINISTRADOR" || role === "SYSADMIN" && (
               <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Usuarios" : ""}
               >
@@ -78,7 +78,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </Link>
             )}
 
-            {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
               <Link href="/facturacion" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Facturación" : ""}
               >
@@ -88,7 +88,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             )}
 
 
-          {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
+          {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
               <Link href="/clients" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Clientes" : ""}
               >
@@ -97,7 +97,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </Link>
             )}
 
-            {(role === "ADMINISTRADOR" || role === "VENDEDOR") && (
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
               <Link href="/pedidos" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Pedidos" : ""}
               >
@@ -106,7 +106,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </Link>
             )}
 
-          {(role === "ADMINISTRADOR") && (
+          {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
               <Link href="/moviles" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Pedidos" : ""}
               >
@@ -115,7 +115,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </Link>
             )}
 
-            {(role === "ADMINISTRADOR" || role === "COMPRADOR" || role === "VENDEDOR") && (
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR" || role === "VENDEDOR") && (
               <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded"
               title={!isOpen ? "Productos" : ""}
               >
@@ -124,7 +124,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </Link>
             )}
 
-            {(role === "ADMINISTRADOR" || role === "COMPRADOR") && (
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR") && (
               <>
                 <Link href="/stock" className="flex items-center p-2 hover:bg-gray-700 rounded"
                   title={!isOpen ? "Stock" : ""}

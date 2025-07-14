@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createProduct, fetchProveedores, fetchUnidades } from "@/app/services/productService";
+import { withAuth } from "@/app/utils/withAuth";
 
 function CreateProductPage() {
   const router = useRouter();
@@ -176,4 +177,5 @@ console.log("Nuevo producto a crear:", nuevoProducto);
   );
 }
 
-export default CreateProductPage;
+
+export default withAuth(CreateProductPage, ['ADMINISTRADOR',"SYSADMIN"]);

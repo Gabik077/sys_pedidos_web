@@ -124,4 +124,4 @@ function EditUserPage() {
   );
 }
 
-export default withAuth(EditUserPage, ["ADMINISTRADOR"]);
+export default withAuth(EditUserPage, ["SYSADMIN"]);
