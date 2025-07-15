@@ -15,7 +15,7 @@ export default async function ProductsPage() {
 
   try {
     const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
-    if (decoded.role !== 'ADMINISTRADOR' && decoded.role !== 'VENDEDOR') {
+    if (decoded.role !== 'ADMINISTRADOR' && decoded.role !== 'VENDEDOR' && decoded.role !== 'SYSADMIN') {
       // Redirige si el rol no es ADMINISTRADOR o VENDEDOR
       redirect('/');
     }
