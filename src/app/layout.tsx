@@ -1,169 +1,22 @@
-"use client";
+// app/layout.tsx
 
-import "./globals.css";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { logout } from "./services/authService";
-import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends, FaTruckMoving } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { SlLogout } from "react-icons/sl";
-import { FaFileInvoiceDollar } from "react-icons/fa6";
+import './globals.css'
+import { Inter } from 'next/font/google'
+import { ReactNode } from 'react'
 
-import { UserProvider, useUser } from "./context/UserContext";
+const inter = Inter({ subsets: ['latin'] })
 
-function LayoutContent({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(true);
-  const router = useRouter();
-
-  const { role, loading } = useUser();
-
-  const handleLogout = async () => {
-    const res = await logout();
-    if (res.status === "ok") {
-      router.push("/login");
-    }
-  };
-
-  if (pathname === "/login") {
-    return (
-      <html lang="es">
-        <body className="flex items-center justify-center min-h-screen bg-white-200">
-          {children}
-        </body>
-      </html>
-    );
-  }
-
-  if (loading) {
-    return (
-      <html lang="es">
-        <body className="flex items-center justify-center h-screen bg-white">
-          <p>Cargando...</p>
-        </body>
-      </html>
-    );
-  }
-
-  return (
-    <html lang="es">
-     <body className="flex min-h-screen">
-        {/* Sidebar */}
-        <div
-          className={`bg-gray-400 text-white p-4 transition-all duration-300 ${
-            isOpen ? "w-64" : "w-16"
-          }`}
-        >
-          <button onClick={() => setIsOpen(!isOpen)} className="mb-4 text-white">
-            {isOpen ? <IoMdClose className="text-lg" /> : <RxHamburgerMenu className="text-lg" />}
-          </button>
-
-          <nav className="space-y-2">
-            <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded"
-             title={!isOpen ? "Home" : ""}
-            >
-              <FaHome className="text-lg" />
-              {isOpen && <span className="ml-2">Home</span>}
-            </Link>
-
-            {role === "ADMINISTRADOR" || role === "SYSADMIN" && (
-              <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Usuarios" : ""}
-              >
-                <FaUser className="text-lg" />
-                {isOpen && <span className="ml-2">Usuarios</span>}
-              </Link>
-            )}
-
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
-              <Link href="/facturacion" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Facturación" : ""}
-              >
-                <FaFileInvoiceDollar className="text-lg" />
-                {isOpen && <span className="ml-2">Facturación</span>}
-              </Link>
-            )}
-
-
-          {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
-              <Link href="/clients" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Clientes" : ""}
-              >
-                <FaUserFriends className="text-lg" />
-                {isOpen && <span className="ml-2">Clientes</span>}
-              </Link>
-            )}
-
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
-              <Link href="/pedidos" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Pedidos" : ""}
-              >
-                <FaCalendar className="text-lg" />
-                {isOpen && <span className="ml-2">Pedidos</span>}
-              </Link>
-            )}
-
-          {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
-              <Link href="/moviles" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Pedidos" : ""}
-              >
-                <FaTruckMoving className="text-lg" />
-                {isOpen && <span className="ml-2">Moviles</span>}
-              </Link>
-            )}
-
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR" || role === "VENDEDOR") && (
-              <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Productos" : ""}
-              >
-                <FaShoppingCart className="text-lg" />
-                {isOpen && <span className="ml-2">Productos</span>}
-              </Link>
-            )}
-
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR") && (
-              <>
-                <Link href="/stock" className="flex items-center p-2 hover:bg-gray-700 rounded"
-                  title={!isOpen ? "Stock" : ""}
-                >
-                  <FaBoxOpen className="text-lg" />
-                  {isOpen && <span className="ml-2">Stock</span>}
-                </Link>
-                <Link href="/compras" className="flex items-center p-2 hover:bg-gray-700 rounded"
-                title={!isOpen ? "Compras" : ""}
-                >
-                  <FaShoppingBasket className="text-lg" />
-                  {isOpen && <span className="ml-2">Compras</span>}
-                </Link>
-              </>
-            )}
-
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full text-left p-2 hover:bg-red-700 rounded"
-              title={!isOpen ? "Cerrar sesión" : ""}
-            >
-              <SlLogout className="text-lg" />
-              {isOpen && <span className="ml-2">Cerrar sesión</span>}
-            </button>
-          </nav>
-        </div>
-
-        {/* Contenido principal */}
-     {/* Contenido principal */}
-<div className="flex-1 p-6 bg-gray-100 overflow-auto">{children}</div>
-      </body>
-    </html>
-  );
+export const metadata = {
+  title: 'Mi App',
+  description: 'Descripción de la aplicación',
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <UserProvider>
-      <LayoutContent>{children}</LayoutContent>
-    </UserProvider>
-  );
+    <html lang="es">
+      <body className={inter.className}>
+        {children}
+      </body>
+    </html>
+  )
 }
