@@ -24,35 +24,32 @@ export async function POST(req: Request) {
     const { username, password } = await req.json();
 
     // Reemplazá esto con tu función real de login:
-    /*  const res = await login(username, password);
+    const res = await login(username, password);
 
-      if (res.status !== "ok") {
-          return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
-      }
+    if (res.status !== "ok") {
+        return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
+    }
 
+    const token = res.token;
+    if (!token || typeof token !== "string") {
+        return NextResponse.json({ status: "error", message: "Token inválido" }, { status: 401 });
+    }
 
-      const token = res.token;
+    try {
+        const decoded = jwt.verify(token as string, process.env.JWT_SECRET!);
 
+    } catch (err) {
+        return NextResponse.json({ status: 'invalid_token' }, { status: 401 });
+    }
 
-      try {
-          const decoded = jwt.verify(token as string, process.env.JWT_SECRET!);
-
-      } catch (err) {
-          return NextResponse.json({ status: 'invalid_token' }, { status: 401 });
-      }
-
-      if (!token || typeof token !== "string") {
-          return NextResponse.json({ status: "error", message: "Token inválido" }, { status: 400 });
-      }
-
-      // Guardamos el token en una cookie segura, HTTP-only
-      (await cookies()).set("token", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          maxAge: 60 * 60 * 24 * 1, // 1 día
-          path: "/",
-          sameSite: "lax",
-      });*/
+    // Guardamos el token en una cookie segura, HTTP-only
+    (await cookies()).set("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 1, // 1 día
+        path: "/",
+        sameSite: "lax",
+    });
 
     return NextResponse.json({ status: "ok" });
 }

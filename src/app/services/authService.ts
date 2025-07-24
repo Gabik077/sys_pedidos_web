@@ -4,6 +4,7 @@ interface LoginResponse {
     status: string;
     message?: string;
     data?: any;
+    token?: string;
 }
 
 // Usamos la variable de entorno para obtener la URL de la API
@@ -21,7 +22,7 @@ export const login = async (username: string, password: string): Promise<LoginRe
         if (res.ok) {
             const data = await res.json();
             if (data.status === 'ok') {
-                return { status: 'ok', data };
+                return { status: 'ok', data, token: data.token, message: 'Login exitoso' };
             } else {
                 return { status: 'error', message: data.message || 'Error de autenticación' };
             }
