@@ -65,8 +65,11 @@ export const updateProductById = async (token: string, id: any, productData: any
 };
 
 
-export const deleteProduct = async (id: number) => {
+export const deleteProduct = async (token: string, id: number) => {
     return await handleRequest(`${apiUrl}/products/${id}`, {
         method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     });
 };

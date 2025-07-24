@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { withAuth } from "@/app/utils/withAuth";
 import { createCliente } from "@/app/services/clientService";
+import { useUser } from "@/app/context/UserContext";
 
 function CreateClientePage() {
   const router = useRouter();
@@ -16,6 +16,12 @@ function CreateClientePage() {
   const [lat, setLat] = useState<string>("");
   const [lon, setLon] = useState<string>("");
   const [email, setEmail] = useState("");
+  const { token } = useUser();
+
+  if(!token) {
+    window.location.href = "/login";
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +41,7 @@ function CreateClientePage() {
     };
 
     try {
-      const res = await createCliente(newCliente);
+      const res = await createCliente(token || "", newCliente);
       if (res.status === "ok") {
         alert("Cliente creado con éxito");
         router.push("/clients");
@@ -157,4 +163,4 @@ function CreateClientePage() {
 }
 
 
-export default withAuth(CreateClientePage, ["SYSADMIN"]);
+export default CreateClientePage;

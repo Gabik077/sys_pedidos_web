@@ -4,17 +4,23 @@ import { useEffect, useState } from "react";
 import { getPedidos } from "@/app/services/stockService";
 import { Pedido } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
+import { useUser } from "@/app/context/UserContext";
 
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
+  const { token } = useUser();
 
+  if (!token) {
+    window.location.href = "/login";
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
   const fetchPedidos = async () => {
     setLoading(true);
     try {
-      const pedidos = await getPedidos("pendiente");
+      const pedidos = await getPedidos(token,"pendiente");
       setPedidos(pedidos);
       setFiltroEstado("pendiente"); // Establecer el filtro por defecto
     } catch (err) {
@@ -27,7 +33,7 @@ export default function PedidosPendientesView() {
    const handleEstadoPedido = async (estado: string) => {
     try {
       setFiltroEstado(estado);
-      const pedidos = await getPedidos(estado);
+      const pedidos = await getPedidos(token,estado);
       setPedidos(pedidos);
     } catch (err) {
       console.error("Error al obtener pedidos:", err);

@@ -3,7 +3,8 @@
 import { updateUserById, fetchRoles, fetchUserById } from "@/app/services/userService";
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { withAuth } from "@/app/utils/withAuth";
+import { useUser } from "@/app/context/UserContext";
+
 
 function EditUserPage() {
   const router = useRouter();
@@ -13,13 +14,19 @@ function EditUserPage() {
   const [rol, setRol] = useState(""); // Guardamos el ID del rol como string
   const [roles, setRoles] = useState<{ id: number; descripcion: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const { token } = useUser();
+
+      if(!token) {
+        window.location.href = "/login";
+        return null; // Evitar renderizado adicional si no hay token
+      }
 
   useEffect(() => {
     const loadUserAndRoles = async () => {
       try {
         const [user, rolesData] = await Promise.all([
-          fetchUserById(id),
-          fetchRoles(),
+          fetchUserById(token,id),
+          fetchRoles(token),
         ]);
 
         if (!user) {
@@ -52,7 +59,7 @@ function EditUserPage() {
     e.preventDefault();
 
     const updatedUser = { nombre, email, rol };
-    const res = await updateUserById(id, updatedUser);
+    const res = await updateUserById(token,id, updatedUser);
 
     if (res.status === "ok") {
       alert("Usuario actualizado con éxito");
@@ -124,4 +131,4 @@ function EditUserPage() {
   );
 }
 
-export default withAuth(EditUserPage, ["SYSADMIN"]);
+export default EditUserPage;

@@ -8,6 +8,7 @@ import PedidoItem from "../pedidos/PedidoItem";
 import ListaRutaOrdenada from "./ListaRutaOrdenada";
 import type { Pedido } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
+import { useUser } from "@/app/context/UserContext";
 
 const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
   ssr: false,
@@ -25,11 +26,17 @@ export default function EnvioPedidosView() {
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
   const [loading, setLoading] = useState(false);
   const [totalesCalculados, setTotalesCalculados] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
+  const { token } = useUser();
+
+  if (!token) {
+    window.location.href = "/login";
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
   const fetchPedidos = async () => {
     setLoading(true);
     try {
-      const pedidos = await getPedidos("pendiente");
+      const pedidos = await getPedidos(token,"pendiente");
       setPedidos(pedidos);
     } catch (err) {
       console.error("Error al obtener pedidos:", err);
@@ -41,7 +48,7 @@ export default function EnvioPedidosView() {
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const pedidos = await getPedidos("pendiente");
+        const pedidos = await getPedidos(token,"pendiente");
         setPedidos(pedidos);
       } catch (err) {
         console.error("Error al obtener pedidos:", err);
@@ -96,7 +103,7 @@ export default function EnvioPedidosView() {
     };
 
 
-    const envio = await insertEnvioPedidos(data);
+    const envio = await insertEnvioPedidos(token,data);
 
     if (envio.status === "ok") {
       alert("Envío guardado exitosamente.");

@@ -4,21 +4,27 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { getMovilById, updateMovilById } from "@/app/services/stockService";
 import { MovilPedido } from "@/app/types";
+import { useUser } from "@/app/context/UserContext";
 
 export default function EditMovilPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { id } = useParams();
-
   const [nombreMovil, setNombreMovil] = useState("");
   const [nombreChofer, setNombreChofer] = useState("");
   const [chapaMovil, setChapaMovil] = useState("");
   const [telefonoChofer, setTelefonoChofer] = useState("");
+      const { token } = useUser();
+
+      if (!token) {
+        window.location.href = "/login";
+        return null; // Evitar renderizado adicional si no hay token
+      }
 
   useEffect(() => {
     if (!id) return;
     const fetchMovil = async () => {
-      const movil = await getMovilById(id as string);
+      const movil = await getMovilById(token, id as string);
       if (movil) {
         setNombreMovil(movil.nombreMovil);
         setNombreChofer(movil.nombreChofer);
@@ -40,7 +46,7 @@ export default function EditMovilPage() {
     };
 
     try {
-      const res = await updateMovilById(id, updatedMovil);
+      const res = await updateMovilById(token,id, updatedMovil);
       if (res.status === "ok") {
         alert("Móvil actualizado con éxito");
         router.push("/moviles");

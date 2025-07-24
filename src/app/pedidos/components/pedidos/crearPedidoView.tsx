@@ -79,9 +79,9 @@ export default function CrearPedidoView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const productos = await fetchProductsStock(token || "");
-      const clientes = await fetchClients(token || "");
-      const moviles = await fetchMoviles();
+      const productos = await fetchProductsStock(token);
+      const clientes = await fetchClients(token);
+      const moviles = await fetchMoviles(token);
 
       setProductos(productos);
       setClientes(clientes);
@@ -155,7 +155,7 @@ export default function CrearPedidoView() {
         productos: formData.productos,
       };
 
-    const result = await insertPedido(dataToSend);
+    const result = await insertPedido(token,dataToSend);
     console.log("Resultado:", result);
 
     if (result.status === "ok") {

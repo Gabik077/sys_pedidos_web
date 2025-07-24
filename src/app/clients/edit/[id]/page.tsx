@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { fetchClienteById, updateCliente } from "@/app/services/clientService";
-import { withAuth } from "@/app/utils/withAuth";
+import { useUser } from "@/app/context/UserContext";
 
 function EditClientePage() {
   const router = useRouter();
@@ -19,12 +19,18 @@ function EditClientePage() {
   const [email, setEmail] = useState("");
   const [lat, setLat] = useState<string>("");
   const [lon, setLon] = useState<string>("");
+    const { token } = useUser();
+
+    if(!token) {
+      window.location.href = "/login";
+      return null; // Evitar renderizado adicional si no hay token
+    }
 
   useEffect(() => {
     const fetchCliente = async () => {
       if (!id) return;
       try {
-        const cliente = await fetchClienteById(id as string);
+        const cliente = await fetchClienteById(token,id as string);
         if (cliente) {
           setNombre(cliente.nombre);
           setApellido(cliente.apellido);
@@ -64,7 +70,7 @@ function EditClientePage() {
     };
 
     try {
-      const res = await updateCliente(id as String, updatedCliente);
+      const res = await updateCliente(token,id as String, updatedCliente);
       if (res.status === "ok") {
         alert("Cliente actualizado con éxito");
         router.push("/clients");
@@ -184,4 +190,4 @@ function EditClientePage() {
   );
 }
 
-export default withAuth(EditClientePage, ["SYSADMIN"]);
+export default EditClientePage;

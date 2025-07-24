@@ -8,12 +8,20 @@ if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
 }
 
-export const getEnvios = async (estado: String) => {
-    return await handleRequest(`${apiUrl}/stock/getEnvios?estadoEnvio=${estado}`);
+export const getEnvios = async (token: string, estado: String) => {
+    return await handleRequest(`${apiUrl}/stock/getEnvios?estadoEnvio=${estado}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 };
 
-export const fetchMoviles = async () => {
-    return await handleRequest(`${apiUrl}/stock/moviles`);
+export const fetchMoviles = async (token: string) => {
+    return await handleRequest(`${apiUrl}/stock/moviles`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 }
 
 export const fetchProductsStock = async (token: string) => {
@@ -24,8 +32,14 @@ export const fetchProductsStock = async (token: string) => {
     });
 };
 
-export const getPedidos = async (estado: string) => {
-    return await handleRequest(`${apiUrl}/stock/getPedidos?estadoPedido=${estado}`);
+export const getPedidos = async (token: string, estado: string) => {
+    return await handleRequest(`${apiUrl}/stock/getPedidos?estadoPedido=${estado}`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
 };
 
 export const fetchStockList = async (token: string) => {
@@ -36,11 +50,12 @@ export const fetchStockList = async (token: string) => {
     });
 };
 
-export const guardarEstadoPedido = async (id_envio: number, estado: string) => {
+export const guardarEstadoPedido = async (token: string, id_envio: number, estado: string) => {
     return await handleRequest(`${apiUrl}/stock/guardarEstadoPedido`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ id_envio, estado }),
     });
@@ -56,40 +71,44 @@ export const guardaEstadoPedido = async (data: any) => {
     });
 }
 
-export async function insertEnvioPedidos(data: any) {
+export async function insertEnvioPedidos(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/envio`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
 }
 
-export async function insertEntradaStock(data: any) {
+export async function insertEntradaStock(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/entrada`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
 }
-export async function insertSalidaStock(data: any) {
+export async function insertSalidaStock(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/salida`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
 }
 
-export async function insertPedido(data: any) {
+export async function insertPedido(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/pedido`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
     });
@@ -144,30 +163,39 @@ export const deleteProduct = async (id: number) => {
 };
 
 
-export const createMovil = async (movilData: MovilPedido) => {
+export const createMovil = async (token: string, movilData: MovilPedido) => {
     return await handleRequest(`${apiUrl}/stock/createMovil`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(movilData),
     });
 };
-export const updateMovilById = async (id: any, movilData: MovilPedido) => {
+export const updateMovilById = async (token: string, id: any, movilData: MovilPedido) => {
     return await handleRequest(`${apiUrl}/stock/editMovil/${id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(movilData),
     });
 };
-export const getMovilById = async (id: string) => {
-    return await handleRequest(`${apiUrl}/stock/movil/${id}`);
+export const getMovilById = async (token: string, id: string) => {
+    return await handleRequest(`${apiUrl}/stock/movil/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
 };
 
-export const deleteMovil = async (id: any) => {
+export const deleteMovil = async (token: string, id: any) => {
     return await handleRequest(`${apiUrl}/stock/movil/${id}`, {
         method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
 };

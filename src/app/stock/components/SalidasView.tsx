@@ -105,7 +105,7 @@ export default function SalidasView() {
       productos: formData.productos,
     };
 
-    const result = await insertSalidaStock(dataToSend);
+    const result = await insertSalidaStock(token || "", dataToSend);
     console.log("Resultado:", result);
 
     if (result.status === "ok") {

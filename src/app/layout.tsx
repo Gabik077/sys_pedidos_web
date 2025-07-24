@@ -21,7 +21,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const { role, loading } = useUser();
 
+  const logoutNext = async () => {
+    const res = await fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    return await res.json();
+  };
+
   const handleLogout = async () => {
+    const resLogout = await logoutNext();
     const res = await logout();
     if (res.status === "ok") {
       router.push("/login");

@@ -3,7 +3,7 @@
 import { createUser, fetchRoles } from "@/app/services/userService";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { withAuth } from "@/app/utils/withAuth";
+import { useUser } from "@/app/context/UserContext";
 
 function CreateUserPage() {
   const router = useRouter();
@@ -16,11 +16,17 @@ function CreateUserPage() {
   const [rol, setRol] = useState("");
   const [roles, setRoles] = useState<{ id: number; descripcion: string }[]>([]);
   const [error, setError] = useState("");
+  const { token } = useUser();
+
+    if(!token) {
+      window.location.href = "/login";
+      return null; // Evitar renderizado adicional si no hay token
+    }
 
   useEffect(() => {
     const loadRoles = async () => {
       try {
-        const data = await fetchRoles();
+        const data = await fetchRoles(token);
         if (Array.isArray(data)) {
           setRoles(data);
         } else {
@@ -49,7 +55,7 @@ function CreateUserPage() {
     setError("");
 
     const newUser = { nombre, username, email, contrasena, rol };
-    const res = await createUser(newUser);
+    const res = await createUser(token,newUser);
 
     if (res.status === "ok") {
       alert("Usuario creado con éxito");
@@ -149,4 +155,4 @@ function CreateUserPage() {
   );
 }
 
-export default withAuth(CreateUserPage, ["SYSADMIN"]);
+export default CreateUserPage;

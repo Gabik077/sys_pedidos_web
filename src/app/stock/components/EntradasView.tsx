@@ -117,7 +117,7 @@ export default function EntradasView() {
       productos: formData.productos,
     };
 
-    const result = await insertEntradaStock(dataToSend);
+    const result = await insertEntradaStock(token || "", dataToSend);
 
     if (result.status !== "ok") {
       alert("Error al registrar la entrada: " + result.message);

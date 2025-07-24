@@ -15,33 +15,42 @@ export const fetchClientsFromServer = async (token: String) => {
         cache: 'no-store'
     });
 };
-export const createCliente = async (clienteData: any) => {
+export const createCliente = async (token: string, clienteData: any) => {
     return await handleRequest(`${apiUrl}/clients`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`
         },
         body: JSON.stringify(clienteData),
     });
 };
 
-export const fetchClienteById = async (id: String) => {
-    return await handleRequest(`${apiUrl}/clients/${id}`)
+export const fetchClienteById = async (token: string, id: String) => {
+    return await handleRequest(`${apiUrl}/clients/${id}`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    });
 };
 
-export const updateCliente = async (id: String, clienteData: any) => {
+export const updateCliente = async (token: string, id: String, clienteData: any) => {
     return await handleRequest(`${apiUrl}/clients/${id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`
         },
         body: JSON.stringify(clienteData),
     });
 };
 
-export const deleteCliente = async (id: number) => {
+export const deleteCliente = async (token: string, id: number) => {
     return await handleRequest(`${apiUrl}/clients/${id}`, {
         method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
     });
 };
 

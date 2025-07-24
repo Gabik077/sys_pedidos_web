@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { guardaEstadoPedido, getEnvios, guardarEstadoPedido } from "@/app/services/stockService"; // Asegúrate de que estos endpoints existan
 import { EnvioHeader } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
+import { useUser } from "@/app/context/UserContext";
 
 
 export default function EnviosPendientesView() {
@@ -12,12 +13,17 @@ export default function EnviosPendientesView() {
   const [enviosExpandido, setEnviosExpandido] = useState<Set<number>>(new Set());
   const [productosExpandidoPorPedido, setProductosExpandidoPorPedido] = useState<Record<number, boolean>>({});
   const [loading, setLoading] = useState(false);
+  const { token } = useUser();
 
+  if (!token) {
+    window.location.href = "/login";
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
     const fetchEnvios = async () => {
       setLoading(true);
       try {
-        const data = await getEnvios("pendiente");
+        const data = await getEnvios(token,"pendiente");
         setEnvios(data);
       } catch (err) {
         console.error("Error al obtener pedidos:", err);
@@ -28,7 +34,7 @@ export default function EnviosPendientesView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getEnvios("pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
+      const data = await getEnvios(token,"pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
       setEnvios(data);
     };
     fetchData();
@@ -119,11 +125,11 @@ export default function EnviosPendientesView() {
 
   const handleFinalizarEnvio = async (idEnvio: number) => {
     try {
-      const res = await guardarEstadoPedido(idEnvio, 'entregado');
+      const res = await guardarEstadoPedido(token,idEnvio, 'entregado');
 
       if (res.status === 'ok') {
         alert('Envío finalizado correctamente');
-        const data = await getEnvios("pendiente");
+        const data = await getEnvios(token,"pendiente");
         setEnvios(data);
       } else {
         alert('Error al finalizar el envío');
@@ -136,11 +142,11 @@ export default function EnviosPendientesView() {
 
   const handleCancelarEnvio = async (idEnvio: number) => {
     try {
-      const res = await guardarEstadoPedido(idEnvio, 'cancelado');
+      const res = await guardarEstadoPedido(token,idEnvio, 'cancelado');
 
       if (res.status === 'ok') {
         alert('Envío cancelado correctamente');
-        const data = await getEnvios("pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
+        const data = await getEnvios(token,"pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
         setEnvios(data);
       } else {
         alert('Error al cancelar el envío');

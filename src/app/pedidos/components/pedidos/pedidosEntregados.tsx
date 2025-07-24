@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { guardaEstadoPedido, getEnvios, guardarEstadoPedido } from "@/app/services/stockService"; // Asegúrate de que estos endpoints existan
 import { EnvioHeader } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
+import { useUser } from "@/app/context/UserContext";
 
 
 export default function PedidosEntregadosView() {
@@ -12,12 +13,17 @@ export default function PedidosEntregadosView() {
   const [enviosExpandido, setEnviosExpandido] = useState<Set<number>>(new Set());
   const [productosExpandidoPorPedido, setProductosExpandidoPorPedido] = useState<Record<number, boolean>>({});
   const [loading, setLoading] = useState(false);
+  const { token } = useUser();
 
+  if (!token) {
+    window.location.href = "/login";
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
     const fetchEnvios = async () => {
       setLoading(true);
       try {
-        const data = await getEnvios("entregado");
+        const data = await getEnvios(token, "entregado");
         setEnvios(data);
       } catch (err) {
         console.error("Error al obtener pedidos:", err);
@@ -28,7 +34,7 @@ export default function PedidosEntregadosView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getEnvios("entregado"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
+      const data = await getEnvios(token,"entregado"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
       setEnvios(data);
     };
     fetchData();

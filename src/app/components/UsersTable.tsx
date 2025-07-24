@@ -5,6 +5,7 @@ import Link from "next/link";
 import ConfirmModal from "./confirmModal";
 import { deleteUser } from "../services/userService";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
+import { useUser } from "../context/UserContext";
 interface User {
   id: number;
   nombre: string;
@@ -25,6 +26,12 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
+    const { token } = useUser();
+
+        if(!token) {
+          window.location.href = "/login";
+          return null; // Evitar renderizado adicional si no hay token
+        }
 
   const handleDeleteClick = (userId: number) => {
     setSelectedUserId(userId);
@@ -33,7 +40,7 @@ export default function UsersTable({ users: initialUsers }: UsersTableProps) {
 
   const confirmDelete = async () => {
     if (selectedUserId !== null) {
-      await deleteUser(selectedUserId);
+      await deleteUser(token,selectedUserId);
       const updatedUsers = users.filter((user) => user.id !== selectedUserId);
       setUsers(updatedUsers);
       setIsModalOpen(false);

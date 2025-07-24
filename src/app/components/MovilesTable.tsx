@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import ConfirmModal from "./confirmModal";
 import { fetchMoviles, deleteMovil } from "../services/stockService"; // Asegurate de tener deleteMovil implementado
+import { useUser } from "../context/UserContext";
 
 interface Movil {
   id: number;
@@ -19,13 +20,18 @@ export default function MovilesTable() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const pageSize = 10;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovilId, setSelectedMovilId] = useState<number | null>(null);
+      const { token } = useUser();
+
+          if(!token) {
+            window.location.href = "/login";
+            return null; // Evitar renderizado adicional si no hay token
+          }
 
   useEffect(() => {
     const loadData = async () => {
-      const data = await fetchMoviles();
+      const data = await fetchMoviles(token);
       setMoviles(data);
     };
     loadData();
@@ -49,7 +55,7 @@ export default function MovilesTable() {
 
   const confirmDelete = async () => {
     if (selectedMovilId !== null) {
-     const res =  await deleteMovil(selectedMovilId);
+     const res =  await deleteMovil(token,selectedMovilId);
 
       if(res.status === "error") {
         setIsModalOpen(false);

@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchMoviles } from "@/app/services/stockService";
+import { useUser } from "@/app/context/UserContext";
 
 interface Movil {
   id: number;
@@ -19,11 +20,17 @@ interface Props {
 export default function DropdownMovil({ onSelect }: Props) {
   const [moviles, setMoviles] = useState<Movil[]>([]);
   const [movilId, setMovilId] = useState<number | null>(null);
+    const { token } = useUser();
+
+    if (!token) {
+      window.location.href = "/login";
+      return null; // Evitar renderizado adicional si no hay token
+    }
 
   useEffect(() => {
     const getMoviles = async () => {
       try {
-        const data = await fetchMoviles();
+        const data = await fetchMoviles(token);
         setMoviles(data);
       } catch (error) {
         console.error("Error al cargar móviles:", error);

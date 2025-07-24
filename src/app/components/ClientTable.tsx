@@ -5,6 +5,7 @@ import Link from "next/link";
 import ConfirmModal from "./confirmModal";
 import { deleteCliente } from "../services/clientService";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
+import { useUser } from "../context/UserContext";
 
 interface Cliente {
   id: number;
@@ -29,6 +30,12 @@ export default function ClientesTable({ clientes: initialClientes }: ClientesTab
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
+      const { token } = useUser();
+
+          if(!token) {
+            window.location.href = "/login";
+            return null; // Evitar renderizado adicional si no hay token
+          }
 
 
   const handleDeleteClick = (clienteId: number) => {
@@ -38,7 +45,7 @@ export default function ClientesTable({ clientes: initialClientes }: ClientesTab
 
   const confirmDelete = async () => {
     if (selectedClienteId !== null) {
-      await deleteCliente(selectedClienteId);
+      await deleteCliente(token,selectedClienteId);
       const updatedClientes = clientes.filter((c) => c.id !== selectedClienteId);
       setClientes(updatedClientes);
       setIsModalOpen(false);

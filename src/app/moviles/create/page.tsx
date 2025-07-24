@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createMovil } from "@/app/services/stockService";
+import { useUser } from "@/app/context/UserContext";
 
 
 export default function CreateMovilPage() {
@@ -12,6 +13,12 @@ export default function CreateMovilPage() {
   const [nombreChofer, setNombreChofer] = useState("");
   const [chapaMovil, setChapaMovil] = useState("");
   const [telefonoChofer, setTelefonoChofer] = useState("");
+  const { token } = useUser();
+
+    if (!token) {
+      window.location.href = "/login";
+      return null; // Evitar renderizado adicional si no hay token
+    }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +32,7 @@ export default function CreateMovilPage() {
     };
 
     try {
-      const res = await createMovil(nuevoMovil);
+      const res = await createMovil(token,nuevoMovil);
       if (res.status === "ok") {
         alert("Móvil creado con éxito");
         router.push("/moviles");
