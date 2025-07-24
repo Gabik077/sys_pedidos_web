@@ -3,6 +3,7 @@
 import {  fetchProductsStock, insertSalidaStock,fetchMoviles, insertPedido } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
+import { useUser } from "@/app/context/UserContext";
 
 interface Producto {
   id: number;
@@ -49,6 +50,12 @@ export default function CrearPedidoView() {
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
   const [moviles, setMoviles] = useState<Movil[]>([]);
+  const { token } = useUser();
+
+  if (!token) {
+    window.location.href = "/login";
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
   const [formData, setFormData] = useState({
     tipo_origen: "pedido",
@@ -72,8 +79,8 @@ export default function CrearPedidoView() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const productos = await fetchProductsStock();
-      const clientes = await fetchClients();
+      const productos = await fetchProductsStock(token || "");
+      const clientes = await fetchClients(token || "");
       const moviles = await fetchMoviles();
 
       setProductos(productos);
