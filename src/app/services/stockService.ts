@@ -16,16 +16,24 @@ export const fetchMoviles = async () => {
     return await handleRequest(`${apiUrl}/stock/moviles`);
 }
 
-export const fetchProductsStock = async () => {
-    return await handleRequest(`${apiUrl}/products`);
+export const fetchProductsStock = async (token: string) => {
+    return await handleRequest(`${apiUrl}/products`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 };
 
 export const getPedidos = async (estado: string) => {
     return await handleRequest(`${apiUrl}/stock/getPedidos?estadoPedido=${estado}`);
 };
 
-export const fetchStockList = async () => {
-    return await handleRequest(`${apiUrl}/stock`);
+export const fetchStockList = async (token: string) => {
+    return await handleRequest(`${apiUrl}/stock`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 };
 
 export const guardarEstadoPedido = async (id_envio: number, estado: string) => {

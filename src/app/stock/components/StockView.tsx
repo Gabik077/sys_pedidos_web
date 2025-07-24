@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { fetchStockList, updateStockItem } from "@/app/services/stockService";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaSave } from "react-icons/fa";
 import ConfirmModal from "@/app/components/confirmModal";
+import { UserProvider, useUser } from  "@/app/context/UserContext";
+
+
 
 interface StockItem {
   id: number;
@@ -26,13 +29,15 @@ export default function StockView() {
   const [editCantidad, setEditCantidad] = useState<number>(0);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingSaveItem, setPendingSaveItem] = useState<StockItem | null>(null);
+  const { token } = useUser();
+
 
   const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchStock = async () => {
       try {
-        const response = await fetchStockList();
+        const response = await fetchStockList(token || "");
         setStockItems(response);
       } catch (error) {
         console.error("Error al cargar el stock:", error);

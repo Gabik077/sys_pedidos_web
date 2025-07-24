@@ -3,6 +3,7 @@
 import {  fetchProductsStock, insertSalidaStock } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
+import { useUser } from "@/app/context/UserContext";
 
 interface Producto {
   id: number;
@@ -40,13 +41,14 @@ export default function SalidasView() {
   const [busqueda, setBusqueda] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
+  const { token } = useUser();
 
   useEffect(() => {
     const fetchData = async () => {
-      const productos = await fetchProductsStock();
+      const productos = await fetchProductsStock(token || "");
       setProductos(productos);
 
-      const clientes = await fetchClients();
+      const clientes = await fetchClients(token || "");
       setClientes(clientes);
     };
     fetchData();

@@ -45,6 +45,10 @@ export const deleteCliente = async (id: number) => {
     });
 };
 
-export const fetchClients = async () => {
-    return await handleRequest(`${apiUrl}/clients`);
+export const fetchClients = async (token: string) => {
+    return await handleRequest(`${apiUrl}/clients`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    });
 };

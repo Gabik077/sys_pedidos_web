@@ -28,7 +28,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           credentials: "include",
         });
         const data = await res.json();
-
         if (data.status === "ok" && data.user) {
           setRole(data.user.role);
           setToken(data.token ?? null); // si el backend incluye el token en la respuesta
@@ -40,6 +39,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         }
 
         }
+        setLoading(false);
       } catch (e) {
         console.error("Error al obtener datos del usuario", e);
       } finally {

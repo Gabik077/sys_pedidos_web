@@ -27,6 +27,7 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
   const itemsPerPage = 10;
   const [searchTerm, setSearchTerm] = useState("");
 
+
   const handleDeleteClick = (productId: number,name: string) => {
     setSelectedProductId(productId);
     setSelectedProductName(name);

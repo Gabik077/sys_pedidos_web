@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createProduct, fetchProveedores, fetchUnidades } from "@/app/services/productService";
-import { withAuth } from "@/app/utils/withAuth";
+import { useUser } from "@/app/context/UserContext";
 
 function CreateProductPage() {
   const router = useRouter();
@@ -24,13 +24,19 @@ function CreateProductPage() {
   const [idUnidad, setIdUnidad] = useState("");
   const [unidades, setUnidades] = useState([]);//lista de unidades
   const [proveedores, setProveedores] = useState([]);
+  const { token } = useUser();
+
+  if (!token) {
+    router.push("/login");
+    return null; // Evitar renderizado adicional si no hay token
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [resUnidades, resProveedores] = await Promise.all([
-          fetchUnidades(),
-          fetchProveedores()
+          fetchUnidades(token || ""),
+          fetchProveedores(token || "")
         ]);
         setUnidades(resUnidades);
         setProveedores(resProveedores);
@@ -62,7 +68,7 @@ function CreateProductPage() {
       sku: "",
     };
 console.log("Nuevo producto a crear:", nuevoProducto);
-    const res = await createProduct(nuevoProducto);
+    const res = await createProduct(token || "", nuevoProducto);
 
     if (res.status === "ok") {
       alert("Producto creado con éxito");
@@ -178,4 +184,4 @@ console.log("Nuevo producto a crear:", nuevoProducto);
 }
 
 
-export default withAuth(CreateProductPage, ['ADMINISTRADOR',"SYSADMIN"]);
+export default CreateProductPage;

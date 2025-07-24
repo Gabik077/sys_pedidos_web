@@ -8,7 +8,7 @@ import {
   fetchProveedores,
   fetchUnidades,
 } from '@/app/services/productService';
-import { withAuth } from '@/app/utils/withAuth';
+import { useUser } from '@/app/context/UserContext';
 
 function EditProductPage() {
   const router = useRouter();
@@ -33,13 +33,21 @@ function EditProductPage() {
   const [unidades, setUnidades] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const { token } = useUser();
+
+    if (!token) {
+      router.push("/login");
+      return null; // Evitar renderizado adicional si no hay token
+    }
+
+
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const [proveedoresRes, unidadesRes] = await Promise.all([
-          fetchProveedores(),
-          fetchUnidades(),
+          fetchProveedores(token || ''),
+          fetchUnidades(token || ''),
         ]);
         setProveedores(proveedoresRes);
         setUnidades(unidadesRes);
@@ -53,10 +61,9 @@ function EditProductPage() {
 
   useEffect(() => {
     if (!id) return;
-
     const loadProduct = async () => {
       try {
-        const producto = await fetchProductById(id);
+        const producto = await fetchProductById(token,id);
         if (!producto) {
           alert('Producto no encontrado');
           return;
@@ -105,7 +112,7 @@ function EditProductPage() {
       unidad: parseInt(unidadId, 10),
     };
 
-    const res = await updateProductById(id, productoActualizado);
+    const res = await updateProductById(token,id, productoActualizado);
 
     if (res.status === 'ok') {
       alert('Producto actualizado con éxito');
@@ -225,4 +232,4 @@ function EditProductPage() {
   );
 }
 
-export default withAuth(EditProductPage, ['ADMINISTRADOR',"SYSADMIN"]);
+export default EditProductPage;

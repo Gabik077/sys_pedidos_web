@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@/app/context/UserContext";
 import { fetchProveedores } from "@/app/services/productService";
 import { fetchProductsStock, insertEntradaStock } from "@/app/services/stockService";
 import { useState, useEffect } from "react";
@@ -48,10 +49,12 @@ export default function EntradasView() {
   const [busqueda, setBusqueda] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
+  const { token } = useUser();
+
 
   useEffect(() => {
     const fetchData = async () => {
-      const productos = await fetchProductsStock();
+      const productos = await fetchProductsStock(token || "");
       if (productos.status == "invalid_token") {
             alert("Sesión expirada, por favor inicie sesión nuevamente.");
           window.location.href = "/login";
@@ -59,7 +62,7 @@ export default function EntradasView() {
         }
       setProductos(productos);
 
-      const proveedores = await fetchProveedores();
+      const proveedores = await fetchProveedores(token || "");
 
       setProveedores(proveedores);
     };
