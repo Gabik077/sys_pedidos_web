@@ -57,7 +57,7 @@ export default function DropdownMovil({ onSelect }: Props) {
         </option>
         {moviles.map((movil) => (
           <option key={movil.id} value={movil.id}>
-            {movil.nombreMovil} - {movil.nombreChofer} ({movil.chapaMovil})
+            {movil.nombreMovil} - {movil.nombreChofer}
           </option>
         ))}
       </select>
