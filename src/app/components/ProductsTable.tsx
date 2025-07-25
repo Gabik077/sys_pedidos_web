@@ -63,6 +63,12 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
     currentPage * itemsPerPage
   );
 
+  const priceFormatter = new Intl.NumberFormat("es-PY", {
+    style: "currency",
+    currency: "PYG",
+    minimumFractionDigits: 0,
+  });
+
   return (
     <div className="min-h-screen bg-white p-6">
     <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
@@ -104,7 +110,9 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
                 <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-100">
                   <td className="py-3 px-6 text-left">{product.nombre}</td>
                   <td className="py-3 px-6 text-left">{product.descripcion}</td>
-                  <td className="py-3 px-6 text-left">{product.precio_venta}</td>
+                  <td className="py-3 px-6 text-left">
+                    {priceFormatter.format(Number(product.precio_venta))}
+                  </td>
                   <td className="py-3 px-6 text-center flex gap-2">
                     <Link href={`/products/edit/${product.id}`}>
                       <button className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow-md"><FaEdit className="text-white" /> Editar</button>
