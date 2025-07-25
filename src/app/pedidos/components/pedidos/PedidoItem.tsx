@@ -1,5 +1,6 @@
 "use client";
 
+import { formatearFecha } from "@/app/utils/utils";
 import { Pedido } from "../../../types";
 import { FC, useState } from "react";
 
@@ -43,7 +44,7 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
         <div>
           <h3 className="font-bold">
             Pedido #{pedido.id} -{" "}
-            {new Date(pedido.fechaPedido).toLocaleString()}
+            {formatearFecha(pedido.fechaPedido)}
           </h3>
           <p>
             <strong>Cliente:</strong> {pedido.clienteNombre} ({pedido.cliente?.ruc})

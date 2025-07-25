@@ -5,6 +5,7 @@ import { fetchStockList, updateStockItem } from "@/app/services/stockService";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaSave } from "react-icons/fa";
 import ConfirmModal from "@/app/components/confirmModal";
 import { UserProvider, useUser } from  "@/app/context/UserContext";
+import { numberFormatter, priceFormatter } from "@/app/utils/utils";
 
 
 
@@ -78,16 +79,9 @@ export default function StockView() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  const numberFormatter = new Intl.NumberFormat("es-PY", {
-    style: "decimal",
-    minimumFractionDigits: 0,
-  });
 
-  const priceFormatter = new Intl.NumberFormat("es-PY", {
-    style: "currency",
-    currency: "PYG",
-    minimumFractionDigits: 0,
-  });
+
+
 
 
   return (

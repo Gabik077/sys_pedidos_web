@@ -5,6 +5,7 @@ import { getPedidos } from "@/app/services/stockService";
 import { Pedido } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
+import { formatearFecha } from "@/app/utils/utils";
 
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -81,7 +82,7 @@ export default function PedidosPendientesView() {
         {pedidos.map((pedido) => (
           <div key={pedido.id} className="border p-4 mb-6 rounded shadow">
             <h3 className="text-lg font-semibold mb-2 text-gray-500">
-              Pedido #{pedido.id} - {new Date(pedido.fechaPedido).toLocaleString()}
+              Pedido #{pedido.id} - {formatearFecha(pedido.fechaPedido)}
             </h3>
             <p><strong>Cliente:</strong> {pedido.clienteNombre}</p>
             <p><strong>RUC:</strong> {pedido.cliente?.ruc}</p>

@@ -6,6 +6,7 @@ import { guardaEstadoPedido, getEnvios, guardarEstadoPedido } from "@/app/servic
 import { EnvioHeader } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
+import { formatearFecha } from "@/app/utils/utils";
 
 
 export default function EnviosPendientesView() {
@@ -62,6 +63,8 @@ export default function EnviosPendientesView() {
 
 
 
+
+
   const handleImprimirEnvio = (envio: EnvioHeader) => {
     const win = window.open('', '_blank');
     if (!win) return;
@@ -78,7 +81,7 @@ export default function EnviosPendientesView() {
         </head>
         <body>
           <h2>Envío #${envio.id}</h2>
-          <p><strong>Fecha:</strong> ${new Date(envio.fechaCreacion).toLocaleString()}</p>
+          <p><strong>Fecha:</strong> ${formatearFecha(envio.fechaCreacion)}</p>
           <p><strong>Móvil:</strong> ${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
           <p><strong>Cantidad pedidos:</strong> ${envio.envioPedido.length}</p>
           <p><strong>Distancia:</strong> ${envio.kmCalculado || ""}</p>
@@ -191,7 +194,7 @@ export default function EnviosPendientesView() {
         </head>
         <body>
           <h2>Productos del Envío #${envio.id}</h2>
-          <p><strong>Fecha:</strong> ${new Date(envio.fechaCreacion).toLocaleString()}</p>
+          <p><strong>Fecha:</strong> ${formatearFecha(envio.fechaCreacion)}</p>
             <p><strong>Móvil:</strong> ${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
           <ul>${productosHTML}</ul>
           <script>window.print();</script>
@@ -269,7 +272,7 @@ export default function EnviosPendientesView() {
             <div className="flex justify-between items-center mb-2">
               <div>
                 <h3 className="text-lg font-semibold text-gray-500">
-                  Envío #{envio.id} - {new Date(envio.fechaCreacion).toLocaleString()}
+                  Envío #{envio.id} - {formatearFecha(envio.fechaCreacion)}
                 </h3>
                 <p className="text-sm text-gray-600">
                  <strong>Móvil:</strong>  {envio.envioPedido?.[0]?.movil?.nombreMovil} -

@@ -6,6 +6,7 @@ import ConfirmModal from "./confirmModal";
 import { deleteProduct } from "../services/productService";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import { useUser } from "../context/UserContext";
+import { priceFormatter } from "../utils/utils";
 interface Product {
   id: number;
   nombre: string;
@@ -63,11 +64,7 @@ export default function ProductsTable({ products: initialProducts }: ProductsTab
     currentPage * itemsPerPage
   );
 
-  const priceFormatter = new Intl.NumberFormat("es-PY", {
-    style: "currency",
-    currency: "PYG",
-    minimumFractionDigits: 0,
-  });
+
 
   return (
     <div className="min-h-screen bg-white p-6">
