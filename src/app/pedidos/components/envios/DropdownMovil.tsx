@@ -47,7 +47,7 @@ export default function DropdownMovil({ onSelect }: Props) {
 
   return (
     <div>
-      <select
+      <select style={{ maxWidth: "220px", width: "100%" }}
         value={movilId ?? ""}
         onChange={handleChange}
         className="w-full border rounded px-3 py-2"
