@@ -69,14 +69,53 @@ export default function EnviosPendientesView() {
     const win = window.open('', '_blank');
     if (!win) return;
     let totalEnvio = 0;
+
     const contenido = `
       <html>
         <head>
           <title>Envío #${envio.id}</title>
           <style>
-            body { font-family: sans-serif; padding: 20px; }
-            h2 { margin-top: 0; }
-            .pedido { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+            body {
+              font-family: sans-serif;
+              padding: 20px;
+            }
+
+            h2, h3 {
+              margin-top: 0;
+            }
+
+            .pedido {
+              margin-bottom: 30px;
+              padding-bottom: 15px;
+              border-bottom: 2px solid #ccc;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 10px;
+              margin-bottom: 10px;
+            }
+
+            th, td {
+              border: 1px solid #aaa;
+              padding: 8px;
+              text-align: left;
+            }
+
+            thead {
+              background-color: #f0f0f0;
+            }
+
+            tr.combo {
+              background-color: #fff8c4;
+              font-weight: bold;
+            }
+
+            tr.combo-detalle {
+              background-color: #f9f9f9;
+              font-style: italic;
+            }
           </style>
         </head>
         <body>
@@ -86,37 +125,68 @@ export default function EnviosPendientesView() {
           <p><strong>Cantidad pedidos:</strong> ${envio.envioPedido.length}</p>
           <p><strong>Distancia:</strong> ${envio.kmCalculado || ""}</p>
           <p><strong>Tiempo estimado:</strong> ${envio.tiempoCalculado || ""}</p>
+
           ${envio.envioPedido.map((ep) => {
             const p = ep.pedido;
             totalEnvio += Number(p.total);
+
+            const detalles = p.detalles.map(d => {
+              const esCombo = !!d.producto?.comboHeader;
+              return `
+                <tr class="${esCombo ? 'combo' : ''}">
+                  <td>${d.producto?.nombre || 'Sin nombre'}</td>
+                  <td>${d.cantidad}</td>
+                  <td>${Number(d.precioUnitario).toLocaleString('es-PY', {
+                    style: 'currency',
+                    currency: 'PYG'
+                  })}</td>
+                </tr>
+                ${esCombo && d.producto.comboHeader?.detalles
+                  ? d.producto.comboHeader.detalles.map(cd => `
+                    <tr class="combo-detalle">
+                      <td>- ${cd.producto?.nombre}</td>
+                      <td>${cd.cantidad}</td>
+                      <td></td>
+                    </tr>
+                  `).join('')
+                  : ''
+                }
+              `;
+            }).join('');
+
             return `
               <div class="pedido">
                 <h3>Pedido #${p.id}</h3>
                 <p><strong>Cliente:</strong> ${p.clienteNombre} - ${p.cliente?.ruc}</p>
                 <p><strong>Dirección:</strong> ${p.cliente?.direccion} - ${p.cliente?.ciudad}</p>
-                <p><strong>Ciudad:</strong> ${p.cliente?.ciudad}</p>
                 <p><strong>Observaciones:</strong> ${p.observaciones || "Sin observaciones"}</p>
                 <p><strong>Total:</strong> ${Number(p.total).toLocaleString('es-PY', {
                   style: 'currency',
                   currency: 'PYG'
                 })}</p>
-                 <h3>Productos:</h3>
-                <ul>
-                  ${p.detalles.map(d => `
-                    <li>${d.producto?.nombre} - Cant: ${d.cantidad} - Precio: ${Number(d.precioUnitario).toLocaleString('es-PY', {
-                      style: 'currency',
-                      currency: 'PYG'
-                    })}</li>
-                  `).join('')}
-                </ul>
+
+                <h4>Productos:</h4>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${detalles}
+                  </tbody>
+                </table>
               </div>
-           </h1>
             `;
           }).join('')}
-       <h2>Total pedidos: ${Number(totalEnvio).toLocaleString('es-PY', {
-                style: 'currency',
-                currency: 'PYG'
-              })}
+
+          <h2>Total pedidos: ${Number(totalEnvio).toLocaleString('es-PY', {
+            style: 'currency',
+            currency: 'PYG'
+          })}</h2>
+
           <script>window.print();</script>
         </body>
       </html>
@@ -125,6 +195,7 @@ export default function EnviosPendientesView() {
     win.document.write(contenido);
     win.document.close();
   };
+
 
   const handleFinalizarEnvio = async (idEnvio: number) => {
     try {
