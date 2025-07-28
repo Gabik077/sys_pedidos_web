@@ -128,22 +128,31 @@ export default function PedidosEntregadosView() {
 
 
   const handleImprimirProductos = (envio: EnvioHeader) => {
-    const productosMap = new Map<string, { nombre: string; cantidad: number }>();
+    const productosMap = new Map<string, { nombre: string; cantidad: number; idCategoria: number }>();
 
     envio.envioPedido.forEach(ep => {
       ep.pedido.detalles.forEach(det => {
         const nombre = det.producto?.nombre ?? "Sin nombre";
-        const key = nombre.toLowerCase(); // clave única para consolidar
+        const key = nombre.toLowerCase();
+        const idCategoria = det.producto?.id_categoria ?? 0;
 
         if (!productosMap.has(key)) {
-          productosMap.set(key, { nombre, cantidad: det.cantidad });
+          productosMap.set(key, { nombre, cantidad: det.cantidad, idCategoria });
         } else {
           productosMap.get(key)!.cantidad += det.cantidad;
         }
       });
     });
 
-    const productosHTML = Array.from(productosMap.values())
+    const productosOrdenados = Array.from(productosMap.values()).sort((a, b) => {
+      if (a.idCategoria !== b.idCategoria) {
+        return a.idCategoria - b.idCategoria;
+      }
+      return a.nombre.localeCompare(b.nombre);
+    });
+
+
+    const productosHTML = Array.from(productosOrdenados.values())
       .sort((a, b) => a.nombre.localeCompare(b.nombre))
       .map(p => `<li>${p.nombre} - Cantidad total: ${p.cantidad}</li>`)
       .join('');

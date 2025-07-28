@@ -44,6 +44,7 @@ export interface Producto {
     descripcion: string;
     precio_venta: string;
     marca: string;
+    id_categoria: number;
     comboHeader?: ComboHeader;
 }
 
