@@ -214,13 +214,21 @@ export default function EnviosPendientesView() {
     }
   };
 
+  const handleCancelarClick = (idEnvio: number) => {
+    if (confirm(`¿Estás seguro de que deseas cancelar el envío #${idEnvio}?.`)) {
+
+      handleCancelarEnvio(idEnvio);
+    }
+
+  };
+
   const handleCancelarEnvio = async (idEnvio: number) => {
     try {
       const res = await guardarEstadoPedido(token,idEnvio, 'cancelado');
 
       if (res.status === 'ok') {
         alert('Envío cancelado correctamente');
-        const data = await getEnvios(token,"pendiente"); // Asegúrate de que este endpoint exista y retorne envíos pendientes
+        const data = await getEnvios(token,"pendiente");
         setEnvios(data);
       } else {
         alert('Error al cancelar el envío');
@@ -448,7 +456,7 @@ export default function EnviosPendientesView() {
                 Finalizar envío
               </button>
               <button
-                onClick={() => handleCancelarEnvio(envio.id)}
+                onClick={() => handleCancelarClick(envio.id)}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
               >
                 Cancelar envío
