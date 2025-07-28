@@ -46,6 +46,7 @@ export interface Producto {
     marca: string;
     id_categoria: number;
     comboHeader?: ComboHeader;
+    is_combo?: boolean; // Indica si es un combo
 }
 
 export interface Detalle {
