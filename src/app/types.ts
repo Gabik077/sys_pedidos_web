@@ -26,6 +26,17 @@ export interface EnvioHeader {
     finRutaLat?: number; // Latitud de destino
     finRutaLon?: number; // Longitud de destino
 }
+export interface ComboHeader {
+    id: number;
+    nombreCombo: string;
+    descripcionCombo: string;
+    detalles: ComboDetalle[];
+}
+export interface ComboDetalle {
+    id: number;
+    cantidad: number;
+    producto: Producto;
+}
 
 export interface Producto {
     id: number;
@@ -33,6 +44,7 @@ export interface Producto {
     descripcion: string;
     precio_venta: string;
     marca: string;
+    comboHeader?: ComboHeader;
 }
 
 export interface Detalle {

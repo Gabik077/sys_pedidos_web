@@ -16,6 +16,14 @@ export const getEnvios = async (token: string, estado: String) => {
     });
 };
 
+export const getCombos = async (token: string, idProducto: number) => {
+    return await handleRequest(`${apiUrl}/stock/combo/${idProducto}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const fetchMoviles = async (token: string) => {
     return await handleRequest(`${apiUrl}/stock/moviles`, {
         headers: {

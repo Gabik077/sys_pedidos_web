@@ -196,7 +196,22 @@ export default function EnviosPendientesView() {
           <h2>Productos del Envío #${envio.id}</h2>
           <p><strong>Fecha:</strong> ${formatearFecha(envio.fechaCreacion)}</p>
             <p><strong>Móvil:</strong> ${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
-          <ul>${productosHTML}</ul>
+        <ul>${productosHTML}
+            ${envio.envioPedido
+              .flatMap(ep => ep.pedido.detalles.filter(det => det.producto?.comboHeader))
+              .filter(det => det.producto?.comboHeader?.detalles)
+              .map(prod => `
+                ${prod.producto?.comboHeader?.detalles.map(det => `
+                  <ul>
+                    <li>${det.producto?.nombre} - Cantidad: ${det.cantidad}</li>
+                  </ul>
+              `)
+              .join('')}
+              `)
+              .filter(Boolean)
+              .join('')}
+
+          </ul>
           <script>window.print();</script>
         </body>
       </html>
