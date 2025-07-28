@@ -184,9 +184,12 @@ export default function CreateProductPage() {
             <p className="text-xs text-gray-500">Categoría</p>
             <select value={idCategoria} onChange={(e) => setIdCategoria(e.target.value)} className="w-full p-3 border rounded">
               <option value="1">Varios</option>
-              <option value="2">Helados</option>
-              <option value="3">Bebidas</option>
-              <option value="4">Panificados</option>
+              <option value="2">Balde de 5 litros</option>
+              <option value="3">Baldes de 10 litros</option>
+              <option value="4">Paletas</option>
+              <option value="5">Envasados</option>
+              <option value="6">Especiales</option>
+              <option value="7">Accesorios</option>
             </select>
           </div>
           <div>
