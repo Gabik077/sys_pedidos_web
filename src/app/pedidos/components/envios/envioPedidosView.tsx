@@ -14,6 +14,12 @@ const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
   ssr: false,
 });
 
+function tieneClientesRepetidos(pedidos: Pedido[]): boolean {
+  const ids = pedidos.map(p => p.cliente.id);
+  const idsUnicos = new Set(ids);
+  return ids.length !== idsUnicos.size;
+}
+
 
 export default function EnvioPedidosView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -120,7 +126,14 @@ export default function EnvioPedidosView() {
   };
 
   const handleCalcularRuta = () => {
-    setCalcularRuta(true); // reiniciar para forzar render
+  if(tieneClientesRepetidos(pedidosSeleccionados)) {
+    alert("⚠️ Hay Clientes repetidos en los pedidos seleccionados. Esto puede causar problemas al calcular la ruta.");
+    return;
+
+    }else{
+      setCalcularRuta(true);
+  }
+
 
 
   };

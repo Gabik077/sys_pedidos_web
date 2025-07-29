@@ -27,13 +27,15 @@ interface Props {
   onRutaOptimizada?: (pedidosOrdenados: Pedido[]) => void;
 }
 
+
+
 export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTotalesCalculados, onRutaOptimizada }: Props) {
   const [totales, setTotales] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
   const [loading, setLoading] = useState(false);
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);
   const listaRef = useRef<HTMLDivElement>(null);
 
-  // ✅ CORREGIDO: hooks fuera del JSX
+
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
   const sensors = useSensors(mouseSensor, touchSensor);
@@ -62,6 +64,31 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
       }
     }
   };
+/*function coordsMatch(lat1: number, lon1: number, lat2: number, lon2: number, epsilon = 0.0002): boolean {
+  return Math.abs(lat1 - lat2) < epsilon && Math.abs(lon1 - lon2) < epsilon;
+}*/
+
+function coordsMatch(lat1: number, lon1: number, lat2: number, lon2: number, toleranceInMeters = 50): boolean {
+  return haversineDistance(lat1, lon1, lat2, lon2) < toleranceInMeters;
+}
+
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371e3; // Radio de la Tierra en metros
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // Distancia en metros
+}
+
 
   const handleVerEnGoogleMaps = () => {
     const pointsLimit = 25;
@@ -85,48 +112,115 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
     window.open(url, "_blank");
   };
 
+const pedidosConOrigen = [...pedidos]; // evitar mutar el original si lo necesitas más adelante
+
+pedidosConOrigen.unshift({
+  id: 0,
+  fechaPedido: "",
+  estado: "",
+  total: "",
+  clienteNombre: "",
+  observaciones: "",
+  responsable: "",
+  cliente: {
+    id: 0,
+    nombre: "ORIGEN",
+    apellido: "",
+    telefono: "",
+    direccion: "",
+    ciudad: "",
+    ruc: "",
+    lat: origen.lat,
+    lon: origen.lng
+  },
+  detalles: []
+});
+
   useEffect(() => {
+
     if (!calcularRuta || pedidos.length === 0) return;
 
     const fetchRuta = async () => {
       setLoading(true);
 
-      const coords = pedidos.map((p) => `${p.cliente.lon},${p.cliente.lat}`).join(";");
-      const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?source=first&destination=last&roundtrip=true&overview=false`;
 
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
+    const coords = [
+  `${origen.lng},${origen.lat}`, // origen
+  ...pedidos.map((p) => `${p.cliente.lon},${p.cliente.lat}`)
+].join(";");
 
-        if (data.code === "Ok" && data.trips.length > 0) {
-          const trip = data.trips[0];
-          const orden = data.waypoints
-            .sort((a: any, b: any) => a.waypoint_index - b.waypoint_index)
-            .map((wp: any) => wp.waypoint_index);
+console.log("Calculando ruta para coords:", coords);
 
-          const pedidosOrden = orden.map((i: number) => pedidos[i]);
+const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?source=first&roundtrip=false`;
 
-          setPedidosOrdenados(pedidosOrden);
+try {
+  const res = await fetch(url);
+  const data = await res.json();
 
-          const distanciaTotal = trip.distance;
-          const duracionTotal = trip.duration;
+  if (data.code === "Ok" && data.trips.length > 0) {
+    const trip = data.trips[0];
 
-          const horas = Math.floor(duracionTotal / 3600);
-          const minutos = Math.round((duracionTotal % 3600) / 60);
+    console.log("data.waypoints:", data.waypoints);
 
-          const totales = {
-            distancia: (distanciaTotal / 1000).toFixed(2) + " km",
-            duracion: horas > 0 ? `${horas}h ${minutos}min` : `${minutos} min`
-          };
+    console.log("Orden de visita según OSRM (con nombre de cliente):");
 
-          setTotales(totales);
-          onTotalesCalculados?.(totales);
-          onRutaOptimizada?.(pedidosOrden);
-          console.log("pedidosOrden:", pedidosOrden);
-        }
-      } catch (error) {
-        console.error("Error al calcular ruta optimizada:", error);
-      }
+    const newList: any[] = [];
+
+data.waypoints
+  .sort((a: { waypoint_index: number; }, b: { waypoint_index: number; }) => a.waypoint_index - b.waypoint_index)
+  .forEach((wp: any, i: number) => {
+    const wpLat = Number(wp.location[1]);
+    const wpLon = Number(wp.location[0]);
+
+    const pedido = pedidosConOrigen.find(p =>
+      coordsMatch(Number(p.cliente.lat), Number(p.cliente.lon), wpLat, wpLon)
+    );
+
+
+console.log(`Pedido encontrado: ${pedidosConOrigen[i].cliente.nombre}  clienteCoords: ${pedidosConOrigen[i]?.cliente.lat},${pedidosConOrigen[i]?.cliente.lon} wpCoords: ${wpLat},${wpLon}`);
+
+    const nombreCliente = pedido?.cliente?.nombre || 'ORIGEN';
+
+    console.log(
+      `Visita #${i}: Cliente "${nombreCliente}" - coords: ${wpLat},${wpLon} clienteCoords: ${pedido?.cliente.lat},${pedido?.cliente.lon}`
+    );
+
+    if (nombreCliente !== 'ORIGEN') {
+      newList.push({
+        id: `waypoint-${i}`,
+        lat: wpLat,
+        lon: wpLon,
+        waypoint_index: i,
+        pedido
+      });
+    }
+  });
+
+// Ahora tenés pedidos optimizados
+const pedidosOrden = newList.map((wp) => wp.pedido);
+
+
+  setPedidosOrdenados(pedidosOrden);
+
+    const distanciaTotal = trip.distance;
+    const duracionTotal = trip.duration;
+
+    const horas = Math.floor(duracionTotal / 3600);
+    const minutos = Math.round((duracionTotal % 3600) / 60);
+
+    const totales = {
+      distancia: (distanciaTotal / 1000).toFixed(2) + " km",
+      duracion: horas > 0 ? `${horas}h ${minutos}min` : `${minutos} min`
+    };
+
+    setTotales(totales);
+    onTotalesCalculados?.(totales);
+    onRutaOptimizada?.(pedidosOrden);
+  }
+} catch (error) {
+  console.error("Error al calcular ruta optimizada:", error);
+}
+
 
       setLoading(false);
     };
