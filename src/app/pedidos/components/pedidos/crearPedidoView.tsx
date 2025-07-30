@@ -23,14 +23,6 @@ interface Cliente {
   ciudad?: string;
 }
 
-interface Movil {
-    id: number;
-    nombreChofer: string;
-    chapaMovil: string;
-    tipoMovil: string;
-    nombreMovil: string;
-  }
-
   interface ProductoSeleccionado {
     id_producto: number;
     cantidad: number;
@@ -49,7 +41,6 @@ export default function CrearPedidoView() {
   const [busqueda, setBusquedaProducto] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
-  const [moviles, setMoviles] = useState<Movil[]>([]);
   const { token } = useUser();
 
   if (!token) {
@@ -85,7 +76,6 @@ export default function CrearPedidoView() {
 
       setProductos(productos);
       setClientes(clientes);
-      setMoviles(moviles);
     };
     fetchData();
   }, []);
@@ -255,32 +245,8 @@ export default function CrearPedidoView() {
           className="w-full border p-2 rounded"
         ></textarea>
       </div>
-{/*   <div>
 
-    <label className="block">Asignar Móvil / Chofer</label>
-    <select
-      className="w-full border p-2 rounded"
-      value={formData.pedido.chofer}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          pedido: {
-            ...formData.pedido,
-            chofer: e.target.value,
-          },
-        })
-      }
-    >
-      <option value="">-- Seleccionar móvil --</option>
-      {moviles.map((m) => (
-        <option key={m.id} value={m.nombreChofer}>
-          ({m.nombreMovil}) - {m.nombreChofer} - {m.chapaMovil}
-        </option>
-      ))}
-    </select>
-  </div> */}
 </div>
-
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
