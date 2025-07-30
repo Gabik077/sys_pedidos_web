@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPedidos } from "@/app/services/stockService";
+import { getPedidos, updateEstadoPedido } from "@/app/services/stockService";
 import { Pedido } from "../../../types";
-import { FaEdit, FaRegEdit, FaSyncAlt } from "react-icons/fa";
+import { FaDraft2Digital, FaEdit, FaRegEdit, FaSyncAlt, FaTrash } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
+import { FaCalendarCheck, FaDeleteLeft } from "react-icons/fa6";
 
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -34,6 +35,30 @@ export default function PedidosPendientesView() {
   const handleEditarPedido = (pedidoId: number) => {
     window.location.href = `/pedidos/edit/${pedidoId}`;
   };
+
+const onCancelarPedido = (pedidoId: number) => {
+  if (window.confirm("¿Estás seguro de que deseas cancelar este pedido?")) {
+    handleCancelarPedido(pedidoId);
+  }
+};
+
+    const handleCancelarPedido = async (idPedido: number) => {
+      try {
+
+        const res = await updateEstadoPedido(token,idPedido, 'cancelado');
+
+        if (res.status === 'ok') {
+          alert('Pedido cancelado correctamente');
+          const data = await getPedidos(token,"pendiente");
+          setPedidos(data);
+        } else {
+          alert('Error al cancelar el pedido');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error en el servidor');
+      }
+    };
 
   const handleEstadoPedido = async (estado: string) => {
     try {
@@ -151,7 +176,7 @@ const handleImprimirSeleccionados = () => {
       <div className="flex items-center justify-between mb-6 gap-4">
         <h2 className="text-2xl font-bold text-gray-500">Lista de Pedidos</h2>
 
-        <select
+       <select
           value={filtroEstado}
           onChange={(e) => handleEstadoPedido(e.target.value)}
           className="border rounded px-3 py-2"
@@ -186,9 +211,6 @@ const handleImprimirSeleccionados = () => {
                 Pedido #{pedido.id} - {formatearFecha(pedido.fechaPedido)}
               </h3>
 
-
-
-
               <label className="flex items-center space-x-2">
 
                 <input
@@ -207,6 +229,19 @@ const handleImprimirSeleccionados = () => {
                   >
                     {loading ? "Cargando..." : <FaRegEdit className="text-lg" />}
                   </button>
+
+
+             ) : ("") }
+
+              { pedido.estado === "pendiente" ? (
+                  <button
+                    onClick={() => onCancelarPedido(pedido.id)}
+                    className="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded"
+                  >
+                    {loading ? "Cargando..." : <FaTrash className="text-lg" />}
+                  </button>
+
+
              ) : ("") }
 
               </label>

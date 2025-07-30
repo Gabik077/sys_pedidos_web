@@ -48,6 +48,17 @@ export const fetchProductsStock = async (token: string) => {
     });
 };
 
+export const updateEstadoPedido = async (token: string, idPedido: number, estado: string) => {
+    return await handleRequest(`${apiUrl}/stock/updateEstadoPedido/${idPedido}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ estado }),
+    });
+};
+
 export const getPedidos = async (token: string, estado: string) => {
     return await handleRequest(`${apiUrl}/stock/getPedidos?estadoPedido=${estado}`,
         {
