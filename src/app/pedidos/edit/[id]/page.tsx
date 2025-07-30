@@ -1,9 +1,10 @@
 "use client";
 
-import {  fetchProductsStock, insertSalidaStock,fetchMoviles, insertPedido } from "@/app/services/stockService";
+import {  fetchProductsStock, fetchPedidoPorId,fetchMoviles, insertPedido, updatePedido } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
 import { useUser } from "@/app/context/UserContext";
+import { useParams } from "next/navigation";
 
 interface Producto {
   id: number;
@@ -41,7 +42,7 @@ interface ProductoSeleccionado {
   cantidad: number;
 }
 
-export default function CrearPedidoView() {
+export default function EditarPedidoView() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [busquedaCliente, setBusquedaCliente] = useState("");
@@ -51,6 +52,8 @@ export default function CrearPedidoView() {
   const [cantidad, setCantidad] = useState<number>(1);
   const [moviles, setMoviles] = useState<Movil[]>([]);
   const { token } = useUser();
+  const { id } = useParams();
+
 
   if (!token) {
     window.location.href = "/login";
@@ -69,7 +72,6 @@ export default function CrearPedidoView() {
         id_cliente: 0,
         cliente_nombre:  "",
         estado: "pendiente", // Estado del pedido
-        chofer: "", // Campo opcional para el chofer
       },
     productos: [] as ProductoSeleccionado[],
   });
@@ -89,6 +91,48 @@ export default function CrearPedidoView() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+  const fetchData = async () => {
+    const productos = await fetchProductsStock(token);
+    const clientes = await fetchClients(token);
+    const moviles = await fetchMoviles(token);
+
+    setProductos(productos);
+    setClientes(clientes);
+    setMoviles(moviles);
+
+    // Si viene un ID de pedido, lo buscamos y lo precargamos
+    if (id) {
+      try {
+        const pedido = await fetchPedidoPorId(token, Number(id));
+
+        setFormData({
+          tipo_origen: "pedido",
+          observaciones: pedido.observaciones || "",
+          id_cliente: pedido.cliente.id,
+          cliente_nombre: pedido.clienteNombre,
+          cliente_ciudad: pedido.cliente.ciudad,
+          cliente_direccion: pedido.cliente.direccion,
+          cliente_ruc: pedido.cliente.ruc,
+          pedido: {
+            id_cliente: pedido.cliente.id,
+            cliente_nombre: pedido.clienteNombre,
+            estado: pedido.estado,
+          },
+          productos: pedido.detalles.map((d: any) => ({
+            id_producto: d.idProducto,
+            cantidad: d.cantidad,
+          })),
+        });
+      } catch (err) {
+        console.error("Error cargando pedido existente:", err);
+      }
+    }
+  };
+  fetchData();
+}, []);
+
 
 
   const formatCurrency = (value: number | string) => {
@@ -151,44 +195,22 @@ export default function CrearPedidoView() {
         tipo_origen: "pedido",
         id_origen: 1,
         observaciones: formData.observaciones,
-        total_venta: calcularTotal(),
-        iva: calcularIVA(),
         pedido: {
           id_cliente: formData.id_cliente,
           cliente_nombre: formData.cliente_nombre,
           estado: "pendiente",
-          chofer: formData.pedido.chofer,
         },
         productos: formData.productos,
       };
 
-    const result = await insertPedido(token,dataToSend);
-    console.log("Resultado:", result);
+    const result = await updatePedido(token,id,dataToSend);
+
 
     if (result.status === "ok") {
-      alert("Pedido registrado con exito");
-      setFormData({
-        tipo_origen: "pedido",
-        observaciones: "",
-        id_cliente: 1,
-        cliente_direccion: "",
-        cliente_ciudad: "",
-        cliente_nombre: "",
-        cliente_ruc: "",
-        productos: [],
-        pedido:  {
-            id_cliente: 0,
-            cliente_nombre: "",
-            estado: "pendiente", // Estado del pedido
-            chofer: "", // Campo opcional para el chofer
-          },
-      });
-      setBusquedaProducto("");
-      setProductoFiltrado(null);
-      setCantidad(1);
-      setBusquedaCliente("");
+      alert("Pedido actualizado con exito");
+       // window.location.href = "/pedidos";
     } else {
-      alert(result.message || "Error al registrar pedido");
+      alert(result.message || "Error al editar pedido");
     }
   };
 
@@ -203,82 +225,11 @@ export default function CrearPedidoView() {
 
   return (
     <form onSubmit={handleSubmit} className="p-6 max-w-5xl mx-auto bg-white rounded shadow text-gray-500">
-      <h2 className="text-2xl font-bold mb-6 text-gray-500">Nuevo Pedido</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-500">Editar Pedido</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 ">
-  <div>
-    <label className="block">Buscar Cliente</label>
-    <div className="relative">
-      <input
-        type="text"
-        placeholder="Nombre del cliente"
-        value={busquedaCliente}
-        onChange={(e) => setBusquedaCliente(e.target.value)}
-         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-          }}}
-        className="w-full border p-2 rounded"
-      />
-      {busquedaCliente && clientesSugeridos.length > 0 && (
-        <ul className="absolute bg-white border w-full max-h-48 overflow-y-auto z-10 rounded shadow">
-          {clientesSugeridos.map((cli) => (
-            <li
-              key={cli.id}
-              className="p-2 hover:bg-blue-100 cursor-pointer"
-              onClick={() => {
-                setFormData({
-                  ...formData,
-                  id_cliente: cli.id,
-                  cliente_nombre: `${cli.nombre} ${cli.apellido}`,
-                  cliente_ruc: cli.ruc || "",
-                  cliente_direccion: cli.direccion || "",
-                  cliente_ciudad: cli.ciudad || "",
-                });
-                setBusquedaCliente("");
-              }}
-            >
-              {cli.nombre} {cli.apellido}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  </div>
 
 
-  <div className="mb-6">
-        <label className="block">Observaciones</label>
-        <textarea
-          value={formData.observaciones}
-          onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
-          className="w-full border p-2 rounded"
-        ></textarea>
-      </div>
-{/*   <div>
-
-    <label className="block">Asignar Móvil / Chofer</label>
-    <select
-      className="w-full border p-2 rounded"
-      value={formData.pedido.chofer}
-      onChange={(e) =>
-        setFormData({
-          ...formData,
-          pedido: {
-            ...formData.pedido,
-            chofer: e.target.value,
-          },
-        })
-      }
-    >
-      <option value="">-- Seleccionar móvil --</option>
-      {moviles.map((m) => (
-        <option key={m.id} value={m.nombreChofer}>
-          ({m.nombreMovil}) - {m.nombreChofer} - {m.chapaMovil}
-        </option>
-      ))}
-    </select>
-  </div> */}
 </div>
 
 
@@ -302,6 +253,14 @@ export default function CrearPedidoView() {
           <label className="block">Ciudad</label>
           <input type="text" value={formData.cliente_ciudad} className="w-full border p-2 rounded" disabled />
         </div>
+          <div >
+        <label className="block">Observaciones</label>
+        <textarea
+          value={formData.observaciones}
+          onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
+          className="w-full border p-1 rounded"
+        ></textarea>
+      </div>
       </div>
 
 
@@ -378,7 +337,7 @@ export default function CrearPedidoView() {
       <div className="mb-4 font-bold">IVA (10%): {formatCurrency(calcularIVA())}</div>
 
       <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded">
-        Registrar Pedido
+        Editar Pedido
       </button>
     </form>
   );

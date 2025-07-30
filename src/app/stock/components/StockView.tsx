@@ -109,7 +109,6 @@ export default function StockView() {
               <tr className="bg-blue-200 text-gray-600 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Nombre</th>
                 <th className="py-3 px-6 text-left">Cantidad</th>
-                <th className="py-3 px-6 text-left">Cantidad reservada</th>
                 <th className="py-3 px-6 text-left">Precio Compra</th>
                 <th className="py-3 px-6 text-left">Precio Venta</th>
                 <th className="py-3 px-6 text-left">Acción</th>
@@ -130,9 +129,6 @@ export default function StockView() {
                     ) : (
                       item.cantidad_disponible
                     )}
-                  </td>
-                  <td className="py-3 px-6 text-left">
-                    {numberFormatter.format(item.cantidad_reservada)}
                   </td>
                   <td className="py-3 px-6 text-left">
                     {priceFormatter.format(Number(item.producto.precio_compra))}

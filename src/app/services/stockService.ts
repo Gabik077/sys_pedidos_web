@@ -32,6 +32,14 @@ export const fetchMoviles = async (token: string) => {
     });
 }
 
+export const fetchPedidoPorId = async (token: string, id: number) => {
+    return await handleRequest(`${apiUrl}/stock/getPedido/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const fetchProductsStock = async (token: string) => {
     return await handleRequest(`${apiUrl}/products`, {
         headers: {
@@ -113,6 +121,16 @@ export async function insertSalidaStock(token: string, data: any) {
 
 export async function insertPedido(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/pedido`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+}
+export async function updatePedido(token: string, id: any, data: any) {
+    return await handleRequest(`${apiUrl}/stock/updatePedido/${id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

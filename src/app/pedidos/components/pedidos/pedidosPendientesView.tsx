@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getPedidos } from "@/app/services/stockService";
 import { Pedido } from "../../../types";
-import { FaSyncAlt } from "react-icons/fa";
+import { FaEdit, FaRegEdit, FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
 
@@ -30,6 +30,9 @@ export default function PedidosPendientesView() {
     } finally {
       setLoading(false);
     }
+  };
+  const handleEditarPedido = (pedidoId: number) => {
+    window.location.href = `/pedidos/edit/${pedidoId}`;
   };
 
   const handleEstadoPedido = async (estado: string) => {
@@ -130,6 +133,7 @@ const handleImprimirSeleccionados = () => {
     </html>
   `;
 
+
   const win = window.open("", "_blank");
   if (win) {
     win.document.write(contenido);
@@ -181,14 +185,35 @@ const handleImprimirSeleccionados = () => {
               <h3 className="text-lg font-semibold text-gray-600">
                 Pedido #{pedido.id} - {formatearFecha(pedido.fechaPedido)}
               </h3>
+
+
+
+
               <label className="flex items-center space-x-2">
+
                 <input
                   type="checkbox"
                   checked={seleccionados.includes(pedido.id)}
                   onChange={() => toggleSeleccion(pedido.id)}
                 />
                 <span>Seleccionar</span>
+
+                 <span>  </span>
+                  <span>  </span>
+              { pedido.estado === "pendiente" ? (
+                  <button
+                    onClick={() => handleEditarPedido(pedido.id)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                  >
+                    {loading ? "Cargando..." : <FaRegEdit className="text-lg" />}
+                  </button>
+             ) : ("") }
+
               </label>
+
+
+
+
             </div>
 
             <p><strong>Cliente:</strong> {pedido.clienteNombre}</p>
