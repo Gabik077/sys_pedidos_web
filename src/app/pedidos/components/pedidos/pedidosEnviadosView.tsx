@@ -85,9 +85,11 @@ export default function EnviosPendientesView() {
             }
 
             .pedido {
-              margin-bottom: 30px;
               padding-bottom: 15px;
               border-bottom: 2px solid #ccc;
+              page-break-inside: avoid;
+              break-inside: avoid; /* Para compatibilidad */
+              margin-bottom: 20px;
             }
 
             table {
@@ -119,12 +121,9 @@ export default function EnviosPendientesView() {
           </style>
         </head>
         <body>
-          <h2>Envío #${envio.id}</h2>
-          <p><strong>Fecha:</strong> ${formatearFecha(envio.fechaCreacion)}</p>
-          <p><strong>Móvil:</strong> ${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
+          <p><strong>Envío #${envio.id}</strong> , ${formatearFecha(envio.fechaCreacion)}, Móvil:${envio.envioPedido[0]?.movil?.nombreMovil} - Chofer: ${envio.envioPedido[0]?.movil?.nombreChofer} - Chapa: ${envio.envioPedido[0]?.movil?.chapaMovil}</p>
           <p><strong>Cantidad pedidos:</strong> ${envio.envioPedido.length}</p>
-          <p><strong>Distancia:</strong> ${envio.kmCalculado || ""}</p>
-          <p><strong>Tiempo estimado:</strong> ${envio.tiempoCalculado || ""}</p>
+
 
           ${envio.envioPedido.map((ep) => {
             const p = ep.pedido;
@@ -136,7 +135,7 @@ export default function EnviosPendientesView() {
                 <tr class="${esCombo ? 'combo' : ''}">
                   <td>${d.producto?.nombre || 'Sin nombre'}</td>
                   <td>${d.cantidad}</td>
-                  <td>${Number(d.precioUnitario).toLocaleString('es-PY', {
+                  <td>${(Number(d.precioUnitario) * d.cantidad).toLocaleString('es-PY', {
                     style: 'currency',
                     currency: 'PYG'
                   })}</td>
@@ -156,16 +155,13 @@ export default function EnviosPendientesView() {
 
             return `
               <div class="pedido">
-                <h3>Pedido #${p.id}</h3>
-                <p><strong>Cliente:</strong> ${p.clienteNombre} - ${p.cliente?.ruc}</p>
-                <p><strong>Dirección:</strong> ${p.cliente?.direccion} - ${p.cliente?.ciudad}</p>
+                <p><strong>Pedido #${p.id}</strong></p>
+                <p><strong>Cliente:</strong> ${p.clienteNombre} - ${p.cliente?.ruc}, Dirección: ${p.cliente?.direccion} - ${p.cliente?.ciudad}</p>
                 <p><strong>Observaciones:</strong> ${p.observaciones || "Sin observaciones"}</p>
                 <p><strong>Total:</strong> ${Number(p.total).toLocaleString('es-PY', {
                   style: 'currency',
                   currency: 'PYG'
                 })}</p>
-
-                <h4>Productos:</h4>
                 <table>
                   <thead>
                     <tr>
@@ -182,10 +178,10 @@ export default function EnviosPendientesView() {
             `;
           }).join('')}
 
-          <h2>Total pedidos: ${Number(totalEnvio).toLocaleString('es-PY', {
+          <h3>Total pedidos: ${Number(totalEnvio).toLocaleString('es-PY', {
             style: 'currency',
             currency: 'PYG'
-          })}</h2>
+          })}</h3>
 
           <script>window.print();</script>
         </body>
