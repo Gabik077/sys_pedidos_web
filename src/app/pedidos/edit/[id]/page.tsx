@@ -44,13 +44,9 @@ interface ProductoSeleccionado {
 
 export default function EditarPedidoView() {
   const [productos, setProductos] = useState<Producto[]>([]);
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [busquedaCliente, setBusquedaCliente] = useState("");
-
   const [busqueda, setBusquedaProducto] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
-  const [moviles, setMoviles] = useState<Movil[]>([]);
   const { token } = useUser();
   const { id } = useParams();
 
@@ -77,17 +73,12 @@ export default function EditarPedidoView() {
   });
 
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       const productos = await fetchProductsStock(token);
-      const clientes = await fetchClients(token);
-      const moviles = await fetchMoviles(token);
 
       setProductos(productos);
-      setClientes(clientes);
-      setMoviles(moviles);
+
     };
     fetchData();
   }, []);
@@ -95,12 +86,7 @@ export default function EditarPedidoView() {
   useEffect(() => {
   const fetchData = async () => {
     const productos = await fetchProductsStock(token);
-    const clientes = await fetchClients(token);
-    const moviles = await fetchMoviles(token);
-
     setProductos(productos);
-    setClientes(clientes);
-    setMoviles(moviles);
 
     // Si viene un ID de pedido, lo buscamos y lo precargamos
     if (id) {
@@ -218,9 +204,7 @@ export default function EditarPedidoView() {
     p.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
-  const clientesSugeridos = clientes.filter((cli) =>
-    `${cli.nombre} ${cli.apellido}`.toLowerCase().includes(busquedaCliente.toLowerCase())
-  );
+
 
 
   return (
