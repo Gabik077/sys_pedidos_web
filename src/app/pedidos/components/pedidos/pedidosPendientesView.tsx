@@ -186,7 +186,7 @@ const handleImprimirSeleccionados = () => {
           <option value="entregado">Entregados</option>
           <option value="cancelado">Cancelados</option>
         </select>
-
+        <p>Total pedidos: {pedidos.length}</p>
         <button
           title="Actualizar Pendientes"
           onClick={fetchPedidos}
