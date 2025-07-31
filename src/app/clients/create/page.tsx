@@ -46,7 +46,7 @@ function CreateClientePage() {
         alert("Cliente creado con éxito");
         router.push("/clients");
       } else {
-        alert("Error al crear cliente");
+        alert(`Error al crear cliente: ${res.message}`);
       }
     } catch (err) {
       console.error("Error al crear cliente:", err);

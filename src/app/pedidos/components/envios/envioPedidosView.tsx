@@ -20,6 +20,20 @@ function tieneClientesRepetidos(pedidos: Pedido[]): boolean {
   return ids.length !== idsUnicos.size;
 }
 
+function tieneLatLonDuplicados(pedidos: Pedido[]): boolean {
+  const latLonSet = new Set();
+  for (const pedido of pedidos) {
+    const latLon = `${pedido.cliente.lat},${pedido.cliente.lon}`;
+    if (latLonSet.has(latLon)) {
+      alert(`El cliente ${pedido.cliente.nombre} tiene coordenadas duplicadas con otro cliente en esta lista.`);
+      return true; // Encontrado un duplicado
+    }
+    latLonSet.add(latLon);
+  }
+
+  return false; // No se encontraron duplicados
+}
+
 
 export default function EnvioPedidosView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -89,12 +103,12 @@ export default function EnvioPedidosView() {
     }
 
     if(pedidosSeleccionados.length === 0){
-      alert("Selecciona al menos un pedido para el envío.");
+      alert("Selecciona al menos 2 pedidos para el envío.");
       return;
 
     }
 
-    const pedidosIntermedios = pedidosOrdenados.slice(0, -1);
+
     const pedidoDestino = pedidosOrdenados[pedidosOrdenados.length - 1];
 
     const data = {
@@ -130,11 +144,12 @@ export default function EnvioPedidosView() {
     alert("⚠️ Hay Clientes repetidos en los pedidos seleccionados. Esto puede causar problemas al calcular la ruta.");
     return;
 
-    }else{
-      setCalcularRuta(true);
+  }
+  if(tieneLatLonDuplicados(pedidosSeleccionados)) {
+    return;
   }
 
-
+  setCalcularRuta(true);
 
   };
 
