@@ -20,10 +20,34 @@ function tieneClientesRepetidos(pedidos: Pedido[]): boolean {
   return ids.length !== idsUnicos.size;
 }
 
+function truncarCoord(coord: string | number): string {
+  const str = coord.toString().replace(",", ".");
+  const [entero, decimal] = str.split(".");
+  return decimal ? `${entero}.${decimal.slice(0, 3)}` : str;
+}
+
+function tieneLaUbicacionDeInicio(pedidos: Pedido[], origenLat: number, origenLon: number): boolean {
+  const latInicio = truncarCoord(origenLat);
+  const lonInicio = truncarCoord(origenLon);
+
+  const coincide = pedidos.some(pedido => {
+    const latCliente = truncarCoord(pedido.cliente.lat || "");
+    const lonCliente = truncarCoord(pedido.cliente.lon || "");
+    return latCliente === latInicio && lonCliente === lonInicio;
+  });
+
+  if (coincide) {
+    alert("⚠️ La ubicación de inicio coincide con la ubicación de un cliente.");
+  }
+
+  return coincide;
+}
+
 function tieneLatLonDuplicados(pedidos: Pedido[]): boolean {
   const latLonSet = new Set();
   for (const pedido of pedidos) {
-    const latLon = `${pedido.cliente.lat},${pedido.cliente.lon}`;
+    const latLon = `${truncarCoord(pedido.cliente.lat)},${truncarCoord(pedido.cliente.lon)}`;
+
     if (latLonSet.has(latLon)) {
       alert(`El cliente ${pedido.cliente.nombre} tiene coordenadas duplicadas con otro cliente en esta lista.`);
       return true; // Encontrado un duplicado
@@ -146,6 +170,9 @@ export default function EnvioPedidosView() {
 
   }
   if(tieneLatLonDuplicados(pedidosSeleccionados)) {
+    return;
+  }
+  if(tieneLaUbicacionDeInicio(pedidosSeleccionados, parseFloat(origenLat), parseFloat(origenLon))) {
     return;
   }
 
