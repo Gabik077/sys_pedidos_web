@@ -57,8 +57,9 @@ export default function ClientesTable({ clientes: initialClientes }: ClientesTab
   };
 
   const filteredClientes = clientes.filter((c) =>
-    c.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    `${c.nombre} ${c.apellido} ${c.telefono} ${c.ruc} ${c.ciudad} ${c.lat} ${c.lon}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   const totalPages = Math.ceil(filteredClientes.length / itemsPerPage);
   const paginatedClientes = filteredClientes.slice(
