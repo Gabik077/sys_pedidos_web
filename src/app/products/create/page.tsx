@@ -75,7 +75,7 @@ export default function CreateProductPage() {
     }
 
     const nuevoProducto: any = {
-      nombre,
+      nombre: nombre.trim(),
       descripcion,
       precio_compra: parseFloat(precioCompra),
       precio_venta: parseFloat(precioVenta),
@@ -94,7 +94,7 @@ export default function CreateProductPage() {
 
     if (isCombo) {
       nuevoProducto.comboData = {
-        nombre_combo: nombre,
+        nombre_combo: nombre.trim(),
         descripcion_combo: descripcion,
         id_producto_combo: 0,
         detalles: comboDetalles,
