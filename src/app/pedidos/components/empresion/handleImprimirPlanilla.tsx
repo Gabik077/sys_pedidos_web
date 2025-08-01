@@ -42,6 +42,11 @@ import { formatearFecha } from "@/app/utils/utils";
       <head>
         <title>Planilla de Rendición - Envío #${envio.id}</title>
         <style>
+         .pedido {
+              page-break-inside: avoid;
+              break-inside: avoid; /* Para compatibilidad */
+              margin-bottom: 20px;
+            }
           body { font-family: sans-serif; padding:20px; }
           h1 { margin:0; font-size:18px; }
           .header { display:flex; flex-wrap: wrap; gap:12px; margin-bottom:16px; }
@@ -93,7 +98,6 @@ import { formatearFecha } from "@/app/utils/utils";
   .valor {
     flex:1;
     text-align:right;
-    //  letter-spacing:2px;
   }
   .linea-input {
     display:inline-block;
@@ -131,7 +135,7 @@ import { formatearFecha } from "@/app/utils/utils";
       </head>
       <body>
         <h1>Planilla de Rendición</h1><br>
-        <div class="header">
+        <div class="header pedido">
           <div class="campo"><div class="etiqueta">Responsables:___________________</div></div>
 
           <div style="font-size:12px;">Móvil: ${movil?.nombreMovil || ''} chapa: ${movil?.chapaMovil || ''} ,  Km Inicial:__________ Km Final__________ </div></div>
@@ -140,17 +144,17 @@ import { formatearFecha } from "@/app/utils/utils";
 
         </div>
 
-        <table class="tabla">
+        <table class="tabla pedido">
           <thead>
             <tr>
-              <th>Orden</th>
+              <th></th>
               <th>Ciudad</th>
               <th>Cliente</th>
               <th>A cobrar</th>
               <th>Factura Nro.</th>
               <th>Cobro efectivo</th>
               <th>Cobro giro</th>
-              <th>Cobro transferencia</th>
+              <th>Cobro transf.</th>
               <th>Pendiente</th>
               <th>Observación</th>
               <th>Evaluación
@@ -168,7 +172,7 @@ import { formatearFecha } from "@/app/utils/utils";
         </table>
 
        <div class="lado">
-  <div class="resumen">
+  <div class="resumen pedido">
     <div class="totales">
       <div><span class="etiqueta">Sub total:</span> <span class="linea-input"></span></div>
       <div><span class="etiqueta">Gastos:</span> <span class="linea-input"></span></div>
@@ -176,7 +180,7 @@ import { formatearFecha } from "@/app/utils/utils";
     </div>
   </div>
 
-  <div class="detalle-costos">
+  <div class="detalle-costos pedido">
     <div class="card-titulo">Detalle de costos</div>
     <div class="fila-costo">
       <div class="label">Combustible:</div>
@@ -197,7 +201,7 @@ import { formatearFecha } from "@/app/utils/utils";
   </div>
 </div>
 
-<div class="seccion-mas">
+<div class="seccion-mas pedido">
   <div class="subtitulo">De más:</div>
   <div class="notas">
     <div class="nota-line"><span class="linea-larga"></span></div>
