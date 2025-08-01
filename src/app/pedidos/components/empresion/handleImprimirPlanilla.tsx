@@ -1,6 +1,5 @@
 import { EnvioHeader } from "@/app/types";
 import { formatearFecha, numberFormatter, priceFormatter } from "@/app/utils/utils";
-import PedidoItem from "../pedidos/PedidoItem";
 
   export const handleImprimirPlanilla = (envio: EnvioHeader) => {
   const win = window.open('', '_blank');
@@ -23,20 +22,20 @@ const filasContenido = envio.envioPedido
     return `
       <tr>
         <td>${ordenEnvio}</td>
-        <td>${pedido.cliente?.ciudad || ''}</td>
-        <td>${ pedido.clienteNombre || ''}</td>
+        <td  class="campo-ciudad">${pedido.cliente?.ciudad || ''}</td>
+        <td class="campo-cliente">${ pedido.clienteNombre || ''}</td>
         <td>${ numberFormatter.format(Number(pedido.total)) || ''}</td>
+        <td class="campo-factura"></td>
+        <td ></td>
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td class="campo-observacion"></td>
         <td style="text-align:center;">
-          <div style="display:flex; gap:4px; font-size:12px; justify-content:center;">
-            <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
-            <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
-            <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
+          <div style="display:flex; gap:4px; font-size:10px; justify-content:center;">
+            <div style="width:12px; height:12px; border:1px solid #000; background:#ffffff;"></div>
+            <div style="width:12px; height:12px; border:1px solid #000; background:#ffffff;"></div>
+            <div style="width:12px; height:12px; border:1px solid #000; background:#ffffff;"></div>
           </div>
         </td>
       </tr>
@@ -80,7 +79,12 @@ const filas = filasContenido + filasVacias;
           body { font-family: sans-serif; padding:20px; }
           h1 { margin:0; font-size:18px; }
           .header { display:flex; flex-wrap: wrap; gap:12px; margin-bottom:16px; }
-          .campo { flex:1 1 200px; font-size:12px; }
+          .campo { flex:1 1 100px; font-size:12px; }
+          .campo-cliente { width:120px; max-width:120px; } }
+          .campo-ciudad { width:80px; max-width:80px; }
+          .campo-factura { width:40px; max-width:40px; } }
+          .campo-efectivo { max-width:20px;  }
+          .campo-observacion { width:300px; max-width:400px; }
           .datos { font-weight:500; }
           .tabla { width:100%; border-collapse: collapse; margin-top:8px; }
           th, td { border:1px solid #444; padding:6px; font-size:11px; }
@@ -181,17 +185,17 @@ const filas = filasContenido + filasVacias;
               <th>Ciudad</th>
               <th>Cliente</th>
               <th>A cobrar</th>
-              <th>Factura Nro.</th>
-              <th>Cobro efectivo</th>
+              <th>Fact Nro.</th>
+              <th>Cobro Efec</th>
               <th>Cobro giro</th>
-              <th>Cobro transf.</th>
+              <th>Cobro transf</th>
               <th>Pendiente</th>
               <th>Observación</th>
-              <th>Evaluación
+              <th>Eval
                 <div style="margin-top:2px; display:flex; gap:4px; justify-content:center;">
-                <div style="width:14px; height:14px; border:1px solid #000; background:#ff4d4f;  -webkit-print-color-adjust: exact; print-color-adjust: exact;"></div>
-                <div style="width:14px; height:14px; border:1px solid #000; background:#faad14;  -webkit-print-color-adjust: exact; print-color-adjust: exact;"></div>
-                <div style="width:14px; height:14px; border:1px solid #000; background:#52c41a;  -webkit-print-color-adjust: exact; print-color-adjust: exact;"></div>
+                <div style="width:12px; height:12px; border:1px solid #000; background:#ff4d4f;  -webkit-print-color-adjust: exact; print-color-adjust: exact;"></div>
+                <div style="width:12px; height:12px; border:1px solid #000; background:#faad14;  -webkit-print-color-adjust: exact; print-color-adjust: exact;"></div>
+                <div style="width:12px; height:12px; border:1px solid #000; background:#52c41a;  -webkit-print-color-adjust: exact; print-color-adjust: exact;"></div>
               </div>
               </th>
             </tr>
