@@ -7,6 +7,7 @@ import { ComboDetalle, Detalle, EnvioHeader } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
+import { handleImprimirPlanilla } from "../empresion/handleImprimirPlanilla";
 
 
 export default function PedidosEntregadosView() {
@@ -418,11 +419,18 @@ export default function PedidosEntregadosView() {
                   Imprimir productos
                 </button>
                 <button
+                    onClick={() => handleImprimirPlanilla(envio)}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded"
+                  >
+                    Imprimir Planilla de Rendición
+                </button>
+                <button
                   onClick={() => handleVerEnGoogleMaps(envio)}
                   className="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded"
                 >
                   Ver en Google Maps
                 </button>
+
             </div>
 
             {isExpanded && (

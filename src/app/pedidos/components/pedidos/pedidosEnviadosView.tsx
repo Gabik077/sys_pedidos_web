@@ -220,7 +220,7 @@ export default function EnviosPendientesView() {
                   onClick={() => handleImprimirPlanilla(envio)}
                   className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded"
                 >
-                  Imprimir planilla de rendición
+                  Imprimir Planilla de Rendición
                 </button>
 
                 <button
