@@ -90,7 +90,7 @@ const filas = filasContenido + filasVacias;
           th, td { border:1px solid #444; padding:6px; font-size:11px; }
           thead { background:#efefef; }
           .lado { display:flex; gap:40px; margin-top:12px; }
-          .resumen { flex:1; border:1px solid #666; padding:8px; font-size:12px; }
+
           .detalle-costos { float:right; width:220px; border:1px solid #666; padding:8px; font-size:12px; }
           .seccion-mas { margin-top:20px; }
           .linea { border-bottom:1px solid #ccc; height:18px; margin-bottom:4px; }
@@ -98,15 +98,33 @@ const filas = filasContenido + filasVacias;
           .etiqueta { width:120px; display:inline-block; }
           .cuadrados span { display:inline-block; width:14px; height:14px; margin-right:4px; border:1px solid #000; vertical-align:middle; }
 
-            .detalle-costos {
+ .resumen {
     flex:1;
+    min-width: 250px;
+    max-width:300px;
+    border:1px solid #555;
+    border-radius:6px;
+    padding:10px 12px;
+    font-size:12px;
+  }
+  .resumen-demas {
+    flex:1;
+    min-width: 200px;
+    max-width:200px;
+    border:1px solid #555;
+    border-radius:6px;
+    padding:10px 12px;
+    font-size:12px;
+  }
+
+     .detalle-costos {
+    flex:1;
+    min-width: 250px;
     max-width:260px;
     border:1px solid #555;
     border-radius:6px;
     padding:10px 12px;
     font-size:12px;
-    background: #fafafa;
-
   }
   .card-titulo {
     font-weight:700;
@@ -136,8 +154,19 @@ const filas = filasContenido + filasVacias;
   .linea-input {
     display:inline-block;
     border-bottom:1px solid #000;
-    min-width:150px;
+    min-width:100px;
     padding:10 4px;
+    margin-left:4px;
+
+  }
+
+   .linea-input-demas {
+    display:inline-block;
+    border-bottom:1px solid #000;
+    min-width:180px;
+    max-width:180px;
+    padding:10 4px;
+    align-items: center;
     margin-left:4px;
 
   }
@@ -174,8 +203,6 @@ const filas = filasContenido + filasVacias;
 
           <div style="font-size:12px;">Móvil: ${movil?.nombreMovil || ''} chapa: ${movil?.chapaMovil || ''} ,  Km Inicial:__________ Km Final__________ </div></div>
              <div style="font-size:12px;">Fecha envío: ${fecha}</div>
-
-
         </div>
 
         <table class="tabla pedido">
@@ -233,15 +260,16 @@ const filas = filasContenido + filasVacias;
       <div class="valor"><br>______________</div>
     </div>
   </div>
-</div>
 
-<div class="seccion-mas pedido">
-  <div class="subtitulo">De más:</div>
-  <div class="notas">
-    <div class="nota-line"><span class="linea-larga"></span></div>
-    <div class="nota-line"><span class="linea-larga"></span></div>
-    <div class="nota-line"><span class="linea-larga"></span></div>
-    <div class="nota-line"><span class="linea-larga"></span></div>
+    <div class="resumen-demas pedido">
+    <div >
+      <div><strong>De más:</strong></div>
+      <div> <span class="linea-input-demas"></span></div>
+      <div> <span class="linea-input-demas"></span></div>
+      <div> <span class="linea-input-demas"></span></div>
+      <div> <span class="linea-input-demas"></span></div>
+      <div> <span class="linea-input-demas"></span></div>
+    </div>
   </div>
 </div>
 
