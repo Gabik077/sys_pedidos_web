@@ -13,6 +13,7 @@ import { SlLogout } from "react-icons/sl";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
 
 import { UserProvider, useUser } from "./context/UserContext";
+import { NavItem } from "./navItemLayout";
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -57,6 +58,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     );
   }
 
+
+
   return (
     <html lang="es">
      <body className="flex min-h-screen">
@@ -71,83 +74,37 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </button>
 
           <nav className="space-y-2">
-            <Link href="/" className="flex items-center p-2 hover:bg-gray-700 rounded"
-             title={!isOpen ? "Home" : ""}
-            >
-              <FaHome className="text-lg" />
-              {isOpen && <span className="ml-2">Home</span>}
-            </Link>
+            <NavItem href="/" label="Home" Icon={FaHome} isOpen={isOpen} pathname={pathname} />
 
             {role === "ADMINISTRADOR" || role === "SYSADMIN" && (
-              <Link href="/users" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Usuarios" : ""}
-              >
-                <FaUser className="text-lg" />
-                {isOpen && <span className="ml-2">Usuarios</span>}
-              </Link>
+              <NavItem href="/users" label="Usuarios" Icon={FaUser} isOpen={isOpen} pathname={pathname} />
             )}
 
             {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
-              <Link href="/facturacion" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Facturación" : ""}
-              >
-                <FaFileInvoiceDollar className="text-lg" />
-                {isOpen && <span className="ml-2">Facturación</span>}
-              </Link>
+               <NavItem href="/facturacion" label="Facturación" Icon={FaFileInvoiceDollar} isOpen={isOpen} pathname={pathname} />
             )}
 
 
           {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
-              <Link href="/clients" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Clientes" : ""}
-              >
-                <FaUserFriends className="text-lg" />
-                {isOpen && <span className="ml-2">Clientes</span>}
-              </Link>
+              <NavItem href="/clients" label="Clientes" Icon={FaUserFriends} isOpen={isOpen} pathname={pathname} />
             )}
 
             {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
-              <Link href="/pedidos" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Pedidos" : ""}
-              >
-                <FaCalendar className="text-lg" />
-                {isOpen && <span className="ml-2">Pedidos</span>}
-              </Link>
-            )}
-
-          {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
-              <Link href="/moviles" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Pedidos" : ""}
-              >
-                <FaTruckMoving className="text-lg" />
-                {isOpen && <span className="ml-2">Moviles</span>}
-              </Link>
+              <NavItem href="/pedidos" label="Pedidos" Icon={FaCalendar} isOpen={isOpen} pathname={pathname} />
             )}
 
             {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR" || role === "VENDEDOR") && (
-              <Link href="/products" className="flex items-center p-2 hover:bg-gray-700 rounded"
-              title={!isOpen ? "Productos" : ""}
-              >
-                <FaShoppingCart className="text-lg" />
-                {isOpen && <span className="ml-2">Productos</span>}
-              </Link>
+              <NavItem href="/products" label="Productos" Icon={FaShoppingCart} isOpen={isOpen} pathname={pathname} />
             )}
 
             {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR") && (
-              <>
-                <Link href="/stock" className="flex items-center p-2 hover:bg-gray-700 rounded"
-                  title={!isOpen ? "Stock" : ""}
-                >
-                  <FaBoxOpen className="text-lg" />
-                  {isOpen && <span className="ml-2">Stock</span>}
-                </Link>
-                <Link href="/compras" className="flex items-center p-2 hover:bg-gray-700 rounded"
-                title={!isOpen ? "Compras" : ""}
-                >
-                  <FaShoppingBasket className="text-lg" />
-                  {isOpen && <span className="ml-2">Compras</span>}
-                </Link>
-              </>
+
+                <NavItem href="/stock" label="Stock" Icon={FaBoxOpen} isOpen={isOpen} pathname={pathname} />
+
+            )}
+
+           {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
+            <NavItem href="/moviles" label="Moviles" Icon={FaTruckMoving} isOpen={isOpen} pathname={pathname} />
             )}
 
             <button
@@ -168,7 +125,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </html>
   );
 }
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <UserProvider>

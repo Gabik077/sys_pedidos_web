@@ -1,41 +1,71 @@
 import { EnvioHeader } from "@/app/types";
-import { formatearFecha } from "@/app/utils/utils";
+import { formatearFecha, numberFormatter, priceFormatter } from "@/app/utils/utils";
+import PedidoItem from "../pedidos/PedidoItem";
 
   export const handleImprimirPlanilla = (envio: EnvioHeader) => {
   const win = window.open('', '_blank');
   if (!win) return;
 
   // Encabezado de la planilla
-  const fecha = formatearFecha(envio.fechaCreacion);
+  const fechaActual = new Date();
+  fechaActual.setDate(fechaActual.getDate() + 1);
+  const fecha = formatearFecha(fechaActual);
   const movil = envio.envioPedido[0]?.movil;
+  const totalEnvio = envio.envioPedido.reduce((total, ep) => total + Number(ep.pedido.total), 0);
+  const totalEnvioFormatted = priceFormatter.format(totalEnvio);
+
 
   // Construir filas de detalle
-  const filas = envio.envioPedido
-    .sort((a, b) => a.ordenEnvio - b.ordenEnvio)
-    .map(({ pedido, ordenEnvio }) => {
-      return `
-        <tr>
-          <td>${ordenEnvio}</td>
-          <td>${pedido.cliente?.ciudad || ''}</td>
-          <td>${pedido.clienteNombre || ''}</td>
-          <td></td> <!-- A cobrar -->
-          <td></td> <!-- Factura Nro -->
-          <td></td> <!-- Cobro efectivo -->
-          <td></td> <!-- Cobro giro -->
-          <td></td> <!-- Cobro transferencia -->
-          <td></td> <!-- Pendiente -->
-          <td></td> <!-- Observación -->
-          <td style="text-align:center;">
-            <div style="display:flex; gap:4px; font-size:12px; justify-content:center;">
-              <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
-              <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
-              <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
-            </div>
-          </td>
-        </tr>
-      `;
-    })
-    .join('');
+// Filas con contenido
+const filasContenido = envio.envioPedido
+  .sort((a, b) => a.ordenEnvio - b.ordenEnvio)
+  .map(({ pedido, ordenEnvio }) => {
+    return `
+      <tr>
+        <td>${ordenEnvio}</td>
+        <td>${pedido.cliente?.ciudad || ''}</td>
+        <td>${ pedido.clienteNombre || ''}</td>
+        <td>${ numberFormatter.format(Number(pedido.total)) || ''}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td style="text-align:center;">
+          <div style="display:flex; gap:4px; font-size:12px; justify-content:center;">
+            <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
+            <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
+            <div style="width:15px; height:15px; border:1px solid #000; background:#ffffff;"></div>
+          </div>
+        </td>
+      </tr>
+    `;
+  })
+  .join('');
+
+// Cinco filas vacías adicionales
+const filasVacias = Array.from({ length: 5 })
+  .map(() => `
+    <tr>
+      <td>&nbsp;</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>&nbsp;</td>
+    </tr>
+  `)
+  .join('');
+
+// Combina ambas
+const filas = filasContenido + filasVacias;
+
 
   const contenido = `
     <html>
@@ -174,7 +204,7 @@ import { formatearFecha } from "@/app/utils/utils";
        <div class="lado">
   <div class="resumen pedido">
     <div class="totales">
-      <div><span class="etiqueta">Sub total:</span> <span class="linea-input"></span></div>
+      <div><span class="etiqueta">Total Pedidos:</span> <span class="linea-input">${totalEnvioFormatted}</span></div>
       <div><span class="etiqueta">Gastos:</span> <span class="linea-input"></span></div>
       <div><span class="etiqueta">Saldo:</span> <span class="linea-input"></span></div>
     </div>
@@ -196,7 +226,7 @@ import { formatearFecha } from "@/app/utils/utils";
     </div>
     <div class="fila-costo total">
       <div class="label">Total:</div>
-      <div class="valor">______________</div>
+      <div class="valor"><br>______________</div>
     </div>
   </div>
 </div>
