@@ -78,6 +78,7 @@ export default function VendedoresTable({ vendedores: initialVendedores }: Props
                 <th className="py-3 px-6">Nombre</th>
                 <th className="py-3 px-6">Apellido</th>
                 <th className="py-3 px-6">Cedula</th>
+                <th className="py-3 px-6">Teléfono</th>
                 <th className="py-3 px-6 text-center">Acciones</th>
               </tr>
             </thead>
@@ -87,6 +88,7 @@ export default function VendedoresTable({ vendedores: initialVendedores }: Props
                   <td className="py-3 px-6">{v.nombre}</td>
                   <td className="py-3 px-6">{v.apellido}</td>
                   <td className="py-3 px-6">{v.cedula}</td>
+                  <td className="py-3 px-6">{v.telefono}</td>
                   <td className="py-3 px-6 text-center flex gap-2 justify-center">
                     <Link href={`/vendedores/edit/${v.id}`}>
                       <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">

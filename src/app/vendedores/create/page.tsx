@@ -13,6 +13,7 @@ function CreateVendedorPage() {
   const [apellido, setApellido] = useState("");
   const [cedula, setCedula] = useState("");
   const [comision, setComision] = useState(0);
+  const [telefono, setTelefono] = useState("");
 
   if (!token) {
     window.location.href = "/login";
@@ -22,10 +23,29 @@ function CreateVendedorPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!nombre || !apellido || !cedula || comision < 0) {
+      alert("Por favor, completa todos los campos obligatorios.");
+      return;
+    }
+
+    if (telefono && !/^\d+$/.test(telefono)) {
+      alert("El teléfono solo debe contener números.");
+      return;
+    }
+    if (cedula && !/^\d+$/.test(cedula)) {
+      alert("La cédula solo debe contener números.");
+      return;
+    }
+    if (comision < 0 || comision > 100) {
+      alert("La comisión debe estar entre 0 y 100.");
+      return;
+    }
+
     const nuevoVendedor = {
-      nombre,
-      apellido,
-      cedula,
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      cedula: cedula.trim(),
+      telefono: telefono.trim(),
       comision: Number(comision)
     };
 
@@ -81,7 +101,15 @@ function CreateVendedorPage() {
               required
             />
           </div>
-
+          <div className="col-span-2">
+            <p className="text-xs text-gray-500">Teléfono</p>
+            <input
+              type="text"
+              value={telefono}
+              onChange={(e) => setTelefono(e.target.value)}
+              className="w-full p-3 border rounded"
+            />
+          </div>
           <div className="col-span-2">
             <p className="text-xs text-gray-500">Comisión (%)</p>
             <input
@@ -90,10 +118,11 @@ function CreateVendedorPage() {
               onChange={(e) => setComision(Number(e.target.value))}
               className="w-full p-3 border rounded"
               min={0}
-              step={0.01}
+              step={1}
               required
             />
           </div>
+
 
           <button
             type="submit"

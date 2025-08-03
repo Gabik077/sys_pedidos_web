@@ -8,13 +8,12 @@ import { useUser } from "@/app/context/UserContext";
 
 export default function EditMovilPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { id } = useParams();
   const [nombreMovil, setNombreMovil] = useState("");
   const [nombreChofer, setNombreChofer] = useState("");
   const [chapaMovil, setChapaMovil] = useState("");
   const [telefonoChofer, setTelefonoChofer] = useState("");
-      const { token } = useUser();
+  const { token } = useUser();
 
       if (!token) {
         window.location.href = "/login";

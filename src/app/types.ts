@@ -5,9 +5,8 @@ export interface Vendedor {
     nombre: string;
     apellido: string;
     cedula: string;
+    telefono: string;
     comision: number;
-    id_empresa: number;
-    id_usuario: number;
 }
 export interface EnvioPedido {
     id: number;
