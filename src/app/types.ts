@@ -1,5 +1,14 @@
 // types.ts
 
+export interface Vendedor {
+    id: number;
+    nombre: string;
+    apellido: string;
+    cedula: string;
+    comision: number;
+    id_empresa: number;
+    id_usuario: number;
+}
 export interface EnvioPedido {
     id: number;
     ordenEnvio: number;
@@ -80,4 +89,6 @@ export interface Pedido {
     responsable: string;
     cliente: Cliente;
     detalles: Detalle[];
+    idVendedor?: number;
+
 }

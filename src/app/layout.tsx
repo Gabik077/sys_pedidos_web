@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "./services/authService";
-import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends, FaTruckMoving } from "react-icons/fa";
+import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends, FaTruckMoving, FaUserTie } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { SlLogout } from "react-icons/sl";
@@ -84,9 +84,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                <NavItem href="/facturacion" label="Facturación" Icon={FaFileInvoiceDollar} isOpen={isOpen} pathname={pathname} />
             )}
 
-
           {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
               <NavItem href="/clients" label="Clientes" Icon={FaUserFriends} isOpen={isOpen} pathname={pathname} />
+            )}
+
+           {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
+              <NavItem href="/vendedores" label="Vendedores" Icon={FaUserTie} isOpen={isOpen} pathname={pathname} />
             )}
 
             {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (

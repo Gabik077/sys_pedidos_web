@@ -38,7 +38,7 @@ export const handleRequest = async (url: string, options: RequestInit = {}) => {
             credentials: options.credentials ?? 'include',
             ...options,
         });
-
+        console.log(" petición url:", url, "status:", res.status);
         if (!res.ok) {
             if (res.status === 401 || res.status === 403) {
                 // Redirige si no está autorizado o prohibido
