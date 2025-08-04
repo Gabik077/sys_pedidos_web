@@ -89,5 +89,5 @@ export interface Pedido {
     cliente: Cliente;
     detalles: Detalle[];
     idVendedor?: number;
-
+    vendedorNombre?: string;
 }

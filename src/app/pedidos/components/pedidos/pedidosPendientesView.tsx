@@ -271,7 +271,7 @@ const handleImprimirSeleccionados = () => {
             >
               {pedido.estado}
             </span>
-            <p><strong>Responsable:</strong> {pedido.responsable || "No asignado"}</p>
+            <p><strong>Vendedor:</strong> {pedido.vendedorNombre || "No asignado"}</p>
             <p><strong>Total:</strong>{" "}
               {Number(pedido.total).toLocaleString("es-PY", {
                 style: "currency",
