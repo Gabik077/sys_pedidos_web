@@ -6,12 +6,14 @@ type UserContextType = {
   role: string | null;
   token: string | null;
   loading: boolean;
+  user: any | null;
 };
 
 const UserContext = createContext<UserContextType>({
   role: null,
   token: null,
   loading: true,
+  user: null,
 });
 
 export const useUser = () => useContext(UserContext);
@@ -20,6 +22,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,6 +34,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         if (data.status === "ok" && data.user) {
           setRole(data.user.role);
           setToken(data.token ?? null); // si el backend incluye el token en la respuesta
+          setUser(data.user);
         }else{
          // Solo mostrar alerta y redirigir si NO estamos en /login
          if (window.location.pathname !== "/login") {
@@ -51,7 +55,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ role, token, loading }}>
+    <UserContext.Provider value={{ role, token, loading,user }}>
       {children}
     </UserContext.Provider>
   );

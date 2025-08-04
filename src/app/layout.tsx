@@ -14,6 +14,7 @@ import { FaFileInvoiceDollar } from "react-icons/fa6";
 
 import { UserProvider, useUser } from "./context/UserContext";
 import { NavItem } from "./navItemLayout";
+import Header from "./header";
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -122,8 +123,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </div>
 
         {/* Contenido principal */}
-     {/* Contenido principal */}
-<div className="flex-1 p-6 bg-gray-100 overflow-auto">{children}</div>
+
+          <div className="flex-1 bg-gray-100 overflow-auto">
+          <Header />
+          <main >{children}</main>
+        </div>
       </body>
     </html>
   );
