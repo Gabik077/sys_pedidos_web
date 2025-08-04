@@ -1,9 +1,10 @@
 "use client";
 
-import {  fetchProductsStock, insertSalidaStock,fetchMoviles, insertPedido } from "@/app/services/stockService";
+import {  fetchProductsStock, insertPedido } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
 import { useUser } from "@/app/context/UserContext";
+import DropdownVendedores from "./dropdownVendedores";
 
 interface Producto {
   id: number;
@@ -37,7 +38,7 @@ export default function CrearPedidoView() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [busquedaCliente, setBusquedaCliente] = useState("");
-
+  const [vendedorSeleccionado, setVendedorSeleccionado] = useState<number | null>(null);
   const [busqueda, setBusquedaProducto] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
@@ -55,6 +56,7 @@ export default function CrearPedidoView() {
     cliente_nombre: "",
     cliente_ciudad: "",
     cliente_direccion: "",
+    vendedorId: 1,
     cliente_ruc: "",
     pedido:  {
         id_cliente: 0,
@@ -66,14 +68,10 @@ export default function CrearPedidoView() {
   });
 
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       const productos = await fetchProductsStock(token);
       const clientes = await fetchClients(token);
-      const moviles = await fetchMoviles(token);
-
       setProductos(productos);
       setClientes(clientes);
     };
@@ -142,6 +140,7 @@ export default function CrearPedidoView() {
         id_origen: 1,
         observaciones: formData.observaciones,
         total_venta: calcularTotal(),
+        vendedorId: vendedorSeleccionado || 1,// Default to 1 if no vendor is selected
         iva: calcularIVA(),
         pedido: {
           id_cliente: formData.id_cliente,
@@ -161,6 +160,7 @@ export default function CrearPedidoView() {
         tipo_origen: "pedido",
         observaciones: "",
         id_cliente: 1,
+        vendedorId: 1,
         cliente_direccion: "",
         cliente_ciudad: "",
         cliente_nombre: "",
@@ -209,7 +209,8 @@ export default function CrearPedidoView() {
             e.preventDefault();
           }}}
         className="w-full border p-2 rounded"
-      />
+      /><p>Vendedor:</p>
+      <DropdownVendedores  onSelect={(id) => setVendedorSeleccionado(id)} />
       {busquedaCliente && clientesSugeridos.length > 0 && (
         <ul className="absolute bg-white border w-full max-h-48 overflow-y-auto z-10 rounded shadow">
           {clientesSugeridos.map((cli) => (
