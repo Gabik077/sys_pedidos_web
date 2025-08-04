@@ -74,7 +74,7 @@ export default function EnviosPendientesView() {
         const data = await getEnvios(token,"pendiente");
         setEnvios(data);
       } else {
-        alert('Error al finalizar el envío');
+        alert('Error al finalizar el envío: ' + res.message);
       }
     } catch (err) {
       console.error(err);
@@ -99,7 +99,7 @@ export default function EnviosPendientesView() {
         const data = await getEnvios(token,"pendiente");
         setEnvios(data);
       } else {
-        alert('Error al cancelar el envío');
+        alert('Error al cancelar el envío: ' + res.message);
       }
     } catch (err) {
       console.error(err);

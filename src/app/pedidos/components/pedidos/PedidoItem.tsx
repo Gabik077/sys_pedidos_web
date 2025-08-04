@@ -58,6 +58,10 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
             {pedido.observaciones || "Sin observaciones"}
           </p>
           <p>
+            <strong>Vendedor:</strong>{" "}
+            {pedido.vendedorNombre || "Sin vendedor asignado"}
+          </p>
+          <p>
             <strong>Total:</strong>{" "}
             {Number(pedido.total).toLocaleString("es-PY", {
               style: "currency",

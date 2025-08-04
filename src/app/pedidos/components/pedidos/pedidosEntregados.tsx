@@ -197,6 +197,7 @@ export default function PedidosEntregadosView() {
                         <p><strong>Dirección:</strong> {pedido.cliente?.direccion}</p>
                         <p><strong>Chofer:</strong> {movil.nombreChofer} ({movil.telefonoChofer})</p>
                         <p><strong>Observaciones:</strong> {pedido.observaciones || "Sin observaciones"}</p>
+                        <p><strong>Vendedor:</strong> {pedido.vendedorNombre}</p>
                         <p><strong>Estado:</strong>
                           <span className={`ml-2 px-2 py-1 rounded text-white font-semibold ${
                             pedido.estado === 'pendiente'

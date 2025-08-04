@@ -20,10 +20,8 @@ export default async function VendedoresPage() {
     }
 
     const vendedores = await fetchVendedores(token);
-    if (!vendedores.data || vendedores.data.length === 0) {
-      return <div>No hay vendedores disponibles.</div>;
-    }
-    return <VendedoresTable vendedores={vendedores.data} />;
+
+    return <VendedoresTable vendedores={vendedores.data || []} />;
   } catch (err) {
     console.error("Error al verificar el token o cargar los vendedores:", err);
     redirect('/login');

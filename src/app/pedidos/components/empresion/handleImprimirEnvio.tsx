@@ -93,7 +93,7 @@ import { formatearFecha } from "@/app/utils/utils";
               <div class="pedido">
                 <p><strong>Pedido #${p.id}</strong></p>
                 <p><strong>Cliente:</strong> ${p.clienteNombre} - ${p.cliente?.ruc}, Dirección: ${p.cliente?.direccion} - ${p.cliente?.ciudad}</p>
-                <p><strong>Observaciones:</strong> ${p.observaciones || "Sin observaciones"}</p>
+                <p><strong>Vendedor:</strong> ${p.vendedorNombre || "Sin vendedor"} - <strong>Observaciones:</strong> ${p.observaciones || "Sin observaciones"}</p>
                 <p><strong>Total:</strong> ${Number(p.total).toLocaleString('es-PY', {
                   style: 'currency',
                   currency: 'PYG'
