@@ -68,7 +68,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   return Math.abs(lat1 - lat2) < epsilon && Math.abs(lon1 - lon2) < epsilon;
 }*/
 
-function coordsMatch(lat1: number, lon1: number, lat2: number, lon2: number, toleranceInMeters = 50): boolean {
+function coordsMatch(lat1: number, lon1: number, lat2: number, lon2: number, toleranceInMeters = 100): boolean {
   return haversineDistance(lat1, lon1, lat2, lon2) < toleranceInMeters;
 }
 
