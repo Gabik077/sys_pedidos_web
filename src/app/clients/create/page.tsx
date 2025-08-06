@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCliente } from "@/app/services/clientService";
+import { createCliente, fetchCiudades } from "@/app/services/clientService";
 import { useUser } from "@/app/context/UserContext";
+import { Ciudad } from "@/app/types";
 
 function CreateClientePage() {
   const router = useRouter();
@@ -17,11 +18,29 @@ function CreateClientePage() {
   const [lon, setLon] = useState<string>("");
   const [email, setEmail] = useState("");
   const { token } = useUser();
+  const [ciudades, setCiudades] = useState<Ciudad[]>([]);
+
 
   if(!token) {
     window.location.href = "/login";
     return null; // Evitar renderizado adicional si no hay token
   }
+  useEffect(() => {
+    const getCiudades = async () => {
+      try {
+     const data = await fetchCiudades(token || "");
+        if (Array.isArray(data)) {
+          setCiudades(data);
+        } else {
+          console.error("Respuesta inesperada de /ciudades", data);
+        }
+      } catch (error) {
+        console.error("Error al cargar ciudades:", error);
+      }
+    };
+
+    getCiudades();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,17 +136,22 @@ function CreateClientePage() {
               className="w-full p-3 border rounded"
             />
           </div>
-
           <div className="col-span-2">
             <p className="text-xs text-gray-500">Ciudad</p>
-            <input
-              type="text"
+            <select
               value={ciudad}
               onChange={(e) => setCiudad(e.target.value)}
               className="w-full p-3 border rounded"
-            />
+              required
+            >
+              <option value="">Seleccione una ciudad</option>
+              {ciudades.map((c) => (
+                <option key={c.nombre} value={c.nombre}>
+                  {c.nombre}
+                </option>
+              ))}
+            </select>
           </div>
-
           <div>
             <p className="text-xs text-gray-500">Latitud</p>
             <input

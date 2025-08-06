@@ -91,3 +91,8 @@ export interface Pedido {
     idVendedor?: number;
     vendedorNombre?: string;
 }
+
+export interface Ciudad {
+    id: number;
+    nombre: string;
+}

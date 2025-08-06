@@ -7,6 +7,16 @@ if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
 }
 
+
+export const fetchCiudades = async (token: string) => {
+    return await handleRequest(`${apiUrl}/clients/ciudades`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store'
+    });
+};
+
 export const fetchClientsFromServer = async (token: String) => {
     return await handleRequest(`${apiUrl}/clients`, {
         headers: {
