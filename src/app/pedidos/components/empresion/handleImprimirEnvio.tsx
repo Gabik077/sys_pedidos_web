@@ -55,13 +55,13 @@ import { formatearFecha } from "@/app/utils/utils";
               font-style: italic;
             }
             th.producto, td.producto {
-              width: 25%;
+              width: 35%;
             }
             th.cantidad, td.cantidad {
               width: 10%;
             }
             th.precio, td.precio {
-              width: 65%;
+              width: 55%;
             }
 
           </style>
