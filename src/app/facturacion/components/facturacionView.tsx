@@ -2,22 +2,10 @@
 
 import { fetchProductsStock, insertSalidaStock } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUser } from "@/app/context/UserContext";
+import { Cliente, Producto } from "@/app/types";
 
-interface Producto {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio_venta: string;
-}
-
-interface Cliente {
-  id: number;
-  nombre: string;
-  apellido: string;
-  ruc?: string;
-}
 
 interface ProductoSeleccionado {
   id_producto: number;
@@ -27,14 +15,17 @@ interface ProductoSeleccionado {
 export default function FacturacionView() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const codigoBarraRef = useRef<HTMLInputElement>(null);
+  const [bloqueado, setBloqueado] = useState(false);
 
   const [formData, setFormData] = useState({
     tipo_origen: "venta",
     observaciones: "",
     id_cliente: 1,
     cliente_nombre: "",
+    codigo_barra: "",
     cliente_ruc: "",
-    metodo_pago: "efectivo", // ✅ nuevo campo
+    metodo_pago: "efectivo",
     productos: [] as ProductoSeleccionado[],
   });
 
@@ -120,6 +111,7 @@ export default function FacturacionView() {
         tipo_origen: "facturacion",
         observaciones: "",
         id_cliente: 0,
+        codigo_barra: "",
         cliente_nombre: "",
         metodo_pago: "efectivo",
         cliente_ruc: "",
@@ -135,12 +127,63 @@ export default function FacturacionView() {
   };
 
   const productosSugeridos = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    `${p.codigo_barra} ${p.nombre.toLowerCase()}`.includes(busqueda.toLowerCase())
   );
 
   const clientesSugeridos = clientes.filter((cli) =>
     `${cli.nombre} ${cli.apellido}`.toLowerCase().includes(busquedaCliente.toLowerCase())
   );
+
+
+
+const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+
+    if (bloqueado) return;
+
+    setBloqueado(true);
+    setTimeout(() => setBloqueado(false), 300); // evitar doble escaneo
+
+    const productoEncontrado = productos.find(p => p.codigo_barra === formData.codigo_barra.trim());
+
+    if (productoEncontrado) {
+      setFormData((prev) => {
+        const productosActualizados = [...prev.productos];
+        const indexExistente = productosActualizados.findIndex(
+          p => p.id_producto === productoEncontrado.id
+        );
+
+        const cantidadActual = cantidad;
+
+        if (indexExistente !== -1) {
+          const productoExistente = productosActualizados[indexExistente];
+          productosActualizados[indexExistente] = {
+            ...productoExistente,
+            cantidad: productoExistente.cantidad + cantidadActual,
+          };
+        } else {
+          productosActualizados.push({
+            id_producto: productoEncontrado.id,
+            cantidad: cantidadActual,
+          });
+        }
+
+        return {
+          ...prev,
+          productos: productosActualizados,
+          codigo_barra: "",
+        };
+      });
+
+      setBusqueda("");
+      setProductoFiltrado(null);
+    } else {
+      alert("Producto no encontrado");
+    }
+  }
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="p-6 max-w-6xl mx-auto bg-white rounded shadow text-gray-500">
@@ -227,7 +270,27 @@ export default function FacturacionView() {
         </div>
       </div>
 
-      <h3 className="text-lg font-semibold mt-6 mb-2">Agregar Producto</h3>
+
+
+  <h3 className="text-lg font-semibold mt-6 mb-2">Agregar Producto</h3>
+
+<div className="mb-6">
+  <label className="block mb-1">Escanear Código de Barras</label>
+  <input
+    type="text"
+    placeholder="Escaneá el producto"
+    value={formData.codigo_barra}
+    ref={codigoBarraRef}
+    onChange={(e) => setFormData({ ...formData, codigo_barra: e.target.value })}
+  onKeyDown={(e) => handleKeyDown(e)}
+
+
+    className="w-full border p-2 rounded"
+    autoFocus
+  />
+</div>
+
+
       <div className="flex flex-col md:flex-row gap-2 mb-4">
         <div className="relative w-full">
           <input

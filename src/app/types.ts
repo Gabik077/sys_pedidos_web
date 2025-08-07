@@ -50,8 +50,10 @@ export interface Producto {
     id: number;
     nombre: string;
     descripcion: string;
+    codigo: string;
     precio_venta: string;
     marca: string;
+    codigo_barra?: string;
     id_categoria: number;
     comboHeader?: ComboHeader;
     is_combo?: boolean; // Indica si es un combo
