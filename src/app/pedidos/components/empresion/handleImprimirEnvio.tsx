@@ -54,6 +54,16 @@ import { formatearFecha } from "@/app/utils/utils";
               background-color: #f9f9f9;
               font-style: italic;
             }
+            th.producto, td.producto {
+              width: 25%;
+            }
+            th.cantidad, td.cantidad {
+              width: 10%;
+            }
+            th.precio, td.precio {
+              width: 65%;
+            }
+
           </style>
         </head>
         <body>
@@ -69,9 +79,9 @@ import { formatearFecha } from "@/app/utils/utils";
               const esCombo = !!d.producto?.comboHeader;
               return `
                 <tr class="${esCombo ? 'combo' : ''}">
-                  <td>${d.producto?.nombre || 'Sin nombre'}</td>
-                  <td>${d.cantidad}</td>
-                  <td>${(Number(d.precioUnitario) * d.cantidad).toLocaleString('es-PY', {
+                  <td class="producto">${d.producto?.nombre || 'Sin nombre'}</td>
+                  <td class="cantidad">${d.cantidad}</td>
+                  <td class="precio">${(Number(d.precioUnitario) * d.cantidad).toLocaleString('es-PY', {
                     style: 'currency',
                     currency: 'PYG'
                   })}</td>
@@ -79,9 +89,9 @@ import { formatearFecha } from "@/app/utils/utils";
                 ${esCombo && d.producto.comboHeader?.detalles
                   ? d.producto.comboHeader.detalles.map(cd => `
                     <tr class="combo-detalle">
-                      <td>- ${cd.producto?.nombre}</td>
-                      <td>${cd.cantidad}</td>
-                      <td></td>
+                      <td class="producto">- ${cd.producto?.nombre}</td>
+                      <td class="cantidad">${cd.cantidad}</td>
+                      <td class="precio"></td>
                     </tr>
                   `).join('')
                   : ''
@@ -101,9 +111,9 @@ import { formatearFecha } from "@/app/utils/utils";
                 <table>
                   <thead>
                     <tr>
-                      <th>Producto</th>
-                      <th>Cantidad</th>
-                      <th>Precio</th>
+                      <th class="producto">Producto</th>
+                      <th class="cantidad">Cantidad</th>
+                      <th class="precio">Precio</th>
                     </tr>
                   </thead>
                   <tbody>
