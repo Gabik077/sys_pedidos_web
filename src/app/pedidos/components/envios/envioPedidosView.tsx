@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPedidos, insertEnvioPedidos } from "@/app/services/stockService";
+import { getPedidos, insertEnvioPedidos, updateEnvio } from "@/app/services/stockService";
 import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "../pedidos/PedidoItem";
@@ -70,6 +70,12 @@ export default function EnvioPedidosView() {
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);//para listar ruta ordenada
   const [loading, setLoading] = useState(false);
   const [totalesCalculados, setTotalesCalculados] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
+  const [envioIdEditar, setEnvioIdEditar] = useState<string>("");
+  const [envioIdCargado, setEnvioIdCargado] = useState<number | null>(null);
+  const [mostrarBotonGuardar, setMostrarBotonGuardar] = useState(true);
+  const [mostrarBotonEditar, setMostrarBotonEditar] = useState(false);
+  const [filterEnvioButtonDisabled, setFilterEnvioButtonDisabled] = useState(false);
+
   const { token } = useUser();
 
   if (!token) {
@@ -110,6 +116,106 @@ export default function EnvioPedidosView() {
       return [...prev, pedido];
     });
   };
+
+  const handleActualizarPedidos = async () => {
+    setFilterEnvioButtonDisabled(false);//deshabilita el botón de filtro
+    setPedidos([]);
+    setPedidosSeleccionados([]);
+    setPedidosOrdenados([]);
+    setPedidosOrdenados([]);
+    setCalcularRuta(false);
+    setTotalesCalculados({ distancia: "", duracion: "" });
+    setEnvioIdEditar("");
+    setEnvioIdCargado(null);
+    setMostrarBotonEditar(false); // lo desactiva
+    setMostrarBotonGuardar(true); // lo activa
+    fetchPedidos();
+  }
+
+  const fetchEnvioPorId = async () => {
+  if (!envioIdEditar) return alert("Ingrese un ID de envío");
+  //limpiar pedidos seleccionados y ordenados
+  setFilterEnvioButtonDisabled(true);//deshabilita el botón de filtro
+  setPedidosSeleccionados([]);
+  setPedidosOrdenados([]);
+  setEnvioIdCargado(null);
+  setMostrarBotonEditar(true); // lo desactiva
+  setMostrarBotonGuardar(false); // lo desactiva
+  await fetchPedidos();
+
+  try {
+    const res = await fetch(`http://localhost:4000/api/stock/getEnvioById?estadoEnvio=envio_creado&envioId=${envioIdEditar}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+
+    if (Array.isArray(data) && data.length > 0) {
+      const envio = data[0];
+
+      // Cargar los pedidos
+      const pedidosAEditar = envio.envioPedido.map((ep: any) => ep.pedido);
+      setPedidosSeleccionados(pedidosAEditar);
+
+      const pedidosMezclados = [ ...pedidosAEditar, ...pedidos];
+      setPedidos(pedidosMezclados);
+
+      // Cargar móvil
+      setMovilSeleccionado(Number(envio.envioPedido[0]?.idMovil) || null);
+
+      // Setear ID del envío cargado para editar luego
+      setEnvioIdCargado(envio.id);
+    } else {
+      alert("No se encontró el envío.");
+    }
+  } catch (err) {
+    console.error("Error al obtener envío:", err);
+    alert("Error al obtener el envío.");
+  }
+};
+const handleEditarEnvio = async () => {
+  if (!envioIdCargado || envioIdCargado === 0) {
+    alert("No se ha cargado un envío para editar.");
+    return;
+  }
+
+  if (!pedidosOrdenados.length || !movilSeleccionado || !totalesCalculados.distancia || !totalesCalculados.duracion) {
+    alert("Faltan datos para editar el envío.");
+    return;
+  }
+
+  const pedidoDestino = pedidosOrdenados[pedidosOrdenados.length - 1];
+
+  const data = {
+    idEnvio: envioIdCargado,
+    idMovil: movilSeleccionado,
+    pedidos: pedidosOrdenados.map((p) => p.id),
+    kmCalculado: totalesCalculados.distancia,
+    tiempoCalculado: totalesCalculados.duracion,
+    origenLat: parseFloat(origenLat),
+    origenLon: parseFloat(origenLon),
+    destinoLat: pedidoDestino.cliente?.lat ?? 0.0,
+    destinoLon: pedidoDestino.cliente?.lon ?? 0.0,
+  };
+
+  try {
+    const result = await updateEnvio(token, envioIdCargado, data);
+
+    if (result.status === "ok") {
+      alert("Envío editado exitosamente.");
+      setEnvioIdEditar("");
+      setEnvioIdCargado(null);
+      setPedidosSeleccionados([]);
+      setPedidosOrdenados([]);
+      handleActualizarPedidos(); // Refrescar lista de pedidos
+    } else {
+      alert("Error al editar el envío: " + result.message);
+    }
+  } catch (err) {
+    console.error("Error al editar el envío:", err);
+    alert("Error al editar el envío.");
+  }
+};
 
 
   const handleGuardarEnvio = async () => {
@@ -185,22 +291,44 @@ export default function EnvioPedidosView() {
       <h2 className="text-2xl font-bold mb-1 text-gray-500">Crear Reparto</h2>
       <h3 className="text-gray-500"> Distancia : {totalesCalculados.distancia === "" ? "0" : totalesCalculados.distancia }   -  Tiempo: {totalesCalculados.duracion === "" ? "0" : totalesCalculados.duracion}</h3>
       <div className="mb-4 flex flex-col md:flex-row gap-4 items-center">
+
+      <input
+        type="text"
+        placeholder="ID Envío"
+        value={envioIdEditar}
+        onChange={(e) => setEnvioIdEditar(e.target.value)}
+        className="border rounded px-3 py-1.5 w-full md:w-22"
+      />
+
+        <button
+          id="cargar-envio"
+          onClick={fetchEnvioPorId}
+          className={`px-4 py-2 rounded text-white ${
+            filterEnvioButtonDisabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-yellow-500 hover:bg-yellow-600"
+          }`}
+          disabled={filterEnvioButtonDisabled}
+        >
+          Cargar Envío
+        </button>
+
         <button
           title="Actualizar Pedidos"
-          onClick={fetchPedidos}
-          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+          onClick={handleActualizarPedidos}
+          className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded"
         >
 
           {loading ? "cargando..." : <FaSyncAlt className="text-lg" />}
         </button>
 
 
-  <input
+  {/*<input
     type="date"
     value={filtroFecha}
     onChange={(e) => setFiltroFecha(e.target.value)}
     className="border rounded px-3 py-2"
-  />
+  /> */}
 
         <DropdownMovil onSelect={(id) => setMovilSeleccionado(id)} />
         <input
@@ -208,21 +336,32 @@ export default function EnvioPedidosView() {
           placeholder="Latitud de origen"
           value={origenLat}
           onChange={(e) => setOrigenLat(e.target.value)}
-          className="border rounded px-3 py-2 w-full md:w-64"
+          className="border rounded px-3 py-2 w-full md:w-46"
         />
         <input
           type="text"
           placeholder="Longitud de origen"
           value={origenLon}
           onChange={(e) => setOrigenLon(e.target.value)}
-          className="border rounded px-3 py-2 w-full md:w-64"
+          className="border rounded px-3 py-2 w-full md:w-46"
         />
+      {mostrarBotonGuardar && (
         <button
+          id="guardar-envio"
           onClick={handleGuardarEnvio}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Guardar Envío
         </button>
+        )}
+      {mostrarBotonEditar && (
+      <button
+        onClick={handleEditarEnvio}
+        className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+      >
+        Editar Envío
+      </button>
+    )}
         <button
           onClick={handleCalcularRuta}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"

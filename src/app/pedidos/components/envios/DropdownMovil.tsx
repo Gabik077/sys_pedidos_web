@@ -47,13 +47,13 @@ export default function DropdownMovil({ onSelect }: Props) {
 
   return (
     <div>
-      <select style={{ maxWidth: "220px", width: "100%" }}
+      <select
         value={movilId ?? ""}
         onChange={handleChange}
-        className="w-full border rounded px-3 py-2"
+        className="w-full border rounded px-3 py-2  md:w-36"
       >
         <option value="" disabled>
-          -- Seleccione un móvil --
+          Sel. Móvil
         </option>
         {moviles.map((movil) => (
           <option key={movil.id} value={movil.id}>

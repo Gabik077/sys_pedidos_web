@@ -27,6 +27,8 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
                 ? "bg-orange-500"
                 : pedido.estado === "entregado"
                 ? "bg-green-600"
+                : pedido.estado === "envio_creado"
+                ? "bg-blue-400"
                 : "bg-red-600"
             }`}
         >

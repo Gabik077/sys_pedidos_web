@@ -98,6 +98,18 @@ export const guardaEstadoPedido = async (data: any) => {
     });
 }
 
+export async function updateEnvio(token: string, id: any, data: any) {
+    return await handleRequest(`${apiUrl}/stock/editarEnvio/${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+}
+
+
 export async function insertEnvioPedidos(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/envio`, {
         method: "POST",
