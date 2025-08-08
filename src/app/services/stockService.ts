@@ -8,6 +8,14 @@ if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
 }
 
+export const getEnvioById = async (token: string, envioId: number, estado: string) => {
+    return await handleRequest(`${apiUrl}/stock/getEnvioById?estadoEnvio=${estado}&envioId=${envioId}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const getEnvios = async (token: string, estado: String) => {
     return await handleRequest(`${apiUrl}/stock/getEnvios?estadoEnvio=${estado}`, {
         headers: {

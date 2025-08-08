@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPedidos, insertEnvioPedidos, updateEnvio } from "@/app/services/stockService";
+import { getEnvioById, getPedidos, insertEnvioPedidos, updateEnvio } from "@/app/services/stockService";
 import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "../pedidos/PedidoItem";
@@ -144,11 +144,7 @@ export default function EnvioPedidosView() {
   await fetchPedidos();
 
   try {
-    const res = await fetch(`http://localhost:4000/api/stock/getEnvioById?estadoEnvio=envio_creado&envioId=${envioIdEditar}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const data = await res.json();
+    const data = await getEnvioById(token, parseInt(envioIdEditar), "pendiente");
 
     if (Array.isArray(data) && data.length > 0) {
       const envio = data[0];
@@ -166,6 +162,7 @@ export default function EnvioPedidosView() {
       // Setear ID del envío cargado para editar luego
       setEnvioIdCargado(envio.id);
     } else {
+      handleActualizarPedidos(); // Limpiar todo si no se encuentra el envío
       alert("No se encontró el envío.");
     }
   } catch (err) {
