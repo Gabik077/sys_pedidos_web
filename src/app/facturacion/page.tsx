@@ -32,7 +32,7 @@ export default function StockTabsPage() {
       <div>
       <div>
         {activeTab === "Facturación" && <FacturacionView />}
-        {activeTab === "Productos" && <VentasView />}
+        {activeTab === "Ventas" && <VentasView />}
 
       </div>
       </div>
