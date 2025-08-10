@@ -21,3 +21,7 @@ export const numberFormatter = new Intl.NumberFormat("es-PY", {
     style: "decimal",
     minimumFractionDigits: 0,
 });
+
+export const formatCurrency = (value: number): string => {
+    return priceFormatter.format(value);
+};

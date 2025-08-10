@@ -5,6 +5,7 @@ import { fetchClients } from "@/app/services/clientService";
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "@/app/context/UserContext";
 import { Cliente, Producto } from "@/app/types";
+import { formatCurrency, numberFormatter } from "@/app/utils/utils";
 
 
 interface ProductoSeleccionado {
@@ -34,6 +35,9 @@ export default function FacturacionView() {
   const [busqueda, setBusqueda] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
+  const [pago, setPago] = useState<number>(0);
+  const [pagoString, setPagoString] = useState<string>("0");
+  const [vuelto, setVuelto] = useState<number>(0);
   const { token } = useUser();
 
   if (!token) {
@@ -51,12 +55,48 @@ export default function FacturacionView() {
     fetchData();
   }, []);
 
-  const formatCurrency = (value: number | string) => {
-    return parseFloat(value.toString()).toLocaleString("es-PY", {
-      style: "currency",
-      currency: "PYG",
-    });
-  };
+    // Recalcular vuelto cuando cambia pago o productos
+  useEffect(() => {
+    const total = calcularTotal();
+    if (pago >= total) {
+      setVuelto(pago - total);
+    } else {
+      setVuelto(0);
+    }
+  }, [pago, formData.productos]);
+
+
+const handleVuelto = (input: string) => {
+  // reemplazo de coma por punto para parsear
+  const replacedPago = input.replace(/,/g, ".");
+  const pagoNum = parseFloat(replacedPago);
+
+  if (isNaN(pagoNum)) {
+    setPago(0);
+    setPagoString("");
+    setVuelto(0);
+    return;
+  }
+
+  setPago(pagoNum);
+  setPagoString(input); // dejamos input sin formatear mientras escribe
+
+  const total = calcularTotal();
+
+
+  if (pagoNum >= total) {
+    setVuelto(pagoNum - total);
+  } else {
+    setVuelto(0);
+  }
+};
+
+const handlePagoBlur = () => {
+  // cuando el usuario termine de editar, formateamos con separadores de miles
+  setPagoString(formatCurrency(pago));
+};
+
+
 
   const agregarProducto = () => {
     if (productoFiltrado && cantidad > 0) {
@@ -71,6 +111,7 @@ export default function FacturacionView() {
   };
 
   const quitarProducto = (index: number) => {
+    handleVuelto(pagoString); // recalcular vuelto al quitar producto
     setFormData((prev) => ({
       ...prev,
       productos: prev.productos.filter((_, i) => i !== index),
@@ -103,7 +144,7 @@ export default function FacturacionView() {
     };
 
     const result = await insertSalidaStock(token,dataToSend);
-    console.log("Resultado:", result);
+
 
     if (result.status === "ok") {
       alert("Factura registrada correctamente");
@@ -117,6 +158,9 @@ export default function FacturacionView() {
         cliente_ruc: "",
         productos: [],
       });
+      setPago(0);
+      setPagoString("0");
+      setVuelto(0);
       setBusqueda("");
       setProductoFiltrado(null);
       setCantidad(1);
@@ -340,7 +384,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             <li key={idx} className="flex flex-col md:flex-row md:justify-between md:items-center border p-2 rounded mb-1 gap-2">
               <span>{producto?.nombre}</span>
               <span>Cantidad: {p.cantidad}</span>
-              <span>Precio unitario: {producto ? formatCurrency(producto.precio_venta) : ""}</span>
+              <span>Precio unitario: {producto ? formatCurrency(Number(producto.precio_venta)) : ""}</span>
               <button onClick={() => quitarProducto(idx)} className="text-red-600 hover:underline">
                 Quitar
               </button>
@@ -349,12 +393,41 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         })}
       </ul>
 
+
       <div className="mb-4 font-bold">Total: {formatCurrency(calcularTotal())}</div>
       <div className="mb-4 font-bold">IVA (10%): {formatCurrency(calcularIVA())}</div>
 
-      <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded">
-        Registrar Factura
+      <div className="flex flex-col md:flex-row gap-2 mb-4">
+        <div>
+          <label className="block mb-1 ">Pago</label>
+
+         <input
+            type="text"
+            value={pagoString}
+            onChange={(e) => handleVuelto(e.target.value)}
+            onBlur={handlePagoBlur}
+            className="w-30 border p-2 rounded"
+          />
+
+        </div>
+         <div>
+            <label className="block mb-1 ">Vuelto</label>
+           <input
+              type="text"
+              value={formatCurrency(vuelto)}
+              readOnly
+             className="w-30 border-2 border-green-500 p-2 rounded"
+            />
+        </div>
+        <div>
+          <label className="block mb-1 text-gray-100 ">.</label>
+         <button type="submit" className="bg-green-600 text-white px-6 py-2 rounded">
+         Generar Factura
       </button>
+      </div>
+     </div>
+
+
     </form>
   );
 }
