@@ -184,7 +184,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if (e.key === "Enter") {
     e.preventDefault();
 
-    if (bloqueado) return;
+    if (formData.codigo_barra.trim() === "") return;
 
     setBloqueado(true);
     setTimeout(() => setBloqueado(false), 300); // evitar doble escaneo
@@ -222,6 +222,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
       setBusqueda("");
       setProductoFiltrado(null);
+      formData.codigo_barra = "";
     } else {
       alert("Producto no encontrado");
     }
@@ -264,6 +265,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         <div className="relative">
           <input
             type="text"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.preventDefault();
+            }}
             placeholder="Nombre del cliente"
             value={busquedaCliente}
             onChange={(e) => setBusquedaCliente(e.target.value)}
@@ -298,6 +302,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
           <label className="block">Nombre del Cliente</label>
           <input
             type="text"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.preventDefault();
+            }}
             value={formData.cliente_nombre}
             onChange={(e) => setFormData({ ...formData, cliente_nombre: e.target.value })}
             className="w-full border p-2 rounded"
@@ -307,6 +314,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
           <label className="block">RUC del Cliente</label>
           <input
             type="text"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.preventDefault();
+            }}
             value={formData.cliente_ruc}
             onChange={(e) => setFormData({ ...formData, cliente_ruc: e.target.value })}
             className="w-full border p-2 rounded"
@@ -339,6 +349,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         <div className="relative w-full">
           <input
             type="text"
+            onKeyDown={(e) => {
+            if (e.key === "Enter") e.preventDefault();
+           }}
             placeholder="Buscar producto por nombre"
             value={busqueda}
             onChange={(e) => {
@@ -367,6 +380,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
         <input
           type="number"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.preventDefault();
+          }}
           value={cantidad}
           onChange={(e) => setCantidad(Number(e.target.value))}
           className="w-24 border p-2 rounded"
@@ -385,7 +401,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
               <span>{producto?.nombre}</span>
               <span>Cantidad: {p.cantidad}</span>
               <span>Precio unitario: {producto ? formatCurrency(Number(producto.precio_venta)) : ""}</span>
-              <button onClick={() => quitarProducto(idx)} className="text-red-600 hover:underline">
+              <button  type="button" onClick={() => quitarProducto(idx)} className="text-red-600 hover:underline">
                 Quitar
               </button>
             </li>
@@ -403,6 +419,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
          <input
             type="text"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.preventDefault();
+            }}
             value={pagoString}
             onChange={(e) => handleVuelto(e.target.value)}
             onBlur={handlePagoBlur}
@@ -414,6 +433,9 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             <label className="block mb-1 ">Vuelto</label>
            <input
               type="text"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") e.preventDefault();
+              }}
               value={formatCurrency(vuelto)}
               readOnly
              className="w-30 border-2 border-green-500 p-2 rounded"
