@@ -99,6 +99,11 @@ const handlePagoBlur = () => {
 
 
   const agregarProducto = () => {
+if(productoFiltrado){
+const producto = productos.find((p) => p.id === (productoFiltrado.id || ""));
+
+}
+
     if (productoFiltrado && cantidad > 0) {
       setFormData((prev) => ({
         ...prev,
@@ -111,7 +116,6 @@ const handlePagoBlur = () => {
   };
 
   const quitarProducto = (index: number) => {
-    handleVuelto(pagoString); // recalcular vuelto al quitar producto
     setFormData((prev) => ({
       ...prev,
       productos: prev.productos.filter((_, i) => i !== index),
@@ -129,6 +133,11 @@ const handlePagoBlur = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if(pago < calcularTotal()) {
+      alert("El pago debe ser mayor o igual al total de la factura");
+      return;
+    }
 
     const dataToSend = {
       tipo_origen: formData.tipo_origen,
