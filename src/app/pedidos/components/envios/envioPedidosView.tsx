@@ -6,9 +6,10 @@ import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "../pedidos/PedidoItem";
 import ListaRutaOrdenada from "./ListaRutaOrdenada";
-import type { Pedido } from "../../../types";
+import type { Ciudad, Pedido } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
+import DropdownCiudad from "./DropdownCiudad";
 
 const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
   ssr: false,
@@ -75,6 +76,9 @@ export default function EnvioPedidosView() {
   const [mostrarBotonGuardar, setMostrarBotonGuardar] = useState(true);
   const [mostrarBotonEditar, setMostrarBotonEditar] = useState(false);
   const [filterEnvioButtonDisabled, setFilterEnvioButtonDisabled] = useState(false);
+  const [ciudad, setCiudad] = useState<string | null>(null);
+  const [pedidosFiltradosCiudad, setPedidosFiltradosCiudad] = useState<Pedido[]>([]); // lista filtrada (la que se muestra)
+
 
   const { token } = useUser();
 
@@ -82,6 +86,18 @@ export default function EnvioPedidosView() {
     window.location.href = "/login";
     return null; // Evitar renderizado adicional si no hay token
   }
+
+const handleCiudad = (ciudadId: number, ciudadNombre: string) => {
+  setCiudad(ciudadNombre);
+
+
+  //filter pedidos by ciudad
+  const pedidosFiltrados = pedidos.filter(pedido => pedido.cliente.ciudad.toLowerCase() === ciudadNombre.toLowerCase());
+
+  setPedidosFiltradosCiudad(pedidosFiltrados);
+
+
+};
 
   const fetchPedidos = async () => {
     setLoading(true);
@@ -326,7 +342,7 @@ const handleEditarEnvio = async () => {
     onChange={(e) => setFiltroFecha(e.target.value)}
     className="border rounded px-3 py-2"
   /> */}
-
+        <DropdownCiudad onSelect={(id, nombre) => handleCiudad(id,nombre)} />
         <DropdownMovil onSelect={(id) => setMovilSeleccionado(id)} />
         <input
           type="text"
@@ -377,6 +393,14 @@ const handleEditarEnvio = async () => {
                 if (filtroFecha && !pedido.fechaPedido.startsWith(filtroFecha)) {
                 return false;
                 }
+
+
+        if (ciudad && ciudad !== "todas" && pedido.cliente.ciudad.toLowerCase() !== ciudad.toLowerCase()) {
+          return false;
+        }
+
+
+
 
                 return true;
             })
