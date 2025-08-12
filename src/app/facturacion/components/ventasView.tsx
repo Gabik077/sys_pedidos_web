@@ -8,6 +8,7 @@ export default function VentasView() {
   const [ventas, setVentas] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState<string>("TODAS");
+const [totalVentas, setTotalVentas] = useState<number>(0);
   const { token } = useUser();
 
   if (!token) {
@@ -61,10 +62,12 @@ export default function VentasView() {
         </h1>
 
         <h1 className="text-lg font-semibold text-gray-600">
-          <strong>Monto Total: {ventasFiltradas.reduce((acc, venta) => acc + Number(venta.total_venta), 0).toLocaleString("es-PY", {
-            style: "currency",
-            currency: "PYG",
-          })}</strong>
+          <strong>Monto Total: {ventasFiltradas.reduce((acc, venta) => {
+            const total = venta.salida_stock_general?.salidas?.reduce((sum: number, salida: any) => {
+              return sum + (salida.producto?.precio_venta * salida.cantidad || 0);
+            }, 0) || 0;
+            return acc + total;
+          }, 0).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}</strong>
         </h1>
 
         <button
@@ -107,7 +110,10 @@ export default function VentasView() {
             </p>
             <p>
               <strong>Total:</strong>{" "}
-              {Number(venta.total_venta).toLocaleString("es-PY", {
+              {venta.salida_stock_general?.salidas?.reduce((acc: number, salida: any) => {
+               // setTotalVentas(totalVentas + (acc + (salida.producto?.precio_venta * salida.cantidad || 0)));
+                return acc + (salida.producto?.precio_venta * salida.cantidad || 0);
+              }, 0).toLocaleString("es-PY", {
                 style: "currency",
                 currency: "PYG",
               })}
