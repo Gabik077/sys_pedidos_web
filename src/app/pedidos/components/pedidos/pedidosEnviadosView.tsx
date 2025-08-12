@@ -9,7 +9,7 @@ import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
 import { handleImprimirPlanilla } from "../empresion/handleImprimirPlanilla";
 import { handleImprimirEnvio } from "../empresion/handleImprimirEnvio";
-import { handleImprimirProductos } from "../empresion/handleImprimirProductos";
+import { handleImprimirProductos } from "../empresion/handleImprimirProductosEnvio";
 
 
 export default function EnviosPendientesView() {

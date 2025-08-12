@@ -6,7 +6,8 @@ import { Pedido } from "../../../types";
 import { FaDraft2Digital, FaEdit, FaRegEdit, FaSyncAlt, FaTrash } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
-import { handleImprimirSeleccionados } from "../empresion/handleImprimirPedidosPendientes";
+import { handleImprimirPedidosSeleccionados } from "../empresion/handleImprimirPedidosSeleccionados";
+import { handleImprimirProductosSeleccionados } from "../empresion/handleImprimirProductosSeleccionados";
 
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -109,11 +110,19 @@ const onCancelarPedido = (pedidoId: number) => {
           {loading ? "Cargando..." : <FaSyncAlt className="text-lg" />}
         </button>
 
+
         <button
-          onClick={() => handleImprimirSeleccionados(pedidos, seleccionados)}
+          onClick={() => handleImprimirProductosSeleccionados(pedidos, seleccionados)}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+        >
+          Imprimir Productos
+        </button>
+
+        <button
+          onClick={() => handleImprimirPedidosSeleccionados(pedidos, seleccionados)}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
         >
-          Imprimir seleccionados
+          Imprimir Pedidos
         </button>
       </div>
 

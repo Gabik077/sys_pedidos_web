@@ -1,7 +1,7 @@
 import { Pedido } from "@/app/types";
 import { formatearFecha } from "@/app/utils/utils";
 
-export const handleImprimirSeleccionados = (pedidos: Pedido[], seleccionados: number[]) => {
+export const handleImprimirPedidosSeleccionados = (pedidos: Pedido[], seleccionados: number[]) => {
   const pedidosAImprimir = pedidos.filter(p => seleccionados.includes(p.id));
 
   const contenido = `

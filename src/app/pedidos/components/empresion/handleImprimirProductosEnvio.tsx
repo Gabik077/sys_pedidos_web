@@ -96,6 +96,12 @@ export const handleImprimirProductos = (envio: EnvioHeader) => {
             background-color: #f9f9f9; /* Gris muy claro para productos dentro del combo */
             font-style: italic;
           }
+          th.producto, td.producto {
+              width: 35%;
+            }
+            th.cantidad, td.cantidad {
+              width: 65%;
+            }
         </style>
       </head>
       <body>
@@ -106,8 +112,8 @@ export const handleImprimirProductos = (envio: EnvioHeader) => {
         <table>
           <thead>
             <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
+              <th class="producto">Producto</th>
+              <th class="cantidad">Cantidad</th>
             </tr>
           </thead>
           <tbody>
