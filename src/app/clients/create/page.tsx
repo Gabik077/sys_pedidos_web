@@ -47,6 +47,11 @@ function CreateClientePage() {
     const parsedLat = lat.trim() ? parseFloat(lat.replace(/,/g, ".")) : null;
     const parsedLon = lon.trim() ? parseFloat(lon.replace(/,/g, ".")) : null;
 
+    if(parsedLat === parsedLon){
+      alert("Latitud y Longitud no pueden ser iguales");
+      return;
+    }
+
     const newCliente = {
       nombre,
       apellido,
