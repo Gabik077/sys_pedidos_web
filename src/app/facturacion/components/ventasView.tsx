@@ -16,7 +16,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
 
   const today = new Date();
 
-  return today.toISOString().split("T")[0];
+  return today;
 });
 
 
@@ -35,13 +35,6 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
 
   };
 
-    useEffect(() => {
-    const hoy = new Date();
-    // Ajustar manualmente el offset de zona horaria
-    const hoyLocal = new Date(hoy.getTime() - hoy.getTimezoneOffset() * 60000);
-   // setFiltroFecha(hoyLocal.toISOString().split("T")[0]);
-  }, []);
-
 
 
   const getVentas = async () => {
@@ -57,7 +50,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
      const anio = dateObj.getFullYear();
      const diaStr = dia < 10 ? `0${dia}` : `${dia}`;
      const mesStr = mes < 10 ? `0${mes}` : `${mes}`;
-     const fecha = `${mes}-${diaStr}-${anio}`;
+     const fecha = `${mesStr}-${diaStr}-${anio}`;
      const data = await fetchVentas(token, fecha);
 
 
@@ -102,7 +95,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
 
       const fecha = today.toISOString().split("T")[0];
 
-      setFiltroFecha(fecha);
+      setFiltroFecha(today);
       onSelectFecha(new Date(fecha).getDate() + "/" + (new Date(fecha).getMonth() + 1) + "/" + new Date(fecha).getFullYear());
 
     }
