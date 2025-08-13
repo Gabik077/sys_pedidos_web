@@ -7,6 +7,7 @@ import { formatFechaSinHora } from "@/app/utils/utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { on } from "events";
+import { fetchVentas } from "@/app/services/stockService";
 
 export default function VentasView() {
   const [ventas, setVentas] = useState<any[]>([]);
@@ -43,13 +44,29 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
 
 
 
-  const fetchVentas = async () => {
+  const getVentas = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:4000/api/stock/ventas", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
+      if (!filtroFecha) {
+        alert("Por favor, selecciona una fecha válida.");
+        return;
+      }
+     const dateObj = new Date(filtroFecha);
+     const dia = dateObj.getDate();
+     const mes = dateObj.getMonth() + 1; // Los meses en JS van de 0 a 11
+     const anio = dateObj.getFullYear();
+     const diaStr = dia < 10 ? `0${dia}` : `${dia}`;
+     const mesStr = mes < 10 ? `0${mes}` : `${mes}`;
+     const fecha = `${mes}-${diaStr}-${anio}`;
+     const data = await fetchVentas(token, fecha);
+
+
+      if (!Array.isArray(data)) {
+        console.error("Respuesta inesperada de /ventas", data);
+        setVentas([]);
+        setLoading(false);
+        return;
+      }
       setVentas(data);
     } catch (err) {
       console.error("Error al obtener ventas:", err);
@@ -64,7 +81,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
       : ventas.filter((v) => v.estado === filtroEstado);
 
   useEffect(() => {
-    fetchVentas();
+    getVentas();
   }, []);
 
   return (
@@ -80,6 +97,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
   }
   onChange={(date) => {
     if (date) {
+
   const today = new Date(date);
 
       const fecha = today.toISOString().split("T")[0];
@@ -91,10 +109,13 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
   }}
   dateFormat="dd/MM/yyyy"
 />
-
-
-
-
+        <button
+          title="Actualizar Ventas"
+          onClick={getVentas}
+          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
+        >
+          {loading ? "Cargando..." : <FaSyncAlt className="text-lg" />}
+        </button>
 
         <h1 className="text-lg font-semibold text-gray-600">
           <strong>Cantidad Total: {ventasFiltradas.length}</strong>
@@ -109,13 +130,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
           }, 0).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}</strong>
         </h1>
 
-        <button
-          title="Actualizar Ventas"
-          onClick={fetchVentas}
-          className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
-        >
-          {loading ? "Cargando..." : <FaSyncAlt className="text-lg" />}
-        </button>
+
       </div>
 
       <div className="space-y-4 text-gray-700">
