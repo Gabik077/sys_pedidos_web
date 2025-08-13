@@ -3,18 +3,44 @@
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
+import { formatFechaSinHora } from "@/app/utils/utils";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { on } from "events";
 
 export default function VentasView() {
   const [ventas, setVentas] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+const [filtroFecha, setFiltroFecha] = useState(() => {
+
+  const today = new Date();
+
+  return today.toISOString().split("T")[0];
+});
+
+
   const [filtroEstado, setFiltroEstado] = useState<string>("TODAS");
-const [totalVentas, setTotalVentas] = useState<number>(0);
+  const [totalVentas, setTotalVentas] = useState<number>(0);
   const { token } = useUser();
 
   if (!token) {
     window.location.href = "/login";
     return null;
   }
+
+  const onSelectFecha = (fecha: string) => {
+
+    console.log(fecha);
+
+  };
+
+    useEffect(() => {
+    const hoy = new Date();
+    // Ajustar manualmente el offset de zona horaria
+    const hoyLocal = new Date(hoy.getTime() - hoy.getTimezoneOffset() * 60000);
+   // setFiltroFecha(hoyLocal.toISOString().split("T")[0]);
+  }, []);
+
 
 
   const fetchVentas = async () => {
@@ -46,16 +72,29 @@ const [totalVentas, setTotalVentas] = useState<number>(0);
       <div className="flex items-center justify-between mb-6 gap-4">
         <h2 className="text-2xl font-bold text-gray-500">Lista de Ventas</h2>
 
-        <select
-          value={filtroEstado}
-          onChange={(e) => setFiltroEstado(e.target.value)}
-          className="border rounded px-3 py-2"
-        >
-          <option value="TODAS">Todas</option>
-          <option value="completada">Completadas</option>
-          <option value="pendiente">Pendientes</option>
-          <option value="cancelada">Canceladas</option>
-        </select>
+<DatePicker
+  selected={
+    filtroFecha
+      ? new Date(filtroFecha)
+      : new Date(new Date().setHours(12, 0, 0, 0)) // Forzar mediodía para evitar desfase
+  }
+  onChange={(date) => {
+    if (date) {
+  const today = new Date(date);
+
+      const fecha = today.toISOString().split("T")[0];
+
+      setFiltroFecha(fecha);
+      onSelectFecha(new Date(fecha).getDate() + "/" + (new Date(fecha).getMonth() + 1) + "/" + new Date(fecha).getFullYear());
+
+    }
+  }}
+  dateFormat="dd/MM/yyyy"
+/>
+
+
+
+
 
         <h1 className="text-lg font-semibold text-gray-600">
           <strong>Cantidad Total: {ventasFiltradas.length}</strong>

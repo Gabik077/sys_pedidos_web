@@ -11,6 +11,16 @@ export function formatearFecha(fechaStr: string | Date): string {
     return `${dia}/${mes}/${anio} ${horas}:${minutos}`;
 }
 
+export function formatFechaSinHora(fechaStr: string | Date): string {
+    const fecha = new Date(fechaStr);
+
+    const dia = String(fecha.getDate()).padStart(2, "0");
+    const mes = String(fecha.getMonth() + 1).padStart(2, "0"); // enero = 0
+    const anio = fecha.getFullYear();
+
+    return `${dia}/${mes}/${anio}`;
+}
+
 export const priceFormatter = new Intl.NumberFormat("es-PY", {
     style: "currency",
     currency: "PYG",
