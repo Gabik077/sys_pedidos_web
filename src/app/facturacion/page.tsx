@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import FacturacionView from "./components/facturacionView";
 import VentasView from "./components/ventasView";
+import InputModal from "../components/modalConInput";
 
 
 
@@ -11,6 +12,30 @@ const tabs = ["Facturación", "Ventas"];
 
 export default function StockTabsPage() {
   const [activeTab, setActiveTab] = useState("Facturación");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleConfirm = (password: string) => {
+      console.log("Contraseña ingresada:", password);
+
+      if (password === "1234.") {
+       setActiveTab("Ventas");
+      } else {
+        alert("Contraseña incorrecta ❌");
+      }
+
+      setIsModalOpen(false);
+    };
+
+  const openModal = (tab: string) => {
+
+    if (tab === "Facturación") {
+       setActiveTab(tab);
+    }
+    if (tab === "Ventas") {
+       setIsModalOpen(true);
+    }
+
+  };
 
   return (
     <div className="p-6">
@@ -19,7 +44,7 @@ export default function StockTabsPage() {
         {tabs.map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab)}
+            onClick={() => openModal(tab)}
             className={`pb-2 border-b-2 transition-all duration-300 ${
               activeTab === tab ? "border-blue-600 text-blue-600" : "border-transparent text-gray-600 hover:text-black"
             }`}
@@ -36,6 +61,12 @@ export default function StockTabsPage() {
 
       </div>
       </div>
+       <InputModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleConfirm}
+          message="Ingrese su contraseña para continuar"
+        />
     </div>
   );
 }
