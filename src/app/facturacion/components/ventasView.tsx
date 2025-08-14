@@ -8,9 +8,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { on } from "events";
 import { fetchVentas } from "@/app/services/stockService";
+import { Venta } from "@/app/types";
 
 export default function VentasView() {
-  const [ventas, setVentas] = useState<any[]>([]);
+  const [ventas, setVentas] = useState<Venta[]>([]);
   const [loading, setLoading] = useState(false);
 const [filtroFecha, setFiltroFecha] = useState(() => {
 
@@ -73,6 +74,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
       ? ventas
       : ventas.filter((v) => v.estado === filtroEstado);
 
+
   useEffect(() => {
     getVentas();
   }, []);
@@ -116,18 +118,15 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
 
         <h1 className="text-lg font-semibold text-gray-600">
           <strong>Monto Total: {ventasFiltradas.reduce((acc, venta) => {
-            const total = venta.salida_stock_general?.salidas?.reduce((sum: number, salida: any) => {
-              return sum + (salida.producto?.precio_venta * salida.cantidad || 0);
-            }, 0) || 0;
-            return acc + total;
+            return acc + Number(venta.total_venta || 0);
           }, 0).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}</strong>
         </h1>
-
 
       </div>
 
       <div className="space-y-4 text-gray-700">
         {ventasFiltradas.map((venta) => (
+
           <div
             key={venta.id}
             className="border p-4 mb-6 rounded shadow bg-white"
@@ -137,6 +136,7 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
                 Venta #{venta.id} -{" "}
                 {new Date(venta.fecha_venta).toLocaleString("es-PY")}
               </h3>
+
               <span
                 className={`px-2 py-1 rounded font-semibold text-white ${
                   venta.estado === "completada"
@@ -151,35 +151,17 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
                 {venta.estado}
               </span>
             </div>
-
+               <p>
+               <strong>Cliente:</strong> {venta.cliente?.nombre || "No asignado"}{" "}
+              </p>
             <p>
               <strong>Método de pago:</strong> {venta.metodo_pago}
             </p>
-            <p>
               <strong>Total:</strong>{" "}
-              {venta.salida_stock_general?.salidas?.reduce((acc: number, salida: any) => {
-               // setTotalVentas(totalVentas + (acc + (salida.producto?.precio_venta * salida.cantidad || 0)));
-                return acc + (salida.producto?.precio_venta * salida.cantidad || 0);
-              }, 0).toLocaleString("es-PY", {
-                style: "currency",
-                currency: "PYG",
-              })}
-            </p>
+            {Number(venta.total_venta).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}
 
-
-            <h4 className="mt-4 font-semibold">Productos</h4>
-            <ul className="pl-4 list-disc">
-              {venta.salida_stock_general?.salidas?.map((salida: any) => (
-                <li key={salida.id}>
-                  {salida.producto?.nombre} - Cant: {salida.cantidad} - Precio:{" "}
-                  {Number(salida.producto?.precio_venta).toLocaleString(
-                    "es-PY",
-                    { style: "currency", currency: "PYG" }
-                  )}
-                </li>
-              ))}
-            </ul>
           </div>
+
         ))}
       </div>
     </div>

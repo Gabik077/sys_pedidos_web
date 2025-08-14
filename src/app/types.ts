@@ -58,6 +58,34 @@ export interface Producto {
     comboHeader?: ComboHeader;
     is_combo?: boolean; // Indica si es un combo
 }
+export interface Venta {
+    id: number;
+    total_venta: string;
+    metodo_pago: string;
+    fecha_venta: string; // ISO string
+    estado: string;
+    cliente: Cliente;
+    iva: string;
+    salida_stock_general: SalidaStockGeneral;
+}
+export interface Salida {
+    id: number;
+    cantidad: number;
+    id_pedido: number | null;
+    observaciones: string | null;
+    fecha_salida: string; // ISO string
+    producto: Producto;
+}
+
+export interface SalidaStockGeneral {
+    id: number;
+    tipo_origen: string;
+    id_origen: number | null;
+    fecha: string; // ISO string
+    id_cliente: number;
+    observaciones: string;
+    salidas: Salida[];
+}
 
 export interface Detalle {
     id: number;
@@ -70,7 +98,7 @@ export interface Detalle {
 
 export interface Cliente {
     id: number;
-    nombre: string;
+    nombre?: string;
     apellido: string;
     telefono: string;
     direccion: string;
