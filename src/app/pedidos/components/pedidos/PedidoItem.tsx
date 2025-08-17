@@ -55,10 +55,13 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
             <strong>Dirección:</strong> {pedido.cliente?.direccion} -{" "}
             {pedido.cliente?.ciudad}
           </p>
-          <p>
-            <strong>Observaciones:</strong>{" "}
-            {pedido.observaciones || "Sin observaciones"}
-          </p>
+           {pedido.observaciones && pedido.observaciones.trim() !== "" && (
+            <div className="bg-yellow-100 p-2 rounded-md mt-2">
+              <p>
+                <strong>Observaciones:</strong> {pedido.observaciones}
+              </p>
+            </div>
+            )}
           <p>
             <strong>Vendedor:</strong>{" "}
             {pedido.vendedorNombre || "Sin vendedor asignado"}

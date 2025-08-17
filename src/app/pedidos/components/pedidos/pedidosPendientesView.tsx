@@ -178,7 +178,14 @@ const onCancelarPedido = (pedidoId: number) => {
             <p><strong>RUC:</strong> {pedido.cliente?.ruc}</p>
             <p><strong>Ciudad:</strong> {pedido.cliente?.ciudad}</p>
             <p><strong>Dirección:</strong> {pedido.cliente?.direccion}</p>
-            <p><strong>Observaciones:</strong> {pedido.observaciones}</p>
+           {pedido.observaciones && pedido.observaciones.trim() !== "" && (
+            <div className="bg-yellow-100 p-2 rounded-md mt-2">
+              <p>
+                <strong>Observaciones:</strong> {pedido.observaciones}
+              </p>
+            </div>
+            )}
+
             <span
               className={`px-2 py-1 rounded font-semibold text-white ${
                 pedido.estado === "pendiente"
