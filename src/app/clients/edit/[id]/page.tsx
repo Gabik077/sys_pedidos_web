@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { fetchClienteById, updateCliente } from "@/app/services/clientService";
+import { fetchClienteById, fetchZonaCliente, updateCliente } from "@/app/services/clientService";
 import { useUser } from "@/app/context/UserContext";
+import { ZonaCliente } from "@/app/types";
 
 function EditClientePage() {
   const router = useRouter();
@@ -19,7 +20,9 @@ function EditClientePage() {
   const [email, setEmail] = useState("");
   const [lat, setLat] = useState<string>("");
   const [lon, setLon] = useState<string>("");
-    const { token } = useUser();
+  const [zonas, setZonas] = useState<ZonaCliente[]>([]);
+  const [zona, setZona] = useState(0);
+  const { token } = useUser();
 
     if(!token) {
       window.location.href = "/login";
@@ -27,10 +30,14 @@ function EditClientePage() {
     }
 
   useEffect(() => {
-    const fetchCliente = async () => {
+    const fetchInitData = async () => {
       if (!id) return;
       try {
         const cliente = await fetchClienteById(token,id as string);
+        const zonas = await fetchZonaCliente(token || "");
+        if (zonas && Array.isArray(zonas)) {
+         setZonas(zonas);
+        }
         if (cliente) {
           setNombre(cliente.nombre);
           setApellido(cliente.apellido);
@@ -41,13 +48,14 @@ function EditClientePage() {
           setEmail(cliente.email ?? "");
           setLat(cliente.lat?.toString().replace(/,/g, ".") ?? "");
           setLon(cliente.lon?.toString().replace(/,/g, ".") ?? "");
+          setZona(cliente.zona?.id || 0);
         }
       } catch (err) {
         console.error("Error al cargar cliente:", err);
       }
     };
 
-    fetchCliente();
+    fetchInitData();
   }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,6 +71,7 @@ function EditClientePage() {
       telefono,
       ruc,
       direccion,
+      zona,
       email,
       ciudad,
       lat: parsedLat,
@@ -155,7 +164,22 @@ function EditClientePage() {
               className="w-full p-3 border rounded"
             />
           </div>
-
+            <div className="col-span-2">
+            <p className="text-xs text-gray-500">Zona</p>
+            <select
+              value={zona}
+              onChange={(e) => setZona(Number(e.target.value))}
+              className="w-full p-3 border rounded"
+              required
+            >
+              <option value="">Seleccione una zona</option>
+              {zonas.map((z) => (
+                <option key={z.id} value={z.id}>
+                  {z.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
           <div>
             <p className="text-xs text-gray-500">Latitud</p>
             <input
