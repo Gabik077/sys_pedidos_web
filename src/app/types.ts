@@ -106,6 +106,7 @@ export interface Cliente {
     ruc: string;
     lat: number;
     lon: number;
+    zona?: ZonaCliente;
 }
 
 export interface Pedido {
@@ -123,6 +124,16 @@ export interface Pedido {
 }
 
 export interface Ciudad {
+    id: number;
+    nombre: string;
+}
+
+export interface TipoVenta {
+    id: number;
+    nombre: string;
+}
+
+export interface ZonaCliente {
     id: number;
     nombre: string;
 }

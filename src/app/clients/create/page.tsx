@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCliente, fetchCiudades } from "@/app/services/clientService";
+import { createCliente, fetchCiudades, fetchZonaCliente } from "@/app/services/clientService";
 import { useUser } from "@/app/context/UserContext";
-import { Ciudad } from "@/app/types";
+import { Ciudad,ZonaCliente } from "@/app/types";
 
 function CreateClientePage() {
   const router = useRouter();
@@ -19,6 +19,8 @@ function CreateClientePage() {
   const [email, setEmail] = useState("");
   const { token } = useUser();
   const [ciudades, setCiudades] = useState<Ciudad[]>([]);
+  const [zonas, setZonas] = useState<ZonaCliente[]>([]);
+  const [zona, setZona] = useState(0);
 
 
   if(!token) {
@@ -26,20 +28,29 @@ function CreateClientePage() {
     return null; // Evitar renderizado adicional si no hay token
   }
   useEffect(() => {
-    const getCiudades = async () => {
+    const getInitData = async () => {
       try {
-     const data = await fetchCiudades(token || "");
-        if (Array.isArray(data)) {
-          setCiudades(data);
+     const ciudades = await fetchCiudades(token || "");
+     const zonas = await fetchZonaCliente(token || "");
+        if (Array.isArray(ciudades)) {
+          setCiudades(ciudades);
         } else {
-          console.error("Respuesta inesperada de /ciudades", data);
+          console.error("Respuesta inesperada de /ciudades", ciudades);
         }
+
+        if (Array.isArray(zonas)) {
+          console.log("Zonas de cliente:", zonas);
+          setZonas(zonas);
+        } else {
+          console.error("Respuesta inesperada de /zona-cliente", zonas);
+        }
+
       } catch (error) {
         console.error("Error al cargar ciudades:", error);
       }
     };
 
-    getCiudades();
+    getInitData();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,6 +69,7 @@ function CreateClientePage() {
       telefono,
       ruc,
       email,
+      zona: zona ?? 0 ,
       direccion,
       ciudad,
       lat: parsedLat, // Aseguramos que la latitud y longitud sean números decimales
@@ -153,6 +165,22 @@ function CreateClientePage() {
               {ciudades.map((c) => (
                 <option key={c.nombre} value={c.nombre}>
                   {c.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+            <div className="col-span-2">
+            <p className="text-xs text-gray-500">Zona</p>
+            <select
+              value={zona}
+              onChange={(e) => setZona(Number(e.target.value))}
+              className="w-full p-3 border rounded"
+              required
+            >
+              <option value="">Seleccione una zona</option>
+              {zonas.map((z) => (
+                <option key={z.id} value={z.id}>
+                  {z.nombre}
                 </option>
               ))}
             </select>

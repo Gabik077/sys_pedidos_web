@@ -17,6 +17,15 @@ export const fetchCiudades = async (token: string) => {
     });
 };
 
+export const fetchZonaCliente = async (token: string) => {
+    return await handleRequest(`${apiUrl}/clients/zona-cliente`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store'
+    });
+};
+
 export const fetchClientsFromServer = async (token: String) => {
     return await handleRequest(`${apiUrl}/clients`, {
         headers: {
