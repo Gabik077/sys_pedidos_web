@@ -52,6 +52,9 @@ const PedidoItem: FC<Props> = ({ pedido, seleccionado, onToggle }) => {
             <strong>Cliente:</strong> {pedido.clienteNombre} ({pedido.cliente?.ruc})
           </p>
           <p>
+            <strong>Zona:</strong> {pedido.cliente.zona?.nombre.toLocaleUpperCase() || "Sin zona asignada"}
+          </p>
+          <p>
             <strong>Dirección:</strong> {pedido.cliente?.direccion} -{" "}
             {pedido.cliente?.ciudad}
           </p>

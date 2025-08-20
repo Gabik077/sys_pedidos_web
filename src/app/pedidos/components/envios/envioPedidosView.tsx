@@ -6,10 +6,11 @@ import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "../pedidos/PedidoItem";
 import ListaRutaOrdenada from "./ListaRutaOrdenada";
-import type { Ciudad, Pedido } from "../../../types";
+import type { Ciudad, Pedido, ZonaCliente } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import DropdownCiudad from "./DropdownCiudad";
+import { fetchZonaCliente } from "@/app/services/clientService";
 
 const MapaConPedidos = dynamic(() => import("./MapaConPedidos"), {
   ssr: false,
@@ -78,6 +79,10 @@ export default function EnvioPedidosView() {
   const [filterEnvioButtonDisabled, setFilterEnvioButtonDisabled] = useState(false);
   const [ciudad, setCiudad] = useState<string | null>(null);
   const [pedidosFiltradosCiudad, setPedidosFiltradosCiudad] = useState<Pedido[]>([]); // lista filtrada (la que se muestra)
+    const [pedidosFiltradosZona, setPedidosFiltradosZona] = useState<Pedido[]>([]); // lista filtrada (la que se muestra)
+
+    const [zonas, setZonas] = useState<ZonaCliente[]>([]);
+    const [zona, setZona] = useState(0);
 
 
   const { token } = useUser();
@@ -89,14 +94,27 @@ export default function EnvioPedidosView() {
 
 const handleCiudad = (ciudadId: number, ciudadNombre: string) => {
   setCiudad(ciudadNombre);
-
-
   //filter pedidos by ciudad
   const pedidosFiltrados = pedidos.filter(pedido => pedido.cliente.ciudad.toLowerCase() === ciudadNombre.toLowerCase());
 
   setPedidosFiltradosCiudad(pedidosFiltrados);
 
 
+};
+
+const fetchZonas = async () => {
+  try {
+    const zonas = await fetchZonaCliente(token || "");
+    if (Array.isArray(zonas)) {
+      setZonas(zonas);
+    } else {
+      console.error("Respuesta inesperada de /zona-cliente", zonas);
+      setZonas([]);
+    }
+  } catch (error) {
+    console.error("Error al cargar zonas:", error);
+    setZonas([]);
+  }
 };
 
   const fetchPedidos = async () => {
@@ -122,6 +140,7 @@ const handleCiudad = (ciudadId: number, ciudadNombre: string) => {
     };
 
     fetchPedidos();
+    fetchZonas();
   }, []);
 
   const togglePedido = (pedido: Pedido) => {
@@ -139,6 +158,7 @@ const handleCiudad = (ciudadId: number, ciudadNombre: string) => {
     setPedidosSeleccionados([]);
     setPedidosOrdenados([]);
     setPedidosOrdenados([]);
+    setZona(0);
     setCalcularRuta(false);
     setTotalesCalculados({ distancia: "", duracion: "" });
     setEnvioIdEditar("");
@@ -230,6 +250,15 @@ const handleEditarEnvio = async () => {
   }
 };
 
+const handleZona = (zonaId: number) => {
+  setZona(zonaId);
+  if (zonaId === 1 || zonaId === 0) {
+    setPedidos(pedidos); // Mostrar todos los pedidos filtrados por ciudad
+  } else {
+    const pedidosFiltrados = pedidos.filter(pedido => pedido.cliente.zona?.id === zonaId);
+    setPedidosFiltradosZona(pedidosFiltrados);
+  }
+};
 
   const handleGuardarEnvio = async () => {
     if (!pedidosSeleccionados || !origenLat || !origenLon || pedidosSeleccionados.length === 0) {
@@ -342,6 +371,22 @@ const handleEditarEnvio = async () => {
     onChange={(e) => setFiltroFecha(e.target.value)}
     className="border rounded px-3 py-2"
   /> */}
+              <div className="col-span-1">
+
+            <select
+              value={zona}
+              onChange={(e) => handleZona(Number(e.target.value))}
+              className="w-full p-2 border rounded"
+              required
+            >
+              <option value="">Zonas</option>
+              {zonas.map((z) => (
+                <option key={z.id} value={z.id}>
+                  {z.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
         <DropdownCiudad onSelect={(id, nombre) => handleCiudad(id,nombre)} />
         <DropdownMovil onSelect={(id) => setMovilSeleccionado(id)} />
         <input
@@ -396,6 +441,10 @@ const handleEditarEnvio = async () => {
 
 
         if (ciudad && ciudad !== "todas" && pedido.cliente.ciudad.toLowerCase() !== ciudad.toLowerCase()) {
+          return false;
+        }
+
+        if (zona && zona !== 0 && pedido.cliente.zona?.id !== zona) {
           return false;
         }
 
