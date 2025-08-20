@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchProductsStock, insertSalidaStock } from "@/app/services/stockService";
+import { fetchProductsStock, getTipoVenta, insertSalidaStock } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
 import { useEffect, useRef, useState } from "react";
 import { useUser } from "@/app/context/UserContext";
@@ -18,6 +18,8 @@ export default function FacturacionView() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const codigoBarraRef = useRef<HTMLInputElement>(null);
   const [bloqueado, setBloqueado] = useState(false);
+  const [tipoVenta, setTipoVenta] = useState<{ id: number; nombre: string }[]>([]);
+  const [tipoOrigen, setTipoOrigen] = useState<string>("venta");
 
   const [formData, setFormData] = useState({
     tipo_origen: "venta",
@@ -48,7 +50,10 @@ export default function FacturacionView() {
   useEffect(() => {
     const fetchData = async () => {
       const productos = await fetchProductsStock(token || "");
+      const tipoVenta = await getTipoVenta(token || "");
+      setTipoOrigen(tipoVenta[0]?.nombre || "");
       setProductos(productos);
+      setTipoVenta(tipoVenta);
       const clientes = await fetchClients(token || "");
       setClientes(clientes);
     };
@@ -140,7 +145,7 @@ const producto = productos.find((p) => p.id === (productoFiltrado.id || ""));
     }
 
     const dataToSend = {
-      tipo_origen: formData.tipo_origen,
+      tipo_origen: tipoOrigen,
       id_origen: 1,
       observaciones: formData.observaciones,
       total_venta: calcularTotal(),
@@ -158,7 +163,7 @@ const producto = productos.find((p) => p.id === (productoFiltrado.id || ""));
     if (result.status === "ok") {
       alert("Factura registrada correctamente");
       setFormData({
-        tipo_origen: "facturacion",
+        tipo_origen: tipoOrigen,
         observaciones: "",
         id_cliente: 0,
         codigo_barra: "",
@@ -245,12 +250,16 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
-          <label className="block mb-1 ">Tipo Origen</label>
+          <label className="block mb-1 ">Tipo Venta</label>
           <select
-            value={formData.tipo_origen}
-            onChange={(e) => setFormData({ ...formData, tipo_origen: e.target.value })}
+            value={tipoOrigen}
+            onChange={(e) => setTipoOrigen(e.target.value)}
             className="w-full border p-2 rounded">
-            <option value="facturacion">Facturacion</option>
+            {tipoVenta.map((tv) => (
+              <option key={tv.id} value={tv.id}>
+                {tv.nombre}
+              </option>
+            ))}
           </select>
         </div>
 
