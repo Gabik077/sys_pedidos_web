@@ -154,6 +154,9 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
                <p>
                <strong>Cliente:</strong> {venta.cliente?.nombre || "No asignado"} {venta.cliente?.apellido || ""}
               </p>
+              <p>
+              <strong>Tipo Venta:</strong> {venta.tipo_venta || "No asignado"}
+              </p>
             <p>
               <strong>Método de pago:</strong> {venta.metodo_pago}
             </p>

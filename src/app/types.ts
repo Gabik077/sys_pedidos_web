@@ -64,6 +64,7 @@ export interface Venta {
     metodo_pago: string;
     fecha_venta: string; // ISO string
     estado: string;
+    tipo_venta: string;
     cliente: Cliente;
     iva: string;
     salida_stock_general: SalidaStockGeneral;
