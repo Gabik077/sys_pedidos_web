@@ -72,7 +72,8 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
   const ventasFiltradas =
     filtroEstado === "TODAS"
       ? ventas
-      : ventas.filter((v) => v.estado === filtroEstado);
+      : ventas
+      .filter((v) => v.estado === filtroEstado );
 
 
   useEffect(() => {
@@ -126,7 +127,6 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
 
       <div className="space-y-4 text-gray-700">
         {ventasFiltradas.map((venta) => (
-
           <div
             key={venta.id}
             className="border p-4 mb-6 rounded shadow bg-white"
@@ -162,7 +162,18 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
             </p>
               <strong>Total:</strong>{" "}
             {Number(venta.total_venta).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}
-
+            <p>Productos:</p>
+            <ul className="list-disc pl-6">
+              {venta.salida_stock_general?.salidas.map((detalle) => (
+                <li key={detalle.id}>
+                  {detalle.producto.nombre} - Cantidad: {detalle.cantidad} - Precio:{" "}
+                  {Number(detalle.producto.precio_venta).toLocaleString("es-PY", {
+                    style: "currency",
+                    currency: "PYG",
+                  })}
+                </li>
+              ))}
+            </ul>
           </div>
 
         ))}

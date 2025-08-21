@@ -24,7 +24,7 @@ export default function FacturacionView() {
   const [formData, setFormData] = useState({
     tipo_origen: "venta",
     observaciones: "",
-    id_cliente: 1,
+    id_cliente: 0,
     cliente_nombre: "",
     codigo_barra: "",
     cliente_ruc: "",
@@ -146,7 +146,7 @@ const producto = productos.find((p) => p.id === (productoFiltrado.id || ""));
 
     const dataToSend = {
       tipo_origen: tipoOrigen,
-      id_origen: 1,
+      id_origen: null,
       observaciones: formData.observaciones,
       total_venta: calcularTotal(),
       iva: calcularIVA(),
