@@ -9,6 +9,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import { on } from "events";
 import { fetchVentas } from "@/app/services/stockService";
 import { Venta } from "@/app/types";
+import { handleImprimirPlanilla } from "@/app/pedidos/components/empresion/handleImprimirPlanilla";
+import { handleImprimirPedidosSeleccionados } from "@/app/pedidos/components/empresion/handleImprimirPedidosSeleccionados";
+import { handleImprimirProductosVendidos } from "./impresion/handleImprimirProductosVendidos";
 
 export default function VentasView() {
   const [ventas, setVentas] = useState<Venta[]>([]);
@@ -111,6 +114,14 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
           className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
         >
           {loading ? "Cargando..." : <FaSyncAlt className="text-lg" />}
+        </button>
+
+
+        <button
+          onClick={() => handleImprimirProductosVendidos(ventasFiltradas)}
+          className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Imprimir Ventas
         </button>
 
         <h1 className="text-lg font-semibold text-gray-600">
