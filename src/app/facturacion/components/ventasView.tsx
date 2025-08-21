@@ -3,14 +3,11 @@
 import { useEffect, useState } from "react";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
-import { formatFechaSinHora } from "@/app/utils/utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { on } from "events";
 import { fetchVentas } from "@/app/services/stockService";
 import { Venta } from "@/app/types";
-import { handleImprimirPlanilla } from "@/app/pedidos/components/empresion/handleImprimirPlanilla";
-import { handleImprimirPedidosSeleccionados } from "@/app/pedidos/components/empresion/handleImprimirPedidosSeleccionados";
 import { handleImprimirProductosVendidos } from "./impresion/handleImprimirProductosVendidos";
 
 export default function VentasView() {
@@ -23,9 +20,15 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
   return today;
 });
 
+const [filtroFechaFin, setFiltroFechaFin] = useState(() => {
+
+  const today = new Date();
+
+  return today;
+});
+
 
   const [filtroEstado, setFiltroEstado] = useState<string>("TODAS");
-  const [totalVentas, setTotalVentas] = useState<number>(0);
   const { token } = useUser();
 
   if (!token) {
@@ -33,21 +36,15 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
     return null;
   }
 
-  const onSelectFecha = (fecha: string) => {
-
-    console.log(fecha);
-
-  };
-
-
 
   const getVentas = async () => {
     setLoading(true);
     try {
-      if (!filtroFecha) {
+      if (!filtroFecha || !filtroFechaFin) {
         alert("Por favor, selecciona una fecha válida.");
         return;
       }
+      //fecha Inicio
      const dateObj = new Date(filtroFecha);
      const dia = dateObj.getDate();
      const mes = dateObj.getMonth() + 1; // Los meses en JS van de 0 a 11
@@ -55,11 +52,24 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
      const diaStr = dia < 10 ? `0${dia}` : `${dia}`;
      const mesStr = mes < 10 ? `0${mes}` : `${mes}`;
      const fecha = `${mesStr}-${diaStr}-${anio}`;
-     const data = await fetchVentas(token, fecha);
+
+         //fecha Fin
+     const dateObjFin = new Date(filtroFechaFin);
+     const diaFin = dateObjFin.getDate();
+     const mesFin = dateObjFin.getMonth() + 1; // Los meses en JS van de 0 a 11
+     const anioFin = dateObjFin.getFullYear();
+     const diaStrFin = diaFin < 10 ? `0${diaFin}` : `${diaFin}`;
+     const mesStrFin = mesFin < 10 ? `0${mesFin}` : `${mesFin}`;
+     const fechaFin = `${mesStrFin}-${diaStrFin}-${anioFin}`;
+
+
+     const data = await fetchVentas(token, fecha,fechaFin);
+
+
 
 
       if (!Array.isArray(data)) {
-        console.error("Respuesta inesperada de /ventas", data);
+        alert("Error: "+data.message );
         setVentas([]);
         setLoading(false);
         return;
@@ -86,8 +96,8 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6 gap-4">
-        <h2 className="text-2xl font-bold text-gray-500">Lista de Ventas</h2>
-
+        <h2 className="text-2xl font-bold text-gray-500">Ventas</h2>
+Desde:
 <DatePicker
   selected={
     filtroFecha
@@ -102,7 +112,27 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
       const fecha = today.toISOString().split("T")[0];
 
       setFiltroFecha(today);
-      onSelectFecha(new Date(fecha).getDate() + "/" + (new Date(fecha).getMonth() + 1) + "/" + new Date(fecha).getFullYear());
+
+    }
+  }}
+  dateFormat="dd/MM/yyyy"
+/>
+Hasta:
+<DatePicker
+  selected={
+    filtroFechaFin
+      ? new Date(filtroFechaFin)
+      : new Date(new Date().setHours(12, 0, 0, 0)) // Forzar mediodía para evitar desfase
+  }
+  onChange={(date) => {
+    if (date) {
+
+  const today = new Date(date);
+
+      const fecha = today.toISOString().split("T")[0];
+
+      setFiltroFechaFin(today);
+
 
     }
   }}
@@ -121,15 +151,15 @@ const [filtroFecha, setFiltroFecha] = useState(() => {
           onClick={() => handleImprimirProductosVendidos(ventasFiltradas)}
           className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded"
         >
-          Imprimir Ventas
+          Imprimir
         </button>
 
         <h1 className="text-lg font-semibold text-gray-600">
-          <strong>Cantidad Total: {ventasFiltradas.length}</strong>
+          <strong>Cantidad: {ventasFiltradas.length}</strong>
         </h1>
 
         <h1 className="text-lg font-semibold text-gray-600">
-          <strong>Monto Total: {ventasFiltradas.reduce((acc, venta) => {
+          <strong>Monto: {ventasFiltradas.reduce((acc, venta) => {
             return acc + Number(venta.total_venta || 0);
           }, 0).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}</strong>
         </h1>
