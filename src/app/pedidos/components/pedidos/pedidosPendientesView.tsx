@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPedidos, updateEstadoPedido } from "@/app/services/pedidosService";
+import { finalizarPedidoSalon, getPedidos, updateEstadoPedido } from "@/app/services/pedidosService";
 import { Pedido } from "../../../types";
-import { FaDraft2Digital, FaEdit, FaRegEdit, FaSyncAlt, FaTrash } from "react-icons/fa";
+import { FaCheck, FaDraft2Digital, FaEdit, FaRegEdit, FaSave, FaSyncAlt, FaTrash } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
 import { handleImprimirPedidosSeleccionados } from "../empresion/handleImprimirPedidosSeleccionados";
@@ -20,6 +20,22 @@ export default function PedidosPendientesView() {
     window.location.href = "/login";
     return null;
   }
+
+  const handleFinalizarPedidoSalon = async (pedidoId: number) => {
+    try {
+      const res = await finalizarPedidoSalon(token, {id_pedido: pedidoId});
+      if (res.status === 'ok') {
+        alert('Pedido finalizado correctamente');
+        fetchPedidos();
+
+      } else {
+        alert('Error al finalizar el pedido');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error en el servidor');
+    }
+  };
 
   const fetchPedidos = async () => {
     setLoading(true);
@@ -145,6 +161,17 @@ const onCancelarPedido = (pedidoId: number) => {
 
                  <span>  </span>
                   <span>  </span>
+              { pedido.tipoPedido?.id === 2 ? (
+                  <button
+                    onClick={() => handleFinalizarPedidoSalon(pedido.id)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                  >
+                    {loading ? "Cargando..." : <FaCheck className="text-lg" />}
+                  </button>
+
+
+             ) : ("") }
+
               { pedido.estado === "pendiente" ? (
                   <button
                     onClick={() => handleEditarPedido(pedido.id)}

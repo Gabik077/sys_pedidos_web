@@ -80,6 +80,17 @@ export async function insertEnvioPedidos(token: string, data: any) {
     });
 }
 
+export const finalizarPedidoSalon = async (token: string, data: any) => {
+    return await handleRequest(`${apiUrl}/stock/finalizar-pedido-salon`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+};
+
 export const updateEstadoPedido = async (token: string, idPedido: number, estado: string) => {
     return await handleRequest(`${apiUrl}/stock/updateEstadoPedido/${idPedido}`, {
         method: "POST",
