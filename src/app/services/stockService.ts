@@ -24,45 +24,7 @@ export const getTipoVenta = async (token: string) => {
     });
 };
 
-export const getEnvioById = async (token: string, envioId: number, estado: string) => {
-    return await handleRequest(`${apiUrl}/stock/getEnvioById?estadoEnvio=${estado}&envioId=${envioId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-};
 
-export const getEnvios = async (token: string, estado: String) => {
-    return await handleRequest(`${apiUrl}/stock/getEnvios?estadoEnvio=${estado}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-};
-
-export const getCombos = async (token: string, idProducto: number) => {
-    return await handleRequest(`${apiUrl}/stock/combo/${idProducto}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-};
-
-export const fetchMoviles = async (token: string) => {
-    return await handleRequest(`${apiUrl}/stock/moviles`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-}
-
-export const fetchPedidoPorId = async (token: string, id: number) => {
-    return await handleRequest(`${apiUrl}/stock/getPedido/${id}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-};
 
 export const fetchProductsStock = async (token: string) => {
     return await handleRequest(`${apiUrl}/products`, {
@@ -72,26 +34,6 @@ export const fetchProductsStock = async (token: string) => {
     });
 };
 
-export const updateEstadoPedido = async (token: string, idPedido: number, estado: string) => {
-    return await handleRequest(`${apiUrl}/stock/updateEstadoPedido/${idPedido}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ estado }),
-    });
-};
-
-export const getPedidos = async (token: string, estado: string) => {
-    return await handleRequest(`${apiUrl}/stock/getPedidos?estadoPedido=${estado}`,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-};
 
 export const fetchStockList = async (token: string) => {
     return await handleRequest(`${apiUrl}/stock`, {
@@ -101,49 +43,6 @@ export const fetchStockList = async (token: string) => {
     });
 };
 
-export const guardarEstadoPedido = async (token: string, id_envio: number, estado: string) => {
-    return await handleRequest(`${apiUrl}/stock/guardarEstadoPedido`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ id_envio, estado }),
-    });
-}
-
-export const guardaEstadoPedido = async (data: any) => {
-    return await handleRequest(`${apiUrl}/stock/guardarEstadoPedido`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    });
-}
-
-export async function updateEnvio(token: string, id: any, data: any) {
-    return await handleRequest(`${apiUrl}/stock/editarEnvio/${id}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-    });
-}
-
-
-export async function insertEnvioPedidos(token: string, data: any) {
-    return await handleRequest(`${apiUrl}/stock/envio`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-    });
-}
 
 export async function insertEntradaStock(token: string, data: any) {
     return await handleRequest(`${apiUrl}/stock/entrada`, {
@@ -165,28 +64,6 @@ export async function insertSalidaStock(token: string, data: any) {
         body: JSON.stringify(data),
     });
 }
-
-export async function insertPedido(token: string, data: any) {
-    return await handleRequest(`${apiUrl}/stock/pedido`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-    });
-}
-export async function updatePedido(token: string, id: any, data: any) {
-    return await handleRequest(`${apiUrl}/stock/updatePedido/${id}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-    });
-}
-
 export async function updateStockItem(id: number, data: { cantidad_disponible: number }) {
     const res = await handleRequest(`/api/stock/${id}`, {
         method: "PUT",

@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchMoviles } from "@/app/services/stockService";
+import { fetchMoviles } from "@/app/services/pedidosService";
 import { useUser } from "@/app/context/UserContext";
 
 interface Movil {

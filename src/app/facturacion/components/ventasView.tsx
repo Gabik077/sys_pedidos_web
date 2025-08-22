@@ -65,9 +65,6 @@ const [filtroFechaFin, setFiltroFechaFin] = useState(() => {
 
      const data = await fetchVentas(token, fecha,fechaFin);
 
-
-
-
       if (!Array.isArray(data)) {
         alert("Error: "+data.message );
         setVentas([]);

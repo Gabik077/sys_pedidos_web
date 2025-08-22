@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getPedidos, updateEstadoPedido } from "@/app/services/stockService";
+import { getPedidos, updateEstadoPedido } from "@/app/services/pedidosService";
 import { Pedido } from "../../../types";
 import { FaDraft2Digital, FaEdit, FaRegEdit, FaSyncAlt, FaTrash } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";

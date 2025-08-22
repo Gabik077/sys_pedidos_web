@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchMoviles } from "@/app/services/stockService";
 import { useUser } from "@/app/context/UserContext";
 import { Ciudad } from "@/app/types";
 import { fetchCiudades } from "@/app/services/clientService";

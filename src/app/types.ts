@@ -122,6 +122,7 @@ export interface Pedido {
     detalles: Detalle[];
     idVendedor?: number;
     vendedorNombre?: string;
+    tipoPedido?: TipoPedido;
 }
 
 export interface Ciudad {
@@ -135,6 +136,11 @@ export interface TipoVenta {
 }
 
 export interface ZonaCliente {
+    id: number;
+    nombre: string;
+}
+
+export interface TipoPedido {
     id: number;
     nombre: string;
 }

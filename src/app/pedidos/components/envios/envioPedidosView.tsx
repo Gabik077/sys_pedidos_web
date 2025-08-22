@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getEnvioById, getPedidos, insertEnvioPedidos, updateEnvio } from "@/app/services/stockService";
+import { getEnvioById, getPedidos, insertEnvioPedidos, updateEnvio } from "@/app/services/pedidosService";
 import dynamic from "next/dynamic";
 import DropdownMovil from "./DropdownMovil";
 import PedidoItem from "../pedidos/PedidoItem";

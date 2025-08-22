@@ -1,10 +1,12 @@
 "use client";
 
-import {  fetchProductsStock, insertPedido } from "@/app/services/stockService";
+import { insertPedido } from "@/app/services/pedidosService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
 import { useUser } from "@/app/context/UserContext";
 import DropdownVendedores from "./dropdownVendedores";
+import { fetchProductsStock } from "@/app/services/stockService";
+import DropdownTipoPedidos from "./dropDownTipoPedidos";
 
 interface Producto {
   id: number;
@@ -39,6 +41,7 @@ export default function CrearPedidoView() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [vendedorSeleccionado, setVendedorSeleccionado] = useState<number | null>(null);
+  const [tipoPedidoSeleccionado, setTipoPedidoSeleccionado] = useState<number | null>(null);
   const [busqueda, setBusquedaProducto] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
@@ -209,8 +212,13 @@ export default function CrearPedidoView() {
             e.preventDefault();
           }}}
         className="w-full border p-2 rounded"
-      /><p>Vendedor:</p>
+      />
+
+     <div className="flex items-center space-x-4 mt-3">
       <DropdownVendedores  onSelect={(id) => setVendedorSeleccionado(id)} />
+
+      <DropdownTipoPedidos  onSelect={(id) => setTipoPedidoSeleccionado(id)} />
+         </div>
       {busquedaCliente && clientesSugeridos.length > 0 && (
         <ul className="absolute bg-white border w-full max-h-48 overflow-y-auto z-10 rounded shadow">
           {clientesSugeridos.map((cli) => (

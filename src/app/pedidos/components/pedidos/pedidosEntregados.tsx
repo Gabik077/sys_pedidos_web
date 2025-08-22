@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { guardaEstadoPedido, getEnvios } from "@/app/services/stockService"; // Asegúrate de que estos endpoints existan
+import { getEnvios } from "@/app/services/pedidosService"; // Asegúrate de que estos endpoints existan
 import { ComboDetalle, Detalle, EnvioHeader } from "../../../types";
 import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
