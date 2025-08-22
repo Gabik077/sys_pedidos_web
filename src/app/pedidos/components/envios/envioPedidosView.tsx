@@ -120,8 +120,9 @@ const fetchZonas = async () => {
   const fetchPedidos = async () => {
     setLoading(true);
     try {
-      const pedidos = await getPedidos(token,"pendiente");
-      setPedidos(pedidos);
+      const pedidos = await getPedidos(token,"pendiente") as Pedido[];
+      const filteredPedidos = pedidos.filter(p => p.tipoPedido?.id === 1);//solo tipo delivery
+      setPedidos(filteredPedidos);
     } catch (err) {
       console.error("Error al obtener pedidos:", err);
     } finally {
@@ -132,8 +133,9 @@ const fetchZonas = async () => {
   useEffect(() => {
     const fetchPedidos = async () => {
       try {
-        const pedidos = await getPedidos(token,"pendiente");
-        setPedidos(pedidos);
+        const pedidos = await getPedidos(token,"pendiente") as Pedido[];
+        const filteredPedidos = pedidos.filter(p => p.tipoPedido?.id === 1);//solo tipo delivery
+      setPedidos(filteredPedidos);
       } catch (err) {
         console.error("Error al obtener pedidos:", err);
       }
@@ -447,10 +449,6 @@ const handleZona = (zonaId: number) => {
         if (zona && zona !== 0 && pedido.cliente.zona?.id !== zona) {
           return false;
         }
-
-
-
-
                 return true;
             })
             .map((pedido) => (

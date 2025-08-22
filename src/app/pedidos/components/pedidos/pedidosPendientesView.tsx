@@ -169,13 +169,11 @@ const onCancelarPedido = (pedidoId: number) => {
 
               </label>
 
-
-
-
             </div>
 
             <p><strong>Cliente:</strong> {pedido.clienteNombre}</p>
             <p><strong>RUC:</strong> {pedido.cliente?.ruc}</p>
+            <p><strong>Tipo Pedido:</strong> {pedido.tipoPedido?.nombre}</p>
             <p><strong>Ciudad:</strong> {pedido.cliente?.ciudad}</p>
             <p><strong>Dirección:</strong> {pedido.cliente?.direccion}</p>
            {pedido.observaciones && pedido.observaciones.trim() !== "" && (
