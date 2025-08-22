@@ -140,12 +140,3 @@ export const getMovilById = async (token: string, id: string) => {
         }
     });
 };
-
-export const deleteMovil = async (token: string, id: any) => {
-    return await handleRequest(`${apiUrl}/stock/movil/${id}`, {
-        method: "DELETE",
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-};

@@ -2,7 +2,6 @@
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { redirect } from 'next/navigation';
-import { fetchMoviles } from '../services/stockService';
 import MovilesTable from '../components/MovilesTable';
 
 export default async function MovilesPage() {

@@ -40,6 +40,15 @@ export const fetchMoviles = async (token: string) => {
     });
 }
 
+export const deleteMovil = async (token: string, id: any) => {
+    return await handleRequest(`${apiUrl}/stock/movil/${id}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+};
+
 export const fetchPedidoPorId = async (token: string, id: number) => {
     return await handleRequest(`${apiUrl}/stock/getPedido/${id}`, {
         headers: {

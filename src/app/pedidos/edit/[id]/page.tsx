@@ -1,10 +1,11 @@
 "use client";
 
-import {  fetchProductsStock, fetchPedidoPorId,fetchMoviles, insertPedido, updatePedido } from "@/app/services/stockService";
+import {  fetchProductsStock } from "@/app/services/stockService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
 import { useUser } from "@/app/context/UserContext";
 import { useParams } from "next/navigation";
+import { fetchPedidoPorId, updatePedido } from "@/app/services/pedidosService";
 
 interface Producto {
   id: number;

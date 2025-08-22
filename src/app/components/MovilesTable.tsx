@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { FaChevronLeft, FaChevronRight, FaEdit, FaTrash } from "react-icons/fa";
 import ConfirmModal from "./confirmModal";
-import { fetchMoviles, deleteMovil } from "../services/stockService"; // Asegurate de tener deleteMovil implementado
+import { fetchMoviles, deleteMovil } from "../services/pedidosService"; // Asegurate de tener deleteMovil implementado
 import { useUser } from "../context/UserContext";
 
 interface Movil {
