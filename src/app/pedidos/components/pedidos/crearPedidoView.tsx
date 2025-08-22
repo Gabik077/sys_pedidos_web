@@ -7,24 +7,7 @@ import { useUser } from "@/app/context/UserContext";
 import DropdownVendedores from "./dropdownVendedores";
 import { fetchProductsStock } from "@/app/services/stockService";
 import DropdownTipoPedidos from "./dropDownTipoPedidos";
-
-interface Producto {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  precio_venta: string;
-}
-
-interface Cliente {
-  id: number;
-  nombre: string;
-  apellido: string;
-  ruc?: string;
-  lat?: string;
-  lon?: string;
-  direccion?: string;
-  ciudad?: string;
-}
+import { Cliente, Producto } from "@/app/types";
 
   interface ProductoSeleccionado {
     id_producto: number;
@@ -41,7 +24,7 @@ export default function CrearPedidoView() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [vendedorSeleccionado, setVendedorSeleccionado] = useState<number | null>(null);
-  const [tipoPedidoSeleccionado, setTipoPedidoSeleccionado] = useState<number | null>(null);
+  const [tipoPedidoSeleccionado, setTipoPedidoSeleccionado] = useState<number>(1);
   const [busqueda, setBusquedaProducto] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
@@ -62,6 +45,7 @@ export default function CrearPedidoView() {
     vendedorId: 1,
     cliente_ruc: "",
     pedido:  {
+        tipo_pedido: 1, // Default to 1 if no type is selected
         id_cliente: 0,
         cliente_nombre:  "",
         estado: "pendiente", // Estado del pedido
@@ -146,6 +130,7 @@ export default function CrearPedidoView() {
         vendedorId: vendedorSeleccionado || 1,// Default to 1 if no vendor is selected
         iva: calcularIVA(),
         pedido: {
+          tipo_pedido: tipoPedidoSeleccionado || 1, // Default to 1 if no type is selected
           id_cliente: formData.id_cliente,
           cliente_nombre: formData.cliente_nombre,
           estado: "pendiente",
@@ -170,6 +155,7 @@ export default function CrearPedidoView() {
         cliente_ruc: "",
         productos: [],
         pedido:  {
+            tipo_pedido: 1, // Default to 1 if no type is selected
             id_cliente: 0,
             cliente_nombre: "",
             estado: "pendiente", // Estado del pedido
