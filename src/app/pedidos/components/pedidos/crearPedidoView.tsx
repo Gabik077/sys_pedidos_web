@@ -25,6 +25,7 @@ export default function CrearPedidoView() {
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [vendedorSeleccionado, setVendedorSeleccionado] = useState<number | null>(null);
   const [tipoPedidoSeleccionado, setTipoPedidoSeleccionado] = useState<number>(1);
+  const [nombreCliente, setNombreCliente] = useState("");
   const [busqueda, setBusquedaProducto] = useState("");
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
@@ -38,7 +39,7 @@ export default function CrearPedidoView() {
   const [formData, setFormData] = useState({
     tipo_origen: "pedido",
     observaciones: "",
-    id_cliente: 1,
+    id_cliente: 0,
     cliente_nombre: "",
     cliente_ciudad: "",
     cliente_direccion: "",
@@ -118,7 +119,7 @@ export default function CrearPedidoView() {
       alert("Debe agregar al menos un producto al pedido");
       return;
     }
-    if (!formData.id_cliente || !formData.cliente_nombre) {
+    if ((!formData.id_cliente || !formData.cliente_nombre) && tipoPedidoSeleccionado !== 2) {// 2 es para salon
       alert("Debe seleccionar un cliente antes de registrar el pedido");
       return;
     }
@@ -132,7 +133,7 @@ export default function CrearPedidoView() {
         pedido: {
           tipo_pedido: tipoPedidoSeleccionado || 1, // Default to 1 if no type is selected
           id_cliente: formData.id_cliente,
-          cliente_nombre: formData.cliente_nombre,
+          cliente_nombre: nombreCliente || formData.cliente_nombre,
           estado: "pendiente",
           chofer: formData.pedido.chofer,
         },
@@ -212,10 +213,11 @@ export default function CrearPedidoView() {
               key={cli.id}
               className="p-2 hover:bg-blue-100 cursor-pointer"
               onClick={() => {
+                setNombreCliente(`${cli.nombre} ${cli.apellido}`)
                 setFormData({
                   ...formData,
                   id_cliente: cli.id,
-                  cliente_nombre: `${cli.nombre} ${cli.apellido}`,
+                  cliente_nombre: nombreCliente || `${cli.nombre} ${cli.apellido}`,
                   cliente_ruc: cli.ruc || "",
                   cliente_direccion: cli.direccion || "",
                   cliente_ciudad: cli.ciudad || "",
@@ -246,7 +248,7 @@ export default function CrearPedidoView() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block">Nombre del Cliente</label>
-          <input type="text" value={formData.cliente_nombre} className="w-full border p-2 rounded" disabled />
+          <input type="text" value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} className="w-full border p-2 rounded" />
         </div>
 
         <div>
