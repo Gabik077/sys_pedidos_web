@@ -1,16 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CrearPedidoView from "./components/pedidos/crearPedidoView";
 import EnvioPedidosView from "./components/envios/envioPedidosView";
 import PedidosPendientesView from "./components/pedidos/pedidosPendientesView";
 import PedidosEnviadosView from "./components/pedidos/pedidosEnviadosView";
 import PedidosEntregadosView from "./components/pedidos/pedidosEntregados";
 
-const tabs = ["Crear Pedido", "Pedidos Pendientes", "Reparto", "Pedidos Enviados","Pedidos Entregados"];
+
+const tabs = ["Crear Pedido", "Pedidos Pendientes", "Reparto", "Pedidos Enviados", "Pedidos Entregados"];
 
 export default function ComprasTabsPage() {
   const [activeTab, setActiveTab] = useState("Crear Pedido");
+  const [pedidoEnProgreso, setPedidoEnProgreso] = useState(false);
+  //const { budget, setBudget } = userContext();
+
+  useEffect(() => {
+    const draft = localStorage.getItem("pedidoEnProgreso");
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        if (parsed.productos?.length > 0 || parsed.cliente_nombre.length > 0) {
+          setPedidoEnProgreso(true);
+        }else{
+          setPedidoEnProgreso(false);
+        }
+      } catch {}
+    }
+  }, [activeTab]);
 
   return (
     <div className="p-6">
@@ -21,13 +38,16 @@ export default function ComprasTabsPage() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`pb-2 border-b-2 transition-all duration-300 ${
-              activeTab === tab
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-600 hover:text-black"
+            className={`relative pb-2 border-b-2 transition-all duration-300 ${
+              activeTab === tab ? "border-blue-600 text-blue-600" : "border-transparent text-gray-600 hover:text-black"
             }`}
           >
             {tab}
+            {tab === "Crear Pedido" && pedidoEnProgreso && (
+              <span className="absolute -top-1 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                !
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -39,18 +59,19 @@ export default function ComprasTabsPage() {
         <div className={activeTab === "Pedidos Pendientes" ? "" : "hidden"}>
           <PedidosPendientesView />
         </div>
-
         <div className={activeTab === "Reparto" ? "" : "hidden"}>
           <EnvioPedidosView />
         </div>
-
         <div className={activeTab === "Pedidos Enviados" ? "" : "hidden"}>
           <PedidosEnviadosView />
         </div>
         <div className={activeTab === "Pedidos Entregados" ? "" : "hidden"}>
-         <PedidosEntregadosView />
+          <PedidosEntregadosView />
         </div>
       </div>
     </div>
   );
+}
+function userContext(): { budget: any; setBudget: any; } {
+  throw new Error("Function not implemented.");
 }

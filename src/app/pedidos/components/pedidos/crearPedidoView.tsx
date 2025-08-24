@@ -30,7 +30,7 @@ export default function CrearPedidoView() {
   const [productoFiltrado, setProductoFiltrado] = useState<Producto | null>(null);
   const [cantidad, setCantidad] = useState<number>(1);
   const { token } = useUser();
-
+  const LOCAL_KEY = "pedidoEnProgreso";
   if (!token) {
     window.location.href = "/login";
     return null; // Evitar renderizado adicional si no hay token
@@ -55,6 +55,26 @@ export default function CrearPedidoView() {
     productos: [] as ProductoSeleccionado[],
   });
 
+useEffect(() => {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(formData));
+}, [formData.cliente_nombre, formData]);
+
+  // ✅ Restaurar pedido en progreso
+  useEffect(() => {
+    const draft = localStorage.getItem(LOCAL_KEY);
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        setFormData(parsed);
+        setNombreCliente(parsed.cliente_nombre || "");
+      } catch {}
+    }
+  }, []);
+
+  // ✅ Guardar automáticamente en localStorage
+  useEffect(() => {
+    localStorage.setItem(LOCAL_KEY, JSON.stringify(formData));
+  }, [formData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -156,6 +176,7 @@ export default function CrearPedidoView() {
     console.log("Resultado:", result);
 
     if (result.status === "ok") {
+      localStorage.removeItem(LOCAL_KEY); // ✅ limpiar draft al guardar
       alert("Pedido registrado con exito");
       setFormData({
         tipo_origen: "pedido",
