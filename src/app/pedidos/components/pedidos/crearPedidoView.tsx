@@ -1,6 +1,6 @@
 "use client";
 
-import { insertPedido } from "@/app/services/pedidosService";
+import { getPedidos, insertPedido } from "@/app/services/pedidosService";
 import { fetchClients } from "@/app/services/clientService";
 import { useState, useEffect } from "react";
 import { useUser } from "@/app/context/UserContext";
@@ -74,6 +74,18 @@ export default function CrearPedidoView() {
     });
   };
 
+  const handleTipoPedidoSelect = (id: number) => {
+      setTipoPedidoSeleccionado(id);
+    if(id === 2){ // 2 es para salon
+      formData.id_cliente = 0;
+      formData.cliente_nombre = "";
+      setNombreCliente("");
+      formData.cliente_ruc = "";
+      formData.cliente_direccion = "";
+      formData.cliente_ciudad = "";
+    }
+
+  }
 
   const agregarProducto = () => {
     if (productoFiltrado && cantidad > 0) {
@@ -204,7 +216,7 @@ export default function CrearPedidoView() {
      <div className="flex items-center space-x-4 mt-3">
       <DropdownVendedores  onSelect={(id) => setVendedorSeleccionado(id)} />
 
-      <DropdownTipoPedidos  onSelect={(id) => setTipoPedidoSeleccionado(id)} />
+      <DropdownTipoPedidos  onSelect={(id) => handleTipoPedidoSelect(id)} />
          </div>
       {busquedaCliente && clientesSugeridos.length > 0 && (
         <ul className="absolute bg-white border w-full max-h-48 overflow-y-auto z-10 rounded shadow">
@@ -248,7 +260,13 @@ export default function CrearPedidoView() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div>
           <label className="block">Nombre del Cliente</label>
-          <input type="text" value={nombreCliente} onChange={(e) => setNombreCliente(e.target.value)} className="w-full border p-2 rounded" />
+          <input
+            type="text"
+            value={nombreCliente}
+            onChange={(e) => setNombreCliente(e.target.value)}
+            className="w-full border p-2 rounded"
+            disabled={tipoPedidoSeleccionado === 1}
+          />
         </div>
 
         <div>

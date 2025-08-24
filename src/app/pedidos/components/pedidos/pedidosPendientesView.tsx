@@ -266,7 +266,7 @@ const onCancelarPedido = (pedidoId: number) => {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onConfirm={handleConfirm}
-                message="Ingresar contraseña para borrar el pedido"
+                message="Ingresar contraseña para cancelar el pedido"
               />
     </div>
   );
