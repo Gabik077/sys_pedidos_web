@@ -8,18 +8,34 @@ import { useUser } from "@/app/context/UserContext";
 import { formatearFecha } from "@/app/utils/utils";
 import { handleImprimirPedidosSeleccionados } from "../empresion/handleImprimirPedidosSeleccionados";
 import { handleImprimirProductosSeleccionados } from "../empresion/handleImprimirProductosSeleccionados";
+import InputModal from "@/app/components/modalConInput";
 
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(false);
   const [filtroEstado, setFiltroEstado] = useState<string>("TODOS");
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pedidoToDelete, setPedidoToDelete] = useState<number | null>(0);
   const { token } = useUser();
 
   if (!token) {
     window.location.href = "/login";
     return null;
   }
+
+      const handleConfirm = (password: string) => {
+        if (password === "1234.") {
+          handleCancelarPedido(pedidoToDelete || 0);
+        } else {
+          alert("Contraseña incorrecta ❌");
+        }
+
+        setIsModalOpen(false);
+    };
+
+
+
 
   const handleFinalizarPedidoSalon = async (pedidoId: number) => {
     try {
@@ -54,16 +70,13 @@ export default function PedidosPendientesView() {
   };
 
 const onCancelarPedido = (pedidoId: number) => {
-  if (window.confirm("¿Estás seguro de que deseas cancelar este pedido?")) {
-    handleCancelarPedido(pedidoId);
-  }
+  setPedidoToDelete(pedidoId);
+  setIsModalOpen(true);
 };
 
     const handleCancelarPedido = async (idPedido: number) => {
       try {
-
         const res = await updateEstadoPedido(token,idPedido, 'cancelado');
-
         if (res.status === 'ok') {
           alert('Pedido cancelado correctamente');
           const data = await getPedidos(token,"pendiente");
@@ -191,7 +204,6 @@ const onCancelarPedido = (pedidoId: number) => {
                     {loading ? "Cargando..." : <FaTrash className="text-lg" />}
                   </button>
 
-
              ) : ("") }
 
               </label>
@@ -250,6 +262,12 @@ const onCancelarPedido = (pedidoId: number) => {
           </div>
         ))}
       </div>
+             <InputModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleConfirm}
+                message="Ingresar contraseña para borrar el pedido"
+              />
     </div>
   );
 }

@@ -148,7 +148,7 @@ export default function CrearPedidoView() {
       setFormData({
         tipo_origen: "pedido",
         observaciones: "",
-        id_cliente: 1,
+        id_cliente: 0,
         vendedorId: 1,
         cliente_direccion: "",
         cliente_ciudad: "",
