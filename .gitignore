@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /.env.local
+/gabi_ssh_private_key*
+/gabi_ssh_public_key*
+/ssh_config
+/known_hosts
