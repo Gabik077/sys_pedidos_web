@@ -9,6 +9,8 @@ import { formatearFecha } from "@/app/utils/utils";
 import { handleImprimirPedidosSeleccionados } from "../empresion/handleImprimirPedidosSeleccionados";
 import { handleImprimirProductosSeleccionados } from "../empresion/handleImprimirProductosSeleccionados";
 import InputModal from "@/app/components/modalConInput";
+import DropdownTipoPedidos from "./dropDownTipoPedidos";
+import DropdownTipoPedidosPendientes from "./dropdownTipoPedidosPendientes";
 
 export default function PedidosPendientesView() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -17,6 +19,9 @@ export default function PedidosPendientesView() {
   const [seleccionados, setSeleccionados] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pedidoToDelete, setPedidoToDelete] = useState<number | null>(0);
+  const [tipoVenta, setTipoVenta] = useState<{ id: number; nombre: string }[]>([]);
+  const [tipoOrigen, setTipoOrigen] = useState<string>("venta");
+  const [tipoPedidoSeleccionado, setTipoPedidoSeleccionado] = useState<number>(1);
   const { token } = useUser();
 
   if (!token) {
@@ -35,14 +40,12 @@ export default function PedidosPendientesView() {
     };
 
 
-
-
   const handleFinalizarPedidoSalon = async (pedidoId: number) => {
     try {
       const res = await finalizarPedidoSalon(token, {id_pedido: pedidoId});
       if (res.status === 'ok') {
         alert('Pedido finalizado correctamente');
-        fetchPedidos();
+        fetchPedidos(tipoPedidoSeleccionado);
 
       } else {
         alert('Error al finalizar el pedido');
@@ -53,11 +56,12 @@ export default function PedidosPendientesView() {
     }
   };
 
-  const fetchPedidos = async () => {
+  const fetchPedidos = async (tipoPedido: number) => {
     setLoading(true);
     try {
       const pedidos = await getPedidos(token, "pendiente");
-      setPedidos(pedidos);
+      const pedidosFilteredTipoPedido = pedidos.filter((p: { tipoPedido: { id: number; }; }) => p.tipoPedido?.id === tipoPedido);
+      setPedidos(pedidosFilteredTipoPedido);
       setFiltroEstado("pendiente");
     } catch (err) {
       console.error("Error al obtener pedidos:", err);
@@ -94,7 +98,7 @@ const onCancelarPedido = (pedidoId: number) => {
     try {
       setFiltroEstado(estado);
       const pedidos = await getPedidos(token, estado);
-      setPedidos(pedidos);
+      setPedidos(pedidos.filter((p: { tipoPedido: { id: number; }; }) => p.tipoPedido?.id === tipoPedidoSeleccionado));
       setSeleccionados([]); // Reset selección al cambiar filtro
     } catch (err) {
       console.error("Error al obtener pedidos:", err);
@@ -108,18 +112,23 @@ const onCancelarPedido = (pedidoId: number) => {
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
-
-
+  const handleTipoPedidoSelect = (id: number) => {
+      setTipoPedidoSeleccionado(id);
+      fetchPedidos(id);
+  }
 
   useEffect(() => {
-    fetchPedidos();
+        fetchPedidos(1); // Cargar tipo delivery por defecto
   }, []);
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6 gap-4">
-        <h2 className="text-2xl font-bold text-gray-500">Lista de Pedidos</h2>
+        <h2 className="text-2xl font-bold text-gray-500">Pedidos</h2>
+        <div>
 
+      <DropdownTipoPedidosPendientes  onSelect={(id) => handleTipoPedidoSelect(id)} />
+        </div>
        <select
           value={filtroEstado}
           onChange={(e) => handleEstadoPedido(e.target.value)}
@@ -133,7 +142,7 @@ const onCancelarPedido = (pedidoId: number) => {
         <p><strong>Total Pedidos: {pedidos.length}</strong></p>
         <button
           title="Actualizar Pendientes"
-          onClick={fetchPedidos}
+          onClick={() => fetchPedidos(tipoPedidoSeleccionado)}
           className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded"
         >
           {loading ? "Cargando..." : <FaSyncAlt className="text-lg" />}
@@ -174,7 +183,7 @@ const onCancelarPedido = (pedidoId: number) => {
 
                  <span>  </span>
                   <span>  </span>
-              { pedido.tipoPedido?.id === 2 ? (
+              { pedido.tipoPedido?.id === 2 && pedido.estado === "pendiente" ? (
                   <button
                     onClick={() => handleFinalizarPedidoSalon(pedido.id)}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
