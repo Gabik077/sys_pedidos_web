@@ -32,7 +32,7 @@ export const handleImprimirPedidosSeleccionados = (pedidos: Pedido[], selecciona
             <div class="pedido">
               <h3>Pedido #${pedido.id} - ${formatearFecha(pedido.fechaPedido)}</h3>
               <div class="linea-cliente">
-                <strong>Cliente: ${pedido.clienteNombre}</strong> | RUC: ${pedido.cliente?.ruc} |
+                <strong>Cliente: ${pedido.clienteNombre}</strong> | Código: ${pedido.cliente?.id} |
                 ${pedido.cliente?.ciudad} - ${pedido.cliente?.direccion}<br/>
                 Vendedor: ${pedido.vendedorNombre || "No asignado"} |
                 Obs: ${pedido.observaciones || "-"}
