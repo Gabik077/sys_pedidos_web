@@ -16,6 +16,14 @@ export const fetchVentas = async (token: string, fechaInicio: string, fechaFin: 
     });
 };
 
+export const fetchVentasDelivery = async (token: string, fechaInicio: string, fechaFin: string) => {
+    return await handleRequest(`${apiUrl}/stock/ventas-pedidos?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const getTipoVenta = async (token: string) => {
     return await handleRequest(`${apiUrl}/stock/tipo-venta`, {
         headers: {

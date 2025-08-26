@@ -5,13 +5,13 @@ import { FaSyncAlt } from "react-icons/fa";
 import { useUser } from "@/app/context/UserContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { on } from "events";
-import { fetchVentas } from "@/app/services/stockService";
-import { Venta } from "@/app/types";
+import {  fetchVentasDelivery } from "@/app/services/stockService";
+import { Pedido, Venta } from "@/app/types";
 import { handleImprimirProductosVendidos } from "./impresion/handleImprimirProductosVendidos";
+import { handleImprimirVentaDelivery } from "./impresion/handleImprimirVentaDelivery";
 
 export default function VentasDeliveryView() {
-  const [ventas, setVentas] = useState<Venta[]>([]);
+  const [ventas, setVentas] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(false);
 const [filtroFecha, setFiltroFecha] = useState(() => {
 
@@ -63,7 +63,7 @@ const [filtroFechaFin, setFiltroFechaFin] = useState(() => {
      const fechaFin = `${mesStrFin}-${diaStrFin}-${anioFin}`;
 
 
-     const data = await fetchVentas(token, fecha,fechaFin);
+     const data = await fetchVentasDelivery(token, fecha,fechaFin);
 
       if (!Array.isArray(data)) {
         alert("Error: "+data.message );
@@ -145,7 +145,7 @@ Hasta:
 
 
         <button
-          onClick={() => handleImprimirProductosVendidos(ventasFiltradas)}
+          onClick={() => handleImprimirVentaDelivery(ventasFiltradas)}
           className="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded"
         >
           Imprimir
@@ -157,7 +157,7 @@ Hasta:
 
         <h1 className="text-lg font-semibold text-gray-600">
           <strong>Monto: {ventasFiltradas.reduce((acc, venta) => {
-            return acc + Number(venta.total_venta || 0);
+            return acc + Number(venta.total || 0);
           }, 0).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}</strong>
         </h1>
 
@@ -172,16 +172,16 @@ Hasta:
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-lg font-semibold text-gray-600">
                 Venta #{venta.id} -{" "}
-                {new Date(venta.fecha_venta).toLocaleString("es-PY")}
+                {new Date(venta.fechaPedido).toLocaleString("es-PY")}
               </h3>
 
               <span
                 className={`px-2 py-1 rounded font-semibold text-white ${
-                  venta.estado === "completada"
+                  venta.estado === "entregado"
                     ? "bg-green-600"
                     : venta.estado === "pendiente"
                     ? "bg-orange-500"
-                    : venta.estado === "cancelada"
+                    : venta.estado === "cancelado"
                     ? "bg-red-500"
                     : "bg-gray-400"
                 }`}
@@ -193,16 +193,14 @@ Hasta:
                <strong>Cliente:</strong> {venta.cliente?.nombre || "No asignado"} {venta.cliente?.apellido || ""}
               </p>
               <p>
-              <strong>Tipo Venta:</strong> {venta.tipo_venta || "No asignado"}
+              <strong>Tipo Venta:</strong> {venta.tipoPedido?.nombre || "No asignado"}
               </p>
-            <p>
-              <strong>Método de pago:</strong> {venta.metodo_pago}
-            </p>
+
               <strong>Total:</strong>{" "}
-            {Number(venta.total_venta).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}
+            {Number(venta.total).toLocaleString("es-PY", { style: "currency", currency: "PYG" })}
             <p>Productos:</p>
             <ul className="list-disc pl-6">
-              {venta.salida_stock_general?.salidas.map((detalle) => (
+              {venta.detalles.map((detalle) => (
                 <li key={detalle.id}>
                   {detalle.producto.nombre} - Cantidad: {detalle.cantidad} - Precio:{" "}
                   {Number(detalle.producto.precio_venta).toLocaleString("es-PY", {
