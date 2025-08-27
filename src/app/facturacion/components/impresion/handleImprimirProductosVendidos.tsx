@@ -31,7 +31,7 @@ export const handleImprimirProductosVendidos = (pedidosAImprimir: Venta[]) => {
             <div class="pedido">
               <h3>Venta #${venta.id} - ${formatearFecha(venta.fecha_venta)}</h3>
               <div class="linea-cliente">
-                <strong>Cliente:</strong> ${venta.cliente?.nombre || "No asignado"} | Código: ${venta.cliente?.id || ""} -
+                <strong>Cliente:</strong> ${venta.cliente?.nombre || "No asignado"} | Teléfono: ${venta.cliente?.telefono || ""} -
                 ${venta.cliente?.ciudad || ""} - ${venta.cliente?.direccion || ""}<br/>
               </div>
               <table>
