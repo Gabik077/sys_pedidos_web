@@ -66,6 +66,8 @@ export default function EnviosPendientesView() {
 
 
   const handleFinalizarEnvio = async (idEnvio: number) => {
+
+ if (confirm(`¿Estás seguro de que deseas finalizar el envío #${idEnvio}?.`)) {
     try {
       const res = await guardarEstadoPedido(token,idEnvio, 'entregado');
 
@@ -80,6 +82,9 @@ export default function EnviosPendientesView() {
       console.error(err);
       alert('Error en el servidor');
     }
+ }
+
+
   };
 
   const handleCancelarClick = (idEnvio: number) => {

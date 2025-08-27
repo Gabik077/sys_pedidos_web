@@ -41,6 +41,8 @@ export default function PedidosPendientesView() {
 
 
   const handleFinalizarPedidoSalon = async (pedidoId: number) => {
+
+if (confirm(`¿Estás seguro de que deseas finalizar el pedido #${pedidoId}?.`)) {
     try {
       const res = await finalizarPedidoSalon(token, {id_pedido: pedidoId});
       if (res.status === 'ok') {
@@ -54,6 +56,9 @@ export default function PedidosPendientesView() {
       console.error(err);
       alert('Error en el servidor');
     }
+
+}
+
   };
 
   const fetchPedidos = async (tipoPedido: number) => {
