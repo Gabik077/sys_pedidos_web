@@ -15,13 +15,26 @@ import { FaFileInvoiceDollar } from "react-icons/fa6";
 import { UserProvider, useUser } from "./context/UserContext";
 import { NavItem } from "./navItemLayout";
 import Header from "./header";
+import InputModal from "./components/modalConInput";
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
 
   const { role, loading } = useUser();
+
+      const handleConfirm = (password: string) => {
+      console.log("Contraseña ingresada:", password);
+
+      if (password === "1234.") {
+        router.push("/informes");
+      } else {
+        alert("Contraseña incorrecta ❌");
+      }
+      setIsModalOpen(false);
+    };
 
   const logoutNext = async () => {
     const res = await fetch("/api/logout", {
@@ -85,9 +98,21 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                <NavItem href="/facturacion" label="Facturación" Icon={FaFileInvoiceDollar} isOpen={isOpen} pathname={pathname} />
             )}
 
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
-              <NavItem href="/informes" label="Informes" Icon={FaCalendarCheck} isOpen={isOpen} pathname={pathname} />
-            )}
+          {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
+            <Link
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsModalOpen(true);
+              }}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md cursor-pointer hover:bg-gray-500
+                ${isOpen ? "justify-start" : "justify-center"}
+                ${pathname === "/informes" ? "bg-gray-700 text-white font-semibold" : "text-gray-200"}`}
+            >
+              <FaCalendarCheck className="text-xl" />
+              {isOpen && <span>Informes</span>}
+            </Link>
+          )}
 
           {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
               <NavItem href="/clients" label="Clientes" Icon={FaUserFriends} isOpen={isOpen} pathname={pathname} />
@@ -132,10 +157,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <Header />
           <main >{children}</main>
         </div>
+               <InputModal
+                  isOpen={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  onConfirm={handleConfirm}
+                  message="Ingrese su contraseña para continuar"
+                />
       </body>
     </html>
   );
 }
+
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <UserProvider>
