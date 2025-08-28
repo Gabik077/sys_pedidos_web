@@ -4,17 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import InformeVentasView from "./componentes/informeVentasView";
 import InputModal from "../components/modalConInput";
-import VentasDeliveryView from "../facturacion/components/ventasDeliveryView";
 import InformePedidosPorVendedor from "./componentes/informePedidosPorVendedor";
 import InformeVentasDeliveryView from "./componentes/informeVentasDeliveryView";
-
-
 
 const tabs = [ "Ventas Salón", "Ventas con Delivery","Pedidos por Vendedor"];
 
 export default function InformesTabsPage() {
-  const [activeTab, setActiveTab] = useState("Ventas");
-  const [selectedTab, setSelectedTab] = useState("Ventas");
+  const [activeTab, setActiveTab] = useState("Ventas Salón");
+  const [selectedTab, setSelectedTab] = useState("Ventas Salón");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleConfirm = (password: string) => {

@@ -92,7 +92,7 @@ const [filtroFechaFin, setFiltroFechaFin] = useState(() => {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6 gap-4">
-        <h2 className="text-2xl font-bold text-gray-500">Ventas por Delivery</h2>
+        <h2 className="text-2xl font-bold text-gray-500">Delivery</h2>
 Desde:
 <DatePicker
   selected={
