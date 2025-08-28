@@ -148,6 +148,7 @@ const producto = productos.find((p) => p.id === (productoFiltrado.id || ""));
       tipo_origen: tipoOrigen,
       id_origen: null,
       observaciones: formData.observaciones,
+      cliente_nombre: formData.cliente_nombre || "",
       total_venta: calcularTotal(),
       iva: calcularIVA(),
       venta: {

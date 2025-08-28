@@ -68,6 +68,7 @@ export interface Venta {
     cliente: Cliente;
     iva: string;
     salida_stock_general: SalidaStockGeneral;
+    cliente_nombre?: string;
 }
 export interface Salida {
     id: number;

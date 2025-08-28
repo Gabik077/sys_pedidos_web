@@ -190,7 +190,7 @@ Hasta:
               </span>
             </div>
                <p>
-               <strong>Cliente:</strong> {venta.cliente?.nombre || "No asignado"} {venta.cliente?.apellido || ""}
+               <strong>Cliente:</strong> {venta.cliente?.nombre || venta.cliente_nombre || "No asignado"} {venta.cliente?.apellido || ""}
               </p>
               <p>
               <strong>Tipo Venta:</strong> {venta.tipo_venta || "No asignado"}
