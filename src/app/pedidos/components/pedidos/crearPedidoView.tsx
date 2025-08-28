@@ -59,17 +59,6 @@ useEffect(() => {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(formData));
 }, [formData.cliente_nombre, formData]);
 
-  // ✅ Restaurar pedido en progreso
-  useEffect(() => {
-    const draft = localStorage.getItem(LOCAL_KEY);
-    if (draft) {
-      try {
-        const parsed = JSON.parse(draft);
-        setFormData(parsed);
-        setNombreCliente(parsed.cliente_nombre || "");
-      } catch {}
-    }
-  }, []);
 
   // ✅ Guardar automáticamente en localStorage
   useEffect(() => {
