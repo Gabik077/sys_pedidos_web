@@ -108,10 +108,21 @@ export default function InformePedidosPorVendedor() {
 
         <h1 className="text-lg font-semibold text-gray-600">
           <strong>
-            Cantidad:{" "}
+            Cantidad Total:{" "}
             {filteredPedidos
               .reduce((acc, pedido) => acc + Number(pedido.cantidadPedidos || 0), 0)
               .toLocaleString()}
+          </strong>
+        </h1>
+           <h1 className="text-lg font-semibold text-gray-600">
+          <strong>
+            Monto Total:{" "}
+            {filteredPedidos
+              .reduce((acc, pedido) => acc + Number(pedido.montoTotal || 0), 0)
+              .toLocaleString("es-PY", {
+                style: "currency",
+                currency: "PYG",
+              })}
           </strong>
         </h1>
       </div>
