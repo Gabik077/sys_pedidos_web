@@ -60,13 +60,19 @@ export default function StockTabsPage() {
       </div>
 
       <div>
-      <div>
-        {activeTab === "Facturación" && <FacturacionView />}
-        {activeTab === "Ventas" && <VentasView />}
-        {activeTab === "Ventas con Delivery" && <VentasDeliveryView />}
+        <div className={activeTab === "Facturación" ? "" : "hidden"}>
+          <FacturacionView />
+        </div>
 
+        <div className={activeTab === "Ventas" ? "" : "hidden"}>
+          <VentasView />
+        </div>
+
+        <div className={activeTab === "Ventas con Delivery" ? "" : "hidden"}>
+          <VentasDeliveryView />
+        </div>
       </div>
-      </div>
+
        <InputModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
