@@ -1,4 +1,3 @@
-import { MovilPedido } from "../types";
 import { handleRequest } from "./ApiHelper";
 
 
@@ -6,6 +5,15 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 if (!apiUrl) {
     throw new Error("La variable NEXT_PUBLIC_API_URL no está definida en el .env");
+}
+
+
+export const fetchPedidosPorVendedor = async (token: string, fechaInicio: string, fechaFin: string) => {
+    return await handleRequest(`${apiUrl}/vendedor/pedidos-por-vendedor?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 }
 
 export const getEnvioById = async (token: string, envioId: number, estado: string) => {

@@ -144,3 +144,11 @@ export interface TipoPedido {
     id: number;
     nombre: string;
 }
+
+
+export interface PedidoPorVendedor {
+    vendedorId: number;
+    vendedorNombre: string | null;
+    cantidadPedidos: string;
+    montoTotal: string;
+}

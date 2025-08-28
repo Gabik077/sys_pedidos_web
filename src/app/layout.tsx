@@ -81,8 +81,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <NavItem href="/users" label="Usuarios" Icon={FaUser} isOpen={isOpen} pathname={pathname} />
             )}
 
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
                <NavItem href="/facturacion" label="Facturación" Icon={FaFileInvoiceDollar} isOpen={isOpen} pathname={pathname} />
+            )}
+
+              {role === "ADMINISTRADOR" || role === "SYSADMIN" && (
+              <NavItem href="/informes" label="Informes" Icon={FaCalendar} isOpen={isOpen} pathname={pathname} />
             )}
 
           {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "VENDEDOR") && (
