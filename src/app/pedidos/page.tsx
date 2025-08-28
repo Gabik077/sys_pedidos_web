@@ -10,7 +10,7 @@ import PedidosEntregadosView from "./components/pedidos/pedidosEntregados";
 
 const tabs = ["Crear Pedido", "Pedidos Pendientes", "Reparto", "Pedidos Enviados", "Pedidos Entregados"];
 
-export default function ComprasTabsPage() {
+export default function PedidosTabsPage() {
   const [activeTab, setActiveTab] = useState("Crear Pedido");
   const [pedidoEnProgreso, setPedidoEnProgreso] = useState(false);
   //const { budget, setBudget } = userContext();
@@ -71,7 +71,4 @@ export default function ComprasTabsPage() {
       </div>
     </div>
   );
-}
-function userContext(): { budget: any; setBudget: any; } {
-  throw new Error("Function not implemented.");
 }
