@@ -186,7 +186,7 @@ const producto = productos.find((p) => p.id === (productoFiltrado.id || ""));
   };
 
   const productosSugeridos = productos.filter((p) =>
-    `${p.codigo_barra} ${p.nombre.toLowerCase()}`.includes(busqueda.toLowerCase())
+    `${p.codigo_barra} ${p.nombre.toLowerCase()} ${p.marca.toLowerCase()}`.includes(busqueda.toLowerCase())
   );
 
   const clientesSugeridos = clientes.filter((cli) =>
@@ -257,7 +257,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             onChange={(e) => setTipoOrigen(e.target.value)}
             className="w-full border p-2 rounded">
             {tipoVenta.map((tv) => (
-              <option key={tv.id} value={tv.id}>
+              <option key={tv.id} value={tv.nombre}>
                 {tv.nombre}
               </option>
             ))}

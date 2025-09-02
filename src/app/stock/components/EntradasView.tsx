@@ -10,6 +10,7 @@ interface Producto {
   nombre: string;
   descripcion: string;
   precio_venta: string;
+  marca: string;
 }
 
 interface Proveedor {
@@ -144,7 +145,7 @@ export default function EntradasView() {
   };
 
   const productosSugeridos = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  `${p.nombre.toLowerCase()} ${p.marca.toLowerCase()}`.includes(busqueda.toLowerCase())
   );
 
   return (

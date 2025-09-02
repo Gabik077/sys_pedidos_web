@@ -30,9 +30,9 @@ export default function SalidasView() {
   const [busquedaCliente, setBusquedaCliente] = useState("");
 
   const [formData, setFormData] = useState({
-    tipo_origen: "venta",
+    tipo_origen: "ajuste",
     observaciones: "",
-    id_cliente: 1,
+    id_cliente: 0,
     cliente_nombre: "",
     cliente_ruc: "",
     productos: [] as ProductoSeleccionado[],
@@ -99,9 +99,7 @@ export default function SalidasView() {
       observaciones: formData.observaciones,
       total_venta: calcularTotal(),
       iva: calcularIVA(),
-      venta: formData.tipo_origen === "venta" ? {
-        id_cliente: formData.id_cliente,
-      } : null,
+      venta : null,
       productos: formData.productos,
     };
 
@@ -111,9 +109,9 @@ export default function SalidasView() {
     if (result.status === "ok") {
       alert("Salida registrada exitosamente");
       setFormData({
-        tipo_origen: "venta",
+        tipo_origen: formData.tipo_origen,
         observaciones: "",
-        id_cliente: 1,
+        id_cliente: 0,
         cliente_nombre: "",
         cliente_ruc: "",
         productos: [],
@@ -147,10 +145,8 @@ export default function SalidasView() {
             onChange={(e) => setFormData({ ...formData, tipo_origen: e.target.value })}
             className="w-full border p-2 rounded"
           >
-            <option value="venta">Venta</option>
             <option value="ajuste">Ajuste</option>
             <option value="devolucion_proveedor">Devolución Proveedor</option>
-            <option value="pedido">Pedido</option>
             <option value="otro">Otro</option>
           </select>
         </div>
