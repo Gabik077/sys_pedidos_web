@@ -32,7 +32,7 @@ export const handleImprimirProductosSeleccionados = (pedidos: Pedido[], seleccio
 
 
     const productosHTML = Array.from(productosMap.values())
-  //  .sort((a, b) => a.nombre.localeCompare(b.nombre))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre))
     .map(p => {
       const filaPrincipal = `
         <tr class="${p.esCombo ? 'combo' : ''}">
