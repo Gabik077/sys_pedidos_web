@@ -20,16 +20,16 @@ export const handleImprimirProductos = (envio: EnvioHeader) => {
       });
     });
 
-    const productosOrdenados = Array.from(productosMap.values()).sort((a, b) => {
+   /* const productosOrdenados = Array.from(productosMap.values()).sort((a, b) => {
       if (a.idCategoria !== b.idCategoria) {
         return a.idCategoria - b.idCategoria;
       }
       return a.nombre.localeCompare(b.nombre);
-    });
+    });*/
 
 
-    const productosHTML = Array.from(productosOrdenados.values())
-    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+    const productosHTML = Array.from(productosMap.values())
+   // .sort((a, b) => a.nombre.localeCompare(b.nombre))
     .map(p => {
       const filaPrincipal = `
         <tr class="${p.esCombo ? 'combo' : ''}">

@@ -23,16 +23,16 @@ export const handleImprimirProductosSeleccionados = (pedidos: Pedido[], seleccio
       });
     });
 
-    const productosOrdenados = Array.from(productosMap.values()).sort((a, b) => {
+  /*  const productosOrdenados = Array.from(productosMap.values()).sort((a, b) => {
       if (a.idCategoria !== b.idCategoria) {
         return a.idCategoria - b.idCategoria;
       }
       return a.nombre.localeCompare(b.nombre);
-    });
+    });*/
 
 
-    const productosHTML = Array.from(productosOrdenados.values())
-    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+    const productosHTML = Array.from(productosMap.values())
+  //  .sort((a, b) => a.nombre.localeCompare(b.nombre))
     .map(p => {
       const filaPrincipal = `
         <tr class="${p.esCombo ? 'combo' : ''}">
@@ -109,7 +109,7 @@ export const handleImprimirProductosSeleccionados = (pedidos: Pedido[], seleccio
       </head>
       <body>
         <h2>Productos</h2>
-        <p>Total de productos: ${productosOrdenados.length}</p>
+        <p>Total de productos: ${productosMap.size}</p>
         <p>Fecha: ${formatearFecha(new Date())}</p>
         <table>
           <thead>
