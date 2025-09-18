@@ -22,6 +22,7 @@ export default function PedidosPendientesView() {
   const [tipoVenta, setTipoVenta] = useState<{ id: number; nombre: string }[]>([]);
   const [tipoOrigen, setTipoOrigen] = useState<string>("venta");
   const [tipoPedidoSeleccionado, setTipoPedidoSeleccionado] = useState<number>(1);
+    const [searchTerm, setSearchTerm] = useState("");
   const { token } = useUser();
 
   if (!token) {
@@ -126,10 +127,26 @@ const onCancelarPedido = (pedidoId: number) => {
         fetchPedidos(1); // Cargar tipo delivery por defecto
   }, []);
 
+
+    const filteredPedidos = pedidos.filter((p) =>
+    `${p.clienteNombre} ${p.cliente?.apellido} ${p.cliente?.nombre} ${p.cliente?.ciudad} ${p.cliente?.zona?.nombre}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const pedidosList = filteredPedidos;
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6 gap-4">
         <h2 className="text-2xl font-bold text-gray-500">Pedidos</h2>
+         <input
+            type="text"
+            placeholder="Cliente/Ciudad/Zona"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+            className="w-full md:w-40 p-1.5 border rounded"
+          />
         <div>
 
       <DropdownTipoPedidosPendientes  onSelect={(id) => handleTipoPedidoSelect(id)} />
@@ -144,7 +161,7 @@ const onCancelarPedido = (pedidoId: number) => {
           <option value="entregado">Entregados</option>
           <option value="cancelado">Cancelados</option>
         </select>
-        <p><strong>Total Pedidos: {pedidos.length}</strong></p>
+        <p><strong>Pedidos: {pedidos.length}</strong></p>
         <button
           title="Actualizar Pendientes"
           onClick={() => fetchPedidos(tipoPedidoSeleccionado)}
@@ -170,7 +187,7 @@ const onCancelarPedido = (pedidoId: number) => {
       </div>
 
       <div className="space-y-4 text-gray-700">
-        {pedidos.map((pedido) => (
+        {pedidosList.map((pedido) => (
           <div key={pedido.id} className="border p-4 mb-6 rounded shadow">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-lg font-semibold text-gray-600">
