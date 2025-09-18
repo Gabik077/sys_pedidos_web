@@ -33,6 +33,8 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   const [totales, setTotales] = useState<{ distancia: string; duracion: string }>({ distancia: "", duracion: "" });
   const [loading, setLoading] = useState(false);
   const [pedidosOrdenados, setPedidosOrdenados] = useState<Pedido[]>([]);
+  const [destinoLatLng, setDestinoLatLng] = useState<{ lat: number; lng: number }>({ lat: -25.366594304094598, lng: -57.5892038538108 });//Destino Doña Ana
+
   const listaRef = useRef<HTMLDivElement>(null);
 
 
@@ -40,30 +42,7 @@ export default function ListaRutaOrdenada({ pedidos, origen, calcularRuta, onTot
   const touchSensor = useSensor(TouchSensor);
   const sensors = useSensors(mouseSensor, touchSensor);
 
-  const handlePrint = () => {
-    if (listaRef.current) {
-      const printWindow = window.open("", "_blank");
-      if (printWindow) {
-        printWindow.document.write(`
-          <html>
-            <head>
-              <title>Ruta Optimizada</title>
-              <style>
-                body { font-family: sans-serif; padding: 20px; }
-                .pedido { margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-                .totales { font-weight: bold; margin-top: 20px; }
-              </style>
-            </head>
-            <body>
-              ${listaRef.current.innerHTML}
-            </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-      }
-    }
-  };
+
 /*function coordsMatch(lat1: number, lon1: number, lat2: number, lon2: number, epsilon = 0.0002): boolean {
   return Math.abs(lat1 - lat2) < epsilon && Math.abs(lon1 - lon2) < epsilon;
 }*/
@@ -91,21 +70,20 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 
   const handleVerEnGoogleMaps = () => {
-    const pointsLimit = 25;
-    const totalPuntos = pedidosOrdenados.length + 1;
+   // const pointsLimit = 25;
+   // const totalPuntos = pedidosOrdenados.length + 1;
 
-    if (totalPuntos > pointsLimit) {
+   /* if (totalPuntos > pointsLimit) {
       alert("⚠️ Google Maps permite como máximo 25 puntos (incluyendo origen y destino). Solo se mostrarán los primeros 23 pedidos.");
-    }
+    }*/
 
-    const pedidosLimitados = pedidosOrdenados.slice(0, pointsLimit - 1);
-    const intermedios = pedidosLimitados.slice(0, -1);
-    const destino = pedidosLimitados[pedidosLimitados.length - 1];
+   // const pedidosLimitados = pedidosOrdenados.slice(0, pointsLimit - 1);
+    const intermedios = pedidosOrdenados.slice(0, -1);
 
     const waypoints = [
       `${origen.lat},${origen.lng}`,
       ...intermedios.map(p => `${p.cliente.lat},${p.cliente.lon}`),
-      `${destino.cliente.lat},${destino.cliente.lon}`
+      `${destinoLatLng.lat},${destinoLatLng.lng}`
     ];
 
     const url = `https://www.google.com/maps/dir/${waypoints.join("/")}`;
@@ -251,7 +229,7 @@ const pedidosOrden = newList.map((wp) => wp.pedido);
     <div className="mt-6" ref={listaRef}>
       <div className="flex justify-between items-center mb-2">
         <h3 className="text-lg font-bold text-gray-500">
-          Ruta Optimizada ({pedidosOrdenados.length + 1}/25 puntos)
+          Ruta Optimizada ({pedidosOrdenados.length + 1}/30 puntos)
         </h3>
         <div className="flex gap-2">
           <button
@@ -260,12 +238,7 @@ const pedidosOrden = newList.map((wp) => wp.pedido);
           >
             Ver en Google Maps
           </button>
-          <button
-            onClick={handlePrint}
-            className="px-4 py-1 text-sm rounded bg-blue-400 text-white hover:bg-blue-500 shadow"
-          >
-            Imprimir
-          </button>
+
         </div>
       </div>
 
@@ -286,6 +259,10 @@ const pedidosOrden = newList.map((wp) => wp.pedido);
             {pedidosOrdenados.map((p, i) => (
               <SortableItem key={p.id} pedido={p} index={i} />
             ))}
+               <li className="border p-3 rounded shadow bg-white">
+               <strong>#{pedidosOrdenados.length + 2} Final</strong><br />
+              Latitud: {destinoLatLng.lat}, Longitud: {destinoLatLng.lng}
+            </li>
           </ul>
         </SortableContext>
       </DndContext>
