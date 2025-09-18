@@ -45,7 +45,7 @@ export const handleImprimirPedidosSeleccionados = (pedidos: Pedido[], selecciona
                     <th>Producto</th>
                     <th>Cant.</th>
                     <th>Precio Unit.</th>
-                    <th>Sub   Total</th>
+                    <th>Sub Total</th>
                   </tr>
                 </thead>
                 <tbody>
