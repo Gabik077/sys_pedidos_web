@@ -28,8 +28,7 @@ const filasContenido = envio.envioPedido
         <td class="campo-factura"></td>
         <td ></td>
         <td></td>
-        <td></td>
-        <td></td>
+
         <td class="campo-observacion"></td>
         <td style="text-align:center;">
           <div style="display:flex; gap:4px; font-size:10px; justify-content:center;">
@@ -48,8 +47,6 @@ const filasVacias = Array.from({ length: 5 })
   .map(() => `
     <tr>
       <td>&nbsp;</td>
-      <td></td>
-      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -82,7 +79,7 @@ const filas = filasContenido + filasVacias;
           .campo { flex:1 1 100px; font-size:12px; }
           .campo-cliente { width:120px; max-width:120px; } }
           .campo-ciudad { width:80px; max-width:80px; }
-          .campo-factura { width:40px; max-width:40px; } }
+          .campo-factura { width:60px; max-width:60px; } }
           .campo-efectivo { max-width:20px;  }
           .campo-observacion { width:300px; max-width:400px; }
           .datos { font-weight:500; }
@@ -214,9 +211,7 @@ const filas = filasContenido + filasVacias;
               <th>A cobrar</th>
               <th>Fact Nro.</th>
               <th>Cobro Efec</th>
-              <th>Cobro giro</th>
               <th>Cobro transf</th>
-              <th>Pendiente</th>
               <th>Observación</th>
               <th>Eval
                 <div style="margin-top:2px; display:flex; gap:4px; justify-content:center;">
