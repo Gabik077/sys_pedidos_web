@@ -75,7 +75,9 @@ import { formatearFecha } from "@/app/utils/utils";
             const p = ep.pedido;
             totalEnvio += Number(p.total);
 
-            const detalles = p.detalles.map(d => {
+            const detalles = p.detalles
+             .sort((a, b) => a.id - b.id)
+            .map(d => {
               const esCombo = !!d.producto?.comboHeader;
               return `
                 <tr class="${esCombo ? 'combo' : ''}">

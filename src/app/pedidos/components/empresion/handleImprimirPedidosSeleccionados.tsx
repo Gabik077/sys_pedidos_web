@@ -49,7 +49,9 @@ export const handleImprimirPedidosSeleccionados = (pedidos: Pedido[], selecciona
                   </tr>
                 </thead>
                 <tbody>
-                  ${pedido.detalles.map(d => {
+                  ${pedido.detalles
+                    .sort((a, b) => a.id - b.id)
+                    .map(d => {
                     const precioUnit = Number(d.precioUnitario);
                     const totalLinea = precioUnit * d.cantidad;
 
