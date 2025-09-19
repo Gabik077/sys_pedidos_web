@@ -70,19 +70,14 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 
 
   const handleVerEnGoogleMaps = () => {
-   // const pointsLimit = 25;
-   // const totalPuntos = pedidosOrdenados.length + 1;
-
-   /* if (totalPuntos > pointsLimit) {
-      alert("⚠️ Google Maps permite como máximo 25 puntos (incluyendo origen y destino). Solo se mostrarán los primeros 23 pedidos.");
-    }*/
-
-   // const pedidosLimitados = pedidosOrdenados.slice(0, pointsLimit - 1);
-    const intermedios = pedidosOrdenados.slice(0, -1);
+    if (pedidosOrdenados.length === 0) {
+      alert("No hay pedidos en la ruta optimizada para mostrar.");
+      return;
+    }
 
     const waypoints = [
       `${origen.lat},${origen.lng}`,
-      ...intermedios.map(p => `${p.cliente.lat},${p.cliente.lon}`),
+      ...pedidosOrdenados.map(p => `${p.cliente.lat},${p.cliente.lon}`),
       `${destinoLatLng.lat},${destinoLatLng.lng}`
     ];
 

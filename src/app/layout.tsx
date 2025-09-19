@@ -105,11 +105,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 e.preventDefault();
                 setIsModalOpen(true);
               }}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-md cursor-pointer hover:bg-gray-500
-                ${isOpen ? "justify-start" : "justify-center"}
-                ${pathname === "/informes" ? "bg-gray-700 text-white font-semibold" : "text-gray-200"}`}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md cursor-pointer hover:bg-gray-500"}
+                ${pathname === "/informes" ? "bg-gray-700 text-white font-semibold" : "hover:bg-gray-500"}`}
             >
-              <FaCalendarCheck className="text-xl" />
+              <FaCalendarCheck className="text-lg" />
               {isOpen && <span>Informes</span>}
             </Link>
           )}
