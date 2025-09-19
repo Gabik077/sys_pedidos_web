@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { logout } from "./services/authService";
-import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends, FaTruckMoving, FaUserTie, FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
+import { FaBoxOpen, FaShoppingCart, FaUser, FaHome, FaShoppingBasket, FaCalendar, FaHouseUser, FaUserFriends, FaTruckMoving, FaUserTie, FaCalendarCheck } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { SlLogout } from "react-icons/sl";
