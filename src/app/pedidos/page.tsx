@@ -6,14 +6,16 @@ import EnvioPedidosView from "./components/envios/envioPedidosView";
 import PedidosPendientesView from "./components/pedidos/pedidosPendientesView";
 import PedidosEnviadosView from "./components/pedidos/pedidosEnviadosView";
 import PedidosEntregadosView from "./components/pedidos/pedidosEntregados";
+import { useUser } from "../context/UserContext";
 
 
-const tabs = ["Crear Pedido", "Pedidos Pendientes", "Reparto", "Pedidos Enviados", "Pedidos Entregados"];
+let tabs = ["Crear Pedido", "Pedidos Pendientes", "Reparto", "Pedidos Enviados", "Pedidos Entregados"];
+
 
 export default function PedidosTabsPage() {
   const [activeTab, setActiveTab] = useState("Crear Pedido");
   const [pedidoEnProgreso, setPedidoEnProgreso] = useState(false);
-  //const { budget, setBudget } = userContext();
+  const { role, loading } = useUser();
 
   useEffect(() => {
     const draft = localStorage.getItem("pedidoEnProgreso");
@@ -28,6 +30,10 @@ export default function PedidosTabsPage() {
       } catch {}
     }
   }, [activeTab]);
+
+  if(role !== "ADMINISTRADOR" && role !== "SYSADMIN") {
+    tabs = ["Crear Pedido", "Pedidos Pendientes"];
+  }
 
   return (
     <div className="p-6">
@@ -60,13 +66,19 @@ export default function PedidosTabsPage() {
           <PedidosPendientesView />
         </div>
         <div className={activeTab === "Reparto" ? "" : "hidden"}>
+          {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
           <EnvioPedidosView />
+          )}
         </div>
         <div className={activeTab === "Pedidos Enviados" ? "" : "hidden"}>
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
           <PedidosEnviadosView />
+            )}
         </div>
         <div className={activeTab === "Pedidos Entregados" ? "" : "hidden"}>
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN") && (
           <PedidosEntregadosView />
+            )}
         </div>
       </div>
     </div>
