@@ -125,7 +125,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <NavItem href="/pedidos" label="Pedidos" Icon={FaCalendar} isOpen={isOpen} pathname={pathname} />
             )}
 
-            {(role === "ADMINISTRADOR" || role === "SYSADMIN" || role === "COMPRADOR" || role === "VENDEDOR") && (
+            {(role === "ADMINISTRADOR" || role === "SYSADMIN" ) && (
               <NavItem href="/products" label="Productos" Icon={FaShoppingCart} isOpen={isOpen} pathname={pathname} />
             )}
 
