@@ -45,7 +45,19 @@ export default function ClientesTable({ clientes: initialClientes }: ClientesTab
 
   const confirmDelete = async () => {
     if (selectedClienteId !== null) {
-      await deleteCliente(token,selectedClienteId);
+    const res =  await deleteCliente(token,selectedClienteId);
+      if (res.status === "ok") {
+        alert(`Cliente eliminado exitosamente ✅`);
+      } else {
+        if(res.message.includes("update or delete")) {
+          alert(`No puedes eliminar este cliente porque tiene pedidos asociados ❌`);
+        } else  if (res.message.includes("Forbidden")) {
+          alert(`No tienes permiso para eliminar este cliente ❌`);
+        } else {
+          alert(`Error al eliminar el cliente: ${res.message}`);
+        }
+
+      }
       const updatedClientes = clientes.filter((c) => c.id !== selectedClienteId);
       setClientes(updatedClientes);
       setIsModalOpen(false);
