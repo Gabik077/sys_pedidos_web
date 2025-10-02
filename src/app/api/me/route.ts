@@ -37,6 +37,18 @@ export async function POST(req: Request) {
 
     try {
         const decoded = jwt.verify(token as string, process.env.JWT_SECRET!);
+        if (
+            typeof decoded === 'object' &&
+            decoded !== null &&
+            'role' in decoded &&
+            typeof (decoded as any).role === 'string' &&//roles validos
+            (decoded as any).role !== 'ADMINISTRADOR' &&
+            (decoded as any).role !== 'SYSADMIN' &&
+            (decoded as any).role !== 'VENDEDOR' &&
+            (decoded as any).role !== 'COMPRADOR'
+        ) {
+            return NextResponse.json({ message: "Credenciales inválidas" }, { status: 401 });
+        }
 
     } catch (err) {
         return NextResponse.json({ status: 'invalid_token' }, { status: 401 });
