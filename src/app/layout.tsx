@@ -36,6 +36,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       setIsModalOpen(false);
     };
 
+    const openInformes = () => {
+      router.push("/informes");
+    }
+
   const logoutNext = async () => {
     const res = await fetch("/api/logout", {
       method: "POST",
@@ -103,7 +107,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                setIsModalOpen(true);
+              //  setIsModalOpen(true);
+                  openInformes();
               }}
               className={`flex items-center space-x-2 px-3 py-2 rounded-md cursor-pointer hover:bg-gray-500"}
                 ${pathname === "/informes" ? "bg-gray-700 text-white font-semibold" : "hover:bg-gray-500"}`}
