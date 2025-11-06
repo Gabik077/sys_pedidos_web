@@ -1,4 +1,4 @@
-Proyecto hecho en Nextjs para consumir API de pedidos
+Proyecto hecho en Nextjs para gestionar Pedidos y Repartos
 
 
 ![Pantalla de Pedidos 2](assets/image_system_2.png)
